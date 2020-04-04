@@ -1,0 +1,43 @@
+.Comment {
+    /* border: 1 x solid black; */
+}
+
+.Comment-content {
+    padding: 0.1em 0 0.1em 0em;
+}
+
+.Comment-header {
+    font-weight: bold;
+}
+
+.Comment-header, .Comment-footer {
+    font-size: 0.75em;
+}
+
+.Comment-hide {
+    color: #aaa;
+    cursor: pointer;
+}
+
+.Comment-time {
+    color: #aaa;
+}
+
+.Comment {
+    margin-top: 1em;
+}
+
+.Comment .Comment {
+    margin-top: 1em;
+    margin-left: 1.5em;
+}
+
+.CommentList .CommentList {
+    border-left: 1px solid #aaa; 
+}
+
+.Comment-user {
+    color: #427AA1;
+    font-weight: bold;
+    text-decoration: none;
+}
