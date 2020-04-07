@@ -1,0 +1,32 @@
+{
+  "name": "redditbackend",
+  "version": "1.0.0",
+  "description": "this is the backend of the reddit",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CS554",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.643.0",
+    "date-input-polyfill": "^2.14.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.17.0",
+    "handlebars": "^4.5.1",
+    "method-override": "^3.0.0",
+    "mongo": "^0.1.0",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
+    "nodemon": "^1.19.4",
+    "passport": "^0.4.0",
+    "password-hash": "^1.2.2",
+    "path": "^0.12.7",
+    "socket.io": "^2.3.0",
+    "uuid": "^3.3.3",
+    "xss": "^1.0.6"
+  }
+}
