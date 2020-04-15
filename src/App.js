@@ -2,9 +2,13 @@ import React from 'react';
 import { CommentList } from './components/Comment'
 import './App.css';
 import Form from "./components/Form";
-import {BrowserRouter as Router , Route ,Link} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Question from "./components/questiondisplay";
 import EditQuestion from "./components/editQuestion";
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
+import { AuthProvider } from '../src/firebase/Auth'
+
 
 const comments = [{
   "id": 1,
@@ -60,22 +64,26 @@ const comments = [{
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
-    <div className="App">
-      <header className="App-header">
+      <div className="App">
+        <header className="App-header">
           <h1>Add question</h1>
           <Link className="showlink" to="/questions">Add question</Link>
-      </header>
-      <CommentList comments={comments} />
-      <div className="App-body">
-          <CommentList comments={comments} />
-          <Route exact path="/questions" exact component={Form}/>
+        </header>
+        {/* <CommentList comments={comments} /> */}
+        <div className="App-body">
+          {/* <CommentList comments={comments} /> */}
+          <Route exact path="/signin" exact component={SignIn} />
+          <Route exact path="/signup" exact component={SignUp} />
+          <Route exact path="/questions" exact component={Form} />
           <Route exact path="/questions/display/:id" exact component={Question} />
           <Route exact path="/questions/edit/:id" exact component={EditQuestion} />
 
         </div>
-    </div>
-    </Router>
+      </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
