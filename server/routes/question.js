@@ -53,13 +53,7 @@ router.get("/:id" ,async function(req,res){
 })
 
 router.post("/",questionData.upload.single('image'),async function(req,res){
-    try{
-        await questionData.getquestion(req.params.id)
-
-    }
-    catch(e){
-        res.status(404).json({error:e})
-    }
+    
     try{
         
 
