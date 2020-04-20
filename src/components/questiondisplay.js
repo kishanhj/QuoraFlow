@@ -31,7 +31,9 @@ function Questiondisplay(props) {
     if(getData && getData.image){
         return (
             <div className="App=body">
-                <Link className="showlink" to={`/question/edit/${props.match.params.id}`}>Edit Question</Link>
+                <Link className="showlink" to={`/questions/edit/${props.match.params.id}`}>Edit Question</Link>
+                <br/>
+                <Link className="showlink" to={`/questions/delete/${props.match.params.id}`}>Delete Question</Link>
                 <br/>
                 <span className="title">Title</span>
                 <h1>{getData && getData.title}</h1>
@@ -55,8 +57,10 @@ function Questiondisplay(props) {
     }
 
 	return (
-		<div className="App=body">
-            <Link className="showlink" to='/question/edit/:id'>Edit Question</Link>
+		<div className="App-body">
+            <Link className="showlink" to={`/questions/edit/${props.match.params.id}`}>Edit Question</Link>
+            <br/>
+            <Link className="showlink" to={`/questions/delete/${props.match.params.id}`}>Delete Question</Link>
             <br/>
             <span className="title">Title</span>
             <h1>{getData && getData.title}</h1>

@@ -109,7 +109,7 @@ router.patch("/:id",questionData.upload.single('image'),async function(req,res){
         res.status(404).json({error:e})
     }
     try{
-        if(questiondata.title===undefined && questiondata.description===undefined && questiondata.image===undefined){
+        if(questiondata.title===undefined && questiondata.description===undefined && questiondata.image===undefined && questiondata.tags===undefined){
             throw "incorrect Update info"
         }
         
@@ -122,9 +122,11 @@ router.patch("/:id",questionData.upload.single('image'),async function(req,res){
         return;
     }
     try{
-       const updatequestion= await questionData.updatequestion(req.params.id,questiondata)
-       res.status(200).json(updatequestion)
-       return;
+    
+        questiondata.tags=questiondata.tags.split(",")
+        const updatequestion= await questionData.updatequestion(req.params.id,questiondata)
+        res.status(200).json(updatequestion)
+        return;
 
     }
     catch(e){
@@ -137,7 +139,8 @@ router.delete("/:id",async function(req,res){
     try{
         
        const deletequestion= await questionData.deletequestion(req.params.id)
-       res.status(200).json(deletequestion)
+       res.sendStatus(200)
+       return;
 
     }
     catch(e){

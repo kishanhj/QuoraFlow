@@ -117,6 +117,11 @@ const updatequestion = async(id , newquestion)=>{
         if(typeof newquestion.image !=="string") throw "Image is not of string type"
         updateq.image=newquestion.image
     }
+    
+    if(newquestion.tags){
+        if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
+        updateq.tags=newquestion.tags
+    }
     const questioncollection = await questions()
     const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:updateq})
     return await getquestion(String(id))
@@ -127,7 +132,7 @@ const deletequestion=async(id)=>{
     await getquestion(id)
     const questioncollection = await questions()
     const Deletedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:{isdeleted:true}})
-    return await getquestion(id)
+    return;
 
 }
 

@@ -5,6 +5,7 @@ import Form from "./components/Form";
 import {BrowserRouter as Router , Route ,Link} from 'react-router-dom';
 import Question from "./components/questiondisplay";
 import EditQuestion from "./components/editQuestion";
+import DeleteQuestion from "./components/deleteQuestion";
 
 const comments = [{
   "id": 1,
@@ -72,6 +73,7 @@ function App() {
           <Route exact path="/questions" exact component={Form}/>
           <Route exact path="/questions/display/:id" exact component={Question} />
           <Route exact path="/questions/edit/:id" exact component={EditQuestion} />
+          <Route exact path="/questions/delete/:id" exact component={DeleteQuestion} />
 
         </div>
     </div>

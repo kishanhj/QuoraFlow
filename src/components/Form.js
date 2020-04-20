@@ -22,16 +22,15 @@ function Form(props) {
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
 	const [tags,settaags]=useState([
-		{ id: "Thailand", text: "Thailand" },
-		{ id: "India", text: "India" }
+		
 	 ])
 	 const [suggestions,setsuggestions]=useState([
-		{ id: 'USA', text: 'USA' },
-		{ id: 'Germany', text: 'Germany' },
-		{ id: 'Austria', text: 'Austria' },
-		{ id: 'Costa Rica', text: 'Costa Rica' },
-		{ id: 'Sri Lanka', text: 'Sri Lanka' },
-		{ id: 'Thailand', text: 'Thailand' }
+		{ id: 'Computer Science', text: 'Computer Science' },
+		{ id: 'Electronics', text: 'Electronics' },
+		{ id: 'C++', text: 'C++' },
+		{ id: 'Node', text: 'Node' },
+		{ id: 'NodeJS', text: 'NodeJS' },
+		{ id: 'Java', text: 'Java' }
 	 ])
 
 	useEffect(
@@ -53,14 +52,12 @@ function Form(props) {
 		
 		//provide input checking/validation
 		//then perhaps post form data to an API or your express server end point
-		let tags=[]
-		let taginfo=document.getElementsByName('tags');
-		for(let i=0;i<taginfo.length;i++){
-			if(taginfo[i].type==="checkbox" && taginfo[i].checked===true){
-				tags.push(taginfo[i].value)
-			}
+		let tagtext=[]
+		for (let i in tags){
+			
+			tagtext.push(tags[i].text)
 		}
-		formdata.append("tags",tags)
+		formdata.append("tags",tagtext)
 		
 		let questioninfo = {
 			title:question,
@@ -135,6 +132,7 @@ function Form(props) {
    				<Form1.Label>Description</Form1.Label>
     			<Form1.Control as="textarea" rows="3" id='description' name='description' placeholder="Add a description."/>
   				</Form1.Group>
+				<Form1.Label>Tags</Form1.Label>
 				<ReactTags 
 					inputFieldPosition="inline"
 					tags={tags}
@@ -145,6 +143,7 @@ function Form(props) {
 
 					 />  
 				<br/>
+				<Form1.Label>Optional Image Upload</Form1.Label>
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
 				<Button variant="primary" type="submit">
     				Submit
