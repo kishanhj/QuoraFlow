@@ -106,7 +106,7 @@ function EditForm(props) {
 			   
 		});
 		console.log(data)
-		
+		props.history.push(`/questions/display/${props.match.params.id}`)
 		
 		
 		// document.getElementById('question').value = '';

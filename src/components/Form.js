@@ -1,11 +1,11 @@
 import React ,{useState,useEffect} from 'react';
-import ReactDOM from 'react-dom';
-import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
+import { useForm } from "react-hook-form";
 import axios from 'axios';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form1 from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
+import Alert from 'react-bootstrap/Alert'
 import bsCustomFileInput from 'bs-custom-file-input'
 import { WithContext as ReactTags } from 'react-tag-input';
 
@@ -17,11 +17,12 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function Form(props) {
-	
+	const { register, errors, handleSubmit } = useForm();
 	const [ postData, setPostData ] = useState({});
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
 	const [tags,settaags]=useState([
+		{id:'General',text:'General'}
 		
 	 ])
 	 const [suggestions,setsuggestions]=useState([
@@ -40,59 +41,69 @@ function Form(props) {
 	)
 	const formSubmit = async (e) => {
         //disable form's default behavior
-    
-		e.preventDefault();
-		
-		const formdata= new FormData()
-		//get references to form fields.
-		let question = document.getElementById('question').value;
-		let description = document.getElementById('description').value;
-		formdata.append("title",question)
-		formdata.append("description",description)
-		
-		//provide input checking/validation
-		//then perhaps post form data to an API or your express server end point
-		let tagtext=[]
-		for (let i in tags){
+		try{
+			e.preventDefault();
+			const formdata= new FormData()
+			//get references to form fields.
+			let question = document.getElementById('question').value;
+			let description = document.getElementById('description').value;
+			formdata.append("title",question)
+			formdata.append("description",description)
+			//provide input checking/validation
+			//then perhaps post form data to an API or your express server end point
+			let tagtext=[]
+			if(tags.length==0){
+				tagtext.push("General")
+			}
+			else{
+				for (let i in tags){
+				
+					tagtext.push(tags[i].text)
+				}
+
+			}
 			
-			tagtext.push(tags[i].text)
+			formdata.append("tags",tagtext)
+			
+			let questioninfo = {
+				title:question,
+				description:description,
+				tags:tags,
+				image:image,
+				userid:"2g3bfy46346"
+			};
+			formdata.append("userid","2g3bfy46346")
+			if(image !==null){
+				formdata.append("image",image)
+
+			}
+			
+			
+			for(let i of formdata.entries()){
+				console.log(i[0]+" "+i[1])
+			}
+
+			const { data } = await axios.post('http://localhost:8080/questions', formdata, {
+				headers: {
+					'accept': 'application/json',
+					'Accept-Language': 'en-US,en;q=0.8',
+					'Content-Type': 'multipart/form-data',
+				}
+				
+			});
+			
+			
+			
+			
+			document.getElementById('question').value = '';
+			document.getElementById('description').value = '';
+
+			props.history.push(`/questions/display/${data._id}`)
 		}
-		formdata.append("tags",tagtext)
-		
-		let questioninfo = {
-			title:question,
-            description:description,
-			tags:tags,
-			image:image,
-            userid:"2g3bfy46346"
-		};
-		formdata.append("userid","2g3bfy46346")
-		if(image !==null){
-			formdata.append("image",image)
+		catch(e){
 
 		}
 		
-		
-		for(let i of formdata.entries()){
-			console.log(i[0]+" "+i[1])
-		}
-
-		const { data } = await axios.post('http://localhost:8080/questions', formdata, {
-			headers: {
-				'accept': 'application/json',
-     			'Accept-Language': 'en-US,en;q=0.8',
-     			'Content-Type': 'multipart/form-data',
-			   }
-			   
-		});
-		console.log(data)
-		
-		
-		
-		document.getElementById('question').value = '';
-		document.getElementById('description').value = '';
-
-		props.history.push(`/questions/display/${data._id}`)
 		
 		
         
@@ -126,11 +137,17 @@ function Form(props) {
 			<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
 				<Form1.Group>
     			<Form1.Label>Question</Form1.Label>
-    			<Form1.Control id='question' name='question' type="text" placeholder="Question Title" />
+    			<Form1.Control id='question' name='question' type="text" placeholder="Question Title" required/>
+				
+					{errors.question?.type === "required" && <Alert key="questiondanger" variant='danger'>Question has be entered</Alert>}
+  				
+				
+      			{errors.question?.type === "maxLength" && "Your input exceed maxLength"}
   				</Form1.Group>
 				<Form1.Group>
    				<Form1.Label>Description</Form1.Label>
-    			<Form1.Control as="textarea" rows="3" id='description' name='description' placeholder="Add a description."/>
+    			<Form1.Control as="textarea" rows="3" id='description' name='description' placeholder="Add a description." required/>
+				{errors.description?.type === "required" && <Alert key="descriptiondanger" variant='danger'>A Desciption has be entered</Alert>}
   				</Form1.Group>
 				<Form1.Label>Tags</Form1.Label>
 				<ReactTags 
@@ -140,6 +157,7 @@ function Form(props) {
                     handleDelete={handleDelete}
                     handleAddition={handleAddition}
 					delimiters={delimiters}
+					allowDeleteFromEmptyInput={false}
 
 					 />  
 				<br/>

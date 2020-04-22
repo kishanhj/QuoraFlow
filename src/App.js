@@ -6,6 +6,7 @@ import {BrowserRouter as Router , Route ,Link} from 'react-router-dom';
 import Question from "./components/questiondisplay";
 import EditQuestion from "./components/editQuestion";
 import DeleteQuestion from "./components/deleteQuestion";
+import PagenotFound from "./components/pageNotFound";
 
 const comments = [{
   "id": 1,
@@ -67,13 +68,14 @@ function App() {
           <h1>Add question</h1>
           <Link className="showlink" to="/questions">Add question</Link>
       </header>
-      <CommentList comments={comments} />
       <div className="App-body">
-          <CommentList comments={comments} />
+          
           <Route exact path="/questions" exact component={Form}/>
           <Route exact path="/questions/display/:id" exact component={Question} />
           <Route exact path="/questions/edit/:id" exact component={EditQuestion} />
           <Route exact path="/questions/delete/:id" exact component={DeleteQuestion} />
+          <Route  exact path="/notfound" component={PagenotFound} status={404} />
+          <CommentList comments={comments} />
 
         </div>
     </div>

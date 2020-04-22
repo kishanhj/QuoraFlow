@@ -81,8 +81,8 @@ const createquestion = async(title,description,tags,userid,image)=>{
         isdeleted:false,
         issolved:undefined,
         image:image,
-        likes:0,
-        report:0,
+        likes:[],
+        report:[],
         followers:[]
 
     }
@@ -136,12 +136,25 @@ const deletequestion=async(id)=>{
 
 }
 
+const updatelike=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions() 
+    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$addToSet:{likes:String(userid)}}) 
+    return await getquestion(String(id))
+
+}
+
 module.exports={
     createquestion,
     getallquestions,
     getquestion,
     deletequestion,
     updatequestion,
-    upload
+    upload,
+    updatelike
 
 }
