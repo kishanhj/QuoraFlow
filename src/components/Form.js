@@ -91,9 +91,13 @@ function Form(props) {
 				}
 				
 			});
-			
-			
-			
+			const tagdata={
+				tagarray:tagtext,
+				questionID:data._id
+
+			}
+			const { }=await axios.post(`http://localhost:8080/tags/addtags`, tagdata)
+	
 			
 			document.getElementById('question').value = '';
 			document.getElementById('description').value = '';
@@ -101,6 +105,7 @@ function Form(props) {
 			props.history.push(`/questions/display/${data._id}`)
 		}
 		catch(e){
+			console.log(errors)
 
 		}
 		

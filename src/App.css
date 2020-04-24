@@ -53,4 +53,15 @@ body {
   background-color: #ECEBE4;
 }
 
+.tag{
+  border: 1px solid #ddd;
+  background: #eee;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  margin: 0 5px;
+  cursor: move;
+  border-radius: 2px;
+}
+
 

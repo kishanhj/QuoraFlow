@@ -6,6 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button'
 import Nav from 'react-bootstrap/Nav'
 import Image from 'react-bootstrap/Image'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 
 
@@ -84,23 +87,28 @@ function Questiondisplay(props) {
                         <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
                     </Nav.Item>
                 </Nav>
-                <h1>{getData && getData.title}</h1>
-                <hr/>
-                <span className="title">Description</span>
-                <p>{getData && getData.description}</p>
-                <br/>
-                <span className="title">Image</span>
-                <Image src={`${getData && getData.image}`} thumbnail/>
-                {/* <img src={getData && getData.image} alt="questionimage"/> */}
-                <br/>
-                <span className="title">Time</span>
-                <p>{timestamp}</p>
-                <br/>
-                <span className="title">Tags</span>
-                <ul>{gettags && gettags.map((tag)=>{
-                    return <li key={tag}>{tag}</li>
-                })}</ul>
-                <button onClick={handlelike}>Likes {like} </button>
+                <Container>
+                <Row><h1>{getData && getData.title}</h1></Row>
+                <Row>  
+                    <Col><p>{getData && getData.description}</p></Col>
+                </Row>
+                <Row>  
+                    <Col><Image src={`${getData && getData.image}`} thumbnail/></Col>
+                </Row>
+                <Row>
+                    <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
+                    <Col xs large="2"> <p>{timestamp}</p></Col>
+                    <Col md="auto"><span className="title">Tags:</span></Col>
+                    <Col md="auto">
+                        
+                        <ul>{gettags && gettags.map((tag)=>{
+                            return <li  className="tag" key={tag}>{tag}</li>
+                        })}</ul>
+                    </Col>
+                </Row>
+            </Container>
+
+                
             </div>
         );
 
@@ -116,19 +124,25 @@ function Questiondisplay(props) {
                         <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
                     </Nav.Item>
             </Nav>
-            <span className="title">Title</span>
-            <h1>{getData && getData.title}</h1>
-            <span className="title">Description:</span>
-            <p>{getData && getData.description}</p>
-            <br/>
-            <span className="title">Time</span>
-            <p>{timestamp}</p>
-            <br/>
-            <span className="title">Tags</span>
-            <ul className="tag">{gettags && gettags.map((tag)=>{
-                return <li key={tag}>{tag}</li>
-            })}</ul>
-            <button onClick={handlelike}>Likes {like}</button>
+            
+
+            <Container>
+                <Row><h1>{getData && getData.title}</h1></Row>
+                <Row>  
+                    <Col><p>{getData && getData.description}</p></Col>
+                </Row>
+                <Row>
+                    <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
+                    <Col xs large="2"> <p>{timestamp}</p></Col>
+                    <Col md="auto"><span className="title">Tags:</span></Col>
+                    <Col md="auto">
+                        
+                        <ul>{gettags && gettags.map((tag)=>{
+                            return <li  className="tag" key={tag}>{tag}</li>
+                        })}</ul>
+                    </Col>
+                </Row>
+            </Container>
             
   
 		</div>
