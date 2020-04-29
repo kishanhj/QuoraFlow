@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommentList } from './components/Comment'
+import { CommentBox } from './components/Comment'
 import './App.css';
 import Form from "./components/Form";
 import {BrowserRouter as Router , Route ,Link} from 'react-router-dom';
@@ -75,7 +75,7 @@ function App() {
           <Route exact path="/questions/edit/:id" exact component={EditQuestion} />
           <Route exact path="/questions/delete/:id" exact component={DeleteQuestion} />
           <Route  exact path="/notfound" component={PagenotFound} status={404} />
-          <CommentList comments={comments} />
+          <CommentBox comments={comments} />
 
         </div>
     </div>
