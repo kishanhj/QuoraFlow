@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ReplyBox from "./ReplyBox.jsx";
+import settings from "../settings.json";
 import "./Comment.css";
 
 const countChildren = (comment) => {
@@ -16,19 +18,21 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ comment, reply }) => {
+const Comment = ({ questionId, comment, reply }) => {
     const [hidden, setHidden] = useState(false);
 
     const childrenCount = countChildren(comment) + 1;
 
+    comment.points = comment.upVotes - comment.downVotes;
+
     return (
         <div className="Comment">
             <div className="Comment-header">
-                <span className="Comment-user"> {comment.user} </span>{" "}
+                <span className="Comment-user"> {comment.userId} </span>{" "}
                 <span className="Comment-points">
                     {comment.points + " points"}
                 </span>{" "}
-                <span className="Comment-time"> {comment.time} </span>{" "}
+                <span className="Comment-time"> {comment.dateAdded} </span>{" "}
                 <span
                     className="Comment-hide"
                     onClick={() => setHidden(!hidden)}
@@ -39,11 +43,12 @@ const Comment = ({ comment, reply }) => {
             {!hidden && (
                 <>
                     <div>
-                        <div className="Comment-content">{comment.content}</div>
+                        <div className="Comment-content">{comment.text}</div>
                         <div className="Comment-footer">
                             {reply.replyParent === comment.id ? (
                                 <ReplyBox
-                                    parentId={comment.id}
+                                    questionId={questionId}
+                                    commentId={comment.id}
                                     onReply={() => reply.setReplyParent(null)}
                                 />
                             ) : (
@@ -70,7 +75,7 @@ const Comment = ({ comment, reply }) => {
     );
 };
 
-const CommentList = ({ comments, reply }) => {
+const CommentList = ({ questionId, comments, reply }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
@@ -80,20 +85,45 @@ const CommentList = ({ comments, reply }) => {
     );
 };
 
-const CommentBox = ({ questionId, comments }) => {
+const CommentBox = ({ questionId }) => {
+    const [comments, setComments] = useState(null);
     const [replyParent, setReplyParent] = useState(null);
+
+    useEffect(() => {
+        async function fetchComments() {
+            const api =
+                settings.backendEndpoint +
+                "questions/" +
+                questionId +
+                "/comments";
+            const res = await axios.get(api);
+            const data = res.data;
+
+            if (data.ok) {
+                setComments(data.comments);
+            }
+        }
+
+        fetchComments();
+    }, [questionId]);
 
     return (
         <>
             <ReplyBox
-                parentId={questionId}
+                questionId={questionId}
                 isParentQuestion={true}
                 onReply={() => {}}
             />
-            <CommentList
-                comments={comments}
-                reply={{ replyParent, setReplyParent }}
-            ></CommentList>
+            {comments &&
+                (comments.length === 0 ? (
+                    <p>No comments</p>
+                ) : (
+                    <CommentList
+                        questionId={questionId}
+                        comments={comments}
+                        reply={{ replyParent, setReplyParent }}
+                    ></CommentList>
+                ))}
         </>
     );
 };

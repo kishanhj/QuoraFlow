@@ -9,7 +9,7 @@ import Image from 'react-bootstrap/Image'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-
+import { CommentBox } from './Comment'
 
 
 function Questiondisplay(props) {
@@ -141,6 +141,9 @@ function Questiondisplay(props) {
                             return <li  className="tag" key={tag}>{tag}</li>
                         })}</ul>
                     </Col>
+                </Row>
+                <Row>
+                    <CommentBox questionId={props.match.params.id} />
                 </Row>
             </Container>
             
