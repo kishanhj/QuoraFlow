@@ -82,5 +82,31 @@ router.post('/:questionId/comments/:commentId', async (req, res) => {
     });
 });
 
+router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
+    const questionId = req.params.questionId;
+    const commentId = req.params.commentId;
+    const {
+        direction
+    } = req.body;
+
+    if (direction !== 'UP' && direction !== 'DOWN') {
+        res.status(400).json({
+            ok: false,
+            error: 'Bad Request',
+        });
+        return;
+    }
+
+    let success = null;
+    try {
+        success = await comments.addVote(commentId, 'TODO', direction);
+    } catch (e) {
+        console.error(e);
+    }
+
+    res.json({
+        ok: true,
+    });
+});
 
 module.exports = router;

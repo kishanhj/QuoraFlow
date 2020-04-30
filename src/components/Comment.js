@@ -4,6 +4,9 @@ import ReplyBox from "./ReplyBox.jsx";
 import settings from "../settings.json";
 import "./Comment.css";
 
+const UP_CODE = "\u25B2";
+const DOWN_CODE = "\u25BC";
+
 const countChildren = (comment) => {
     const sub = comment.comments;
     if (!sub || sub.length === 0) {
@@ -23,20 +26,34 @@ const Comment = ({ questionId, comment, reply }) => {
 
     const childrenCount = countChildren(comment) + 1;
 
+    async function handleVote(direction) {
+        const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id + "/vote";
+        try {
+            const res = await axios.post(api, { direction });
+            const data = res.data;
+            if (data.ok) {
+                // TODO: refresh or update state
+            }
+        } catch (e) {
+            console.error("Failed to vote comment", e);
+        }
+    }
+
     comment.points = comment.upVotes - comment.downVotes;
 
     return (
         <div className="Comment">
             <div className="Comment-header">
+                <button className="Comment-vote-btn" onClick={() => handleVote("UP")}>
+                    {UP_CODE}
+                </button>{" "}
+                <span className="Comment-points">{comment.points}</span>{" "}
+                <button className="Comment-vote-btn" onClick={() => handleVote("DOWN")}>
+                    {DOWN_CODE}
+                </button>
                 <span className="Comment-user"> {comment.userId} </span>{" "}
-                <span className="Comment-points">
-                    {comment.points + " points"}
-                </span>{" "}
                 <span className="Comment-time"> {comment.dateAdded} </span>{" "}
-                <span
-                    className="Comment-hide"
-                    onClick={() => setHidden(!hidden)}
-                >
+                <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
                 </span>{" "}
             </div>
@@ -52,23 +69,13 @@ const Comment = ({ questionId, comment, reply }) => {
                                     onReply={() => reply.setReplyParent(null)}
                                 />
                             ) : (
-                                <button
-                                    className="Comment-reply-btn"
-                                    onClick={() =>
-                                        reply.setReplyParent(comment.id)
-                                    }
-                                >
+                                <button className="Comment-reply-btn" onClick={() => reply.setReplyParent(comment.id)}>
                                     reply
                                 </button>
                             )}
                         </div>
                     </div>
-                    {comment.comments && (
-                        <CommentList
-                            comments={comment.comments}
-                            reply={reply}
-                        ></CommentList>
-                    )}
+                    {comment.comments && <CommentList comments={comment.comments} reply={reply}></CommentList>}
                 </>
             )}
         </div>
@@ -91,11 +98,7 @@ const CommentBox = ({ questionId }) => {
 
     useEffect(() => {
         async function fetchComments() {
-            const api =
-                settings.backendEndpoint +
-                "questions/" +
-                questionId +
-                "/comments";
+            const api = settings.backendEndpoint + "questions/" + questionId + "/comments";
             const res = await axios.get(api);
             const data = res.data;
 
@@ -109,11 +112,7 @@ const CommentBox = ({ questionId }) => {
 
     return (
         <>
-            <ReplyBox
-                questionId={questionId}
-                isParentQuestion={true}
-                onReply={() => {}}
-            />
+            <ReplyBox questionId={questionId} isParentQuestion={true} onReply={() => {}} />
             {comments &&
                 (comments.length === 0 ? (
                     <p>No comments</p>

@@ -72,7 +72,32 @@ async function addComment(parentId, userId, text, isParentQuestion) {
     return true;
 }
 
+// TODO: User
+// direction is 'UP' or 'DOWN'
+async function addVote(commentId, userId, direction) {
+    const commentsCollection = await getCommentsCollection();
+
+    const voteObj = direction === 'UP' ? {
+        upVotes: 1
+    } : {
+        downVotes: 1
+    };
+
+    const updateInfo = await commentsCollection.updateOne({
+        _id: ObjectID(commentId)
+    }, {
+        $inc: voteObj
+    });
+
+    if (updateInfo.matchedCount === 0) {
+        throw new Error('Comment not found');
+    }
+
+    return true;
+}
+
 module.exports = {
     getCommentTree,
     addComment,
+    addVote,
 };
