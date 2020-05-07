@@ -93,7 +93,7 @@ const createquestion = async(title,description,tags,userid,image)=>{
     const newid= insertedquestion.insertedId;
     const questiondata=await getquestion(String(newid));
     elasticSearchAPI.addQuestion(questiondata);
-    return questiondatal
+    return questiondata
 }
 
 const updatequestion = async(id , newquestion)=>{

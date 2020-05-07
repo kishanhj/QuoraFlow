@@ -4,8 +4,9 @@ import Axios from 'axios';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form1 from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 import bsCustomFileInput from 'bs-custom-file-input'
+import Card from 'react-bootstrap/Card'
 import { WithContext as ReactTags } from 'react-tag-input';
 
 const KeyCodes = {
@@ -18,8 +19,9 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function EditForm(props) {
     const [ getData, setgetData ] = useState({});
-	const [image ,selectimage]=useState(null)
-	const [oldimage,setoldimage]=useState(undefined)
+	const [image ,selectimage]=useState(null);
+	const [oldimage,setoldimage]=useState(undefined);
+	const [imagename, setimagename]=useState('');
 	const [tags,settags]=useState([ ])
 	const [suggestions,setsuggestions]=useState([
 	   { id: 'Computer Science', text: 'Computer Science' },
@@ -43,6 +45,10 @@ function EditForm(props) {
 			} 
 			settags(edittags)
 			setoldtags(data.tags)
+			if(data.image!==null){
+				setimagename(data.image.split('/')[3])
+			}
+			
         }
         getdata()
         bsCustomFileInput.init()
@@ -168,7 +174,8 @@ function EditForm(props) {
 					 />  
 				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
-				{oldimage? <p>{oldimage}<Button onClick={handledeleteimage}>delete image</Button></p> : null}
+				<br/>
+				{oldimage? <Button variant="outline-primary" onClick={handledeleteimage}>{imagename} X</Button>: null}
 				
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange}   accept="image/*" custom/>  
 				<Button variant="primary" type="submit">
