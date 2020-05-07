@@ -123,8 +123,10 @@ const updatequestion = async(id , newquestion)=>{
         updateq.tags=newquestion.tags
     }
     const questioncollection = await questions()
-    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:updateq})
-    return await getquestion(String(id))
+    const updatedInfo = await questioncollection.updateOne({_id:ObjectID(id)},{$set:updateq})
+    const updatedquestion =  await getquestion(String(id));
+    elasticSearchAPI.updateQuestion(updatedquestion);
+    return updatedquestion;
 }
 const deletequestion=async(id)=>{
     if(!id) throw "No id is provided"

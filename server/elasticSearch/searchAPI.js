@@ -13,8 +13,8 @@ const addQuestion = async (questionDB) => {
     var url = "", res = {};
 
     if (sConfig.useAws) {
-        var test = await addQuestionAWS(question);
-        console.log(test);
+        var created = await crudAWSWrap(addQuestionAWS,question);
+        if(created) console.log("Index created");
         return;
     }
 
@@ -22,69 +22,24 @@ const addQuestion = async (questionDB) => {
     res = await axios.post(url, question);
 }
 
-const addQuestionAWS = async (question) => {
+const updateQuestion = async (questionDB) => {
 
-    var region = 'us-east-1';
-    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
-    var request = new AWS.HttpRequest(endpoint, region);
+    const question = {
+        "id": questionDB._id,
+        "title": questionDB.title,
+        "description": questionDB.description
+    }
 
-    request.method = 'POST';
-    request.path += sConfig.questionIndex + '/' + sConfig.questionType;
-    console.log(request.path);
-    request.body = JSON.stringify(question);
-    request.headers['host'] = sConfig.awsDomain;
-    request.headers['Content-Type'] = 'application/json';
-    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
+    var url = "", res = {};
 
-    var client = new AWS.HttpClient();
-    client.handleRequest(request, null, function (response) {
-            console.log(response.statusCode + ' ' + response.statusMessage);
-            var responseBody = '';
-            response.on('data', function (chunk) {
-                responseBody += chunk;
-            });
-            response.on('end', function (chunk) {
-                console.log('Response body: ' + responseBody);
-            });
-    }, function (error) {
-        console.log('Error: ' + error);
-    });
+    if (sConfig.useAws) {
+        var created = await crudAWSWrap(updateQuestionAWS,question);
+        if(created) console.log("Index updated");
+        return;
+    }
 
-}
-
-const doNormalSearchAWS = async (query,successCallback,errorCallback) => {
-
-    var region = 'us-east-1';
-    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
-    var request = new AWS.HttpRequest(endpoint, region);
-
-    request.method = 'POST';
-    request.path += sConfig.search;
-    request.body = JSON.stringify(query);
-    request.headers['host'] = sConfig.awsDomain;
-    request.headers['Content-Type'] = 'application/json';
-    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
-
-    var client = new AWS.HttpClient();
-    client.handleRequest(request, null, function (response) {
-        var responseBody = '';
-        response.on('data', function (chunk) {
-            responseBody += chunk;
-        });
-        response.on('end', function (chunk) {
-            successCallback(JSON.parse(responseBody));
-        });
-    }, function (error) {
-        errorCallback(error);
-    });
-
-}
-
-const doNormalSearchAWSWrap = (searchQuery) => {
-    return new Promise((resolve,reject) => {
-        doNormalSearchAWS(searchQuery,(sucessRes) => resolve(sucessRes)
-        ,(errorRes) => reject(errorRes))
-    });
+    url = sConfig.baseUrl + sConfig.slash + sConfig.questionIndex + sConfig.slash + sConfig.questionType;
+    res = await axios.post(url, question);
 }
 
 const doNormalSearch = async (query) => {
@@ -119,7 +74,7 @@ const doNormalSearch = async (query) => {
     }
 
     if (sConfig.useAws){
-        const res =  await doNormalSearchAWSWrap(searchQuery);
+        const res =  await searchAWSWrap(searchQuery);
         return res.hits.hits;
     }
 
@@ -129,8 +84,98 @@ const doNormalSearch = async (query) => {
 
 }
 
+const crudAWSWrap = (crudOperation,searchQuery) => {
+    return new Promise((resolve,reject) => {
+        crudOperation(searchQuery,(sucessRes) => resolve(sucessRes)
+        ,(errorRes) => reject(errorRes))
+    });
+}
+
+const searchAWSWrap = (searchQuery) => {
+    return new Promise((resolve,reject) => {
+        doNormalSearchAWS(searchQuery,(sucessRes) => resolve(sucessRes)
+        ,(errorRes) => reject(errorRes))
+    });
+}
+
+const addQuestionAWS = async (question,successCallback,errorCallback) => {
+
+    var region = 'us-east-1';
+    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
+    var request = new AWS.HttpRequest(endpoint, region);
+
+    request.method = 'POST';
+    request.path += sConfig.questionIndex + '/' + sConfig.questionType + '/' + question.id;
+    console.log(request.path);
+    request.body = JSON.stringify(question);
+    request.headers['host'] = sConfig.awsDomain;
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
+
+    var client = new AWS.HttpClient();
+    client.handleRequest(request, null, function (response) {
+            successCallback('201' == response.statusCode);
+    }, function (error) {
+        console.log(error);
+        errorCallback(false);
+    });
+
+}
+
+const updateQuestionAWS = async (question,successCallback,errorCallback) => {
+
+    var region = 'us-east-1';
+    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
+    var request = new AWS.HttpRequest(endpoint, region);
+
+    request.method = 'PUT';
+    request.path += sConfig.questionIndex + '/' + sConfig.questionType + '/' + question.id;
+    console.log(request.path);
+    request.body = JSON.stringify(question);
+    request.headers['host'] = sConfig.awsDomain;
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
+
+    var client = new AWS.HttpClient();
+    client.handleRequest(request, null, function (response) {
+            successCallback('200' == response.statusCode);
+    }, function (error) {
+        console.log(error);
+        errorCallback(false);
+    });
+
+}
+
+const doNormalSearchAWS = async (query,successCallback,errorCallback) => {
+
+    var region = 'us-east-1';
+    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
+    var request = new AWS.HttpRequest(endpoint, region);
+
+    request.method = 'POST';
+    request.path += sConfig.search;
+    request.body = JSON.stringify(query);
+    request.headers['host'] = sConfig.awsDomain;
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
+
+    var client = new AWS.HttpClient();
+    client.handleRequest(request, null, function (response) {
+        var responseBody = '';
+        response.on('data', function (chunk) {
+            responseBody += chunk;
+        });
+        response.on('end', function (chunk) {
+            successCallback(JSON.parse(responseBody));
+        });
+    }, function (error) {
+        errorCallback(error);
+    });
+
+}
+
 
 
 module.exports = {
-    addQuestion, doNormalSearch
+    addQuestion, doNormalSearch,updateQuestion
 }

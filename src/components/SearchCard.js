@@ -18,7 +18,7 @@ const SearchCard = (props) => {
     if(data.highlight.description) description = ReactHtmlParser(data.highlight.description);
 
     const getQuestionLink = () => {
-        return `/question/${data._source.id}`;
+        return `/questions/display/${data._source.id}`;
     }
 
     if(data._type === 'tag')
