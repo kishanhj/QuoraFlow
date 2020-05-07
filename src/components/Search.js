@@ -3,7 +3,6 @@ import queryString from 'query-string'
 import SearchCard from "./SearchCard";
 import "../public/css/Search.css";
 import Axios from "axios"; 
-const searchApi = require("../utils/elasticSearch/searchAPI");
 
 const makeid = () => {
     var result = '';
