@@ -115,7 +115,11 @@ const updatequestion = async(id , newquestion)=>{
     }
     if(newquestion.image){
         if(typeof newquestion.image !=="string") throw "Image is not of string type"
-        updateq.image=newquestion.image
+        if(newquestion.image==='null'){updateq.image=null}
+        else{
+            updateq.image=newquestion.image
+        }
+        
     }
     
     if(newquestion.tags){

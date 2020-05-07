@@ -19,6 +19,7 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 function EditForm(props) {
     const [ getData, setgetData ] = useState({});
 	const [image ,selectimage]=useState(null)
+	const [oldimage,setoldimage]=useState(undefined)
 	const [tags,settags]=useState([ ])
 	const [suggestions,setsuggestions]=useState([
 	   { id: 'Computer Science', text: 'Computer Science' },
@@ -28,24 +29,27 @@ function EditForm(props) {
 	   { id: 'NodeJS', text: 'NodeJS' },
 	   { id: 'Java', text: 'Java' }
 	])
+	const [oldtags,setoldtags]=useState([])
     useEffect(
         ()=>{
         console.log("question rendered")
         async function getdata(){
             const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
 			setgetData(data)
+			setoldimage(data.image)
 			let edittags=[]
 			for(let i=0;i<data.tags.length;i++){
 				edittags.push({id:data.tags[i],text:data.tags[i]})
 			} 
-			settags(edittags)   
+			settags(edittags)
+			setoldtags(data.tags)
         }
         getdata()
-        
+        bsCustomFileInput.init()
         
 
 
-    },[])
+    },[bsCustomFileInput.init()])
     
 	const formSubmit = async (e) => {
         //disable form's default behavior
@@ -67,35 +71,14 @@ function EditForm(props) {
 		
 		formdata.append("tags",tagtext)
         
-		
-		//provide input checking/validation
-		//then perhaps post form data to an API or your express server end point
-		// let tags=[]
-		// let taginfo=document.getElementsByName('tags');
-		// for(let i=0;i<taginfo.length;i++){
-		// 	if(taginfo[i].type==="checkbox" && taginfo[i].checked===true){
-		// 		tags.push(taginfo[i].value)
-		// 	}
-		// }
-		// formdata.append("tags",tags)
-		
-		// let questioninfo = {
-		// 	title:question,
-        //     description:description,
-		// 	tags:tags,
-		// 	image:image,
-        //     userid:"2g3bfy46346"
-		// };
-		// formdata.append("userid","2g3bfy46346")
 		if(image !==null){
 			formdata.append("image",image)
 
 		}
-		
-		
-		for(let i of formdata.entries()){
-			console.log(i[0]+" "+i[1])
+		else{
+			formdata.append("image",oldimage)
 		}
+		
 
 		const { data } = await Axios.patch(`http://localhost:8080/questions/${props.match.params.id}`, formdata, {
 			headers: {
@@ -105,7 +88,19 @@ function EditForm(props) {
 			   }
 			   
 		});
-		console.log(data)
+		const tagdata={
+			tagarray:tagtext,
+			questionID:data._id
+
+		}
+		
+		
+		
+		const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
+			tagarray:oldtags,
+			questionID:data._id
+		  }})
+		const { }=await Axios.post(`http://localhost:8080/tags/addtags`, tagdata)
 		props.history.push(`/questions/display/${props.match.params.id}`)
 		
 		
@@ -144,7 +139,10 @@ function EditForm(props) {
             return{...prevState,description:val}
         })
 
-    }
+	}
+	const handledeleteimage=(e)=>{
+		setoldimage(null)
+	}
 	
 	
 	return (
@@ -170,7 +168,8 @@ function EditForm(props) {
 					 />  
 				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
-				<p>{getData && getData.image}</p>
+				{oldimage? <p>{oldimage}<Button onClick={handledeleteimage}>delete image</Button></p> : null}
+				
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange}   accept="image/*" custom/>  
 				<Button variant="primary" type="submit">
     				Submit

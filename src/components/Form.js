@@ -166,6 +166,8 @@ function Form(props) {
 
 					 />  
 				<br/>
+				<br/>
+				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
 				<Button variant="primary" type="submit">

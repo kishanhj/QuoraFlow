@@ -5,8 +5,7 @@ const tags= require("./tags")
 
 // async function main(){
 //     try{
-//         const animalinfo=await q
-//         console.log(animalinfo)
+//         const animalinfo= await tags.removetags(['General','Computer Science'],ObjectID('5eaa05a126b8682632dbf612'))
 
 //     }
 //     catch(e){
@@ -14,6 +13,7 @@ const tags= require("./tags")
 //     }
     
 // }
+// main()
 
 
 

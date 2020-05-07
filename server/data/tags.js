@@ -20,7 +20,26 @@ const addtags=async(tagarray ,questionid)=>{
 
 }
 
+const removetags=async(tagarray ,questionid)=>{
+
+    if(!tagarray) throw "No tags has been defined"
+    if(!questionid) throw "No Question id has been defined"
+    if(!Array.isArray(tagarray)) throw "Tags not of array type"
+    if(typeof(questionid)===ObjectID) throw "Question id not of ObjectId type"
+
+    const tagcollection = await tags()
+    for (let i=0;i<tagarray.length;i++){
+        await tagcollection.update({tag:tagarray[i]},{ $pull: { questionid: questionid } })
+
+    }
+    return;
+
+
+}
+
+
 module.exports={
-    addtags
+    addtags,
+    removetags
 }
 
