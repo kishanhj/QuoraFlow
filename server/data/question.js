@@ -7,6 +7,7 @@ const multerS3 = require('multer-s3')
 const config= require("../config/amazonsecretKeys")
 const awskeys= config.awsconfig
 const path =require("path")
+const elasticSearchAPI = require("../elasticSearch/searchAPI");
 
 // aws.config.update({
 //     secretAccessKey:awskeys.AWS_SECRET_KEY_ID,
@@ -90,10 +91,9 @@ const createquestion = async(title,description,tags,userid,image)=>{
     const insertedquestion = await questioncollection.insertOne(newquestion);
     if(insertedquestion.insertedCount === 0) throw "the question could not be added";
     const newid= insertedquestion.insertedId;
-    const questiondata=await getquestion(String(newid))
-    return questiondata
-
-
+    const questiondata=await getquestion(String(newid));
+    elasticSearchAPI.addQuestion(questiondata);
+    return questiondatal
 }
 
 const updatequestion = async(id , newquestion)=>{

@@ -1,0 +1,14 @@
+.SearchCard {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    max-width: 850px;
+}
+
+.matched_word {
+    background-color: yellow;
+}
+
+.SearchCard_title {
+    font-weight: bold;
+}
