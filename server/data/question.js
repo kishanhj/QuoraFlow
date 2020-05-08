@@ -69,6 +69,7 @@ const createquestion = async(title,description,tags,userid,image)=>{
     if(typeof description !== "string" || description.length === 0) throw "Invalid description entered"
     if( description.length === 0) throw "Invalid description entered"
     if(Array.isArray(tags) !== true) throw "Invalid Tags entered"
+    if(tags.length >3 || tags.length <1 ) throw "There must be only 3 tags"
     if(image!=undefined){
         if(typeof image !=='string') throw  "Invalid image path"
     }

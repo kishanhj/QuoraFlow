@@ -23,7 +23,7 @@ const QuestionSchema = yup.object({
   });
 
 function QuestionForm(props) {
-	const [ postData, setPostData ] = useState({});
+	const [ err, seterr ] = useState(false);
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
 	const [tags,settaags]=useState([
@@ -57,16 +57,12 @@ function QuestionForm(props) {
 			//provide input checking/validation
 			//then perhaps post form data to an API or your express server end point
 			let tagtext=[]
-			if(tags.length==0){
-				tagtext.push("General")
-			}
-			else{
 				for (let i in tags){
 				
 					tagtext.push(tags[i].text)
 				}
 
-			}
+			
 			
 			formdata.append("tags",tagtext)
 			
@@ -110,7 +106,14 @@ function QuestionForm(props) {
 			props.history.push(`/questions/display/${data._id}`)
 		}
 		catch(e){
-			console.log(e)
+			if (e.response) {
+				/*
+				 * The request was made and the server responded with a
+				 * status code that falls out of the range of 2xx
+				 */
+				
+				seterr(true)
+			} 
 
 		}
 	};
@@ -229,10 +232,12 @@ function QuestionForm(props) {
 	 				delimiters={delimiters}
 	 				allowDeleteFromEmptyInput={false}
 
-	 				 />  
+	 				 /> 
+				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 4 tags</Alert>:<p></p>} 
 	 			<br/>
 	 			<br/>
 	 			<br/>
+				 
 	 			<Form.Label>Optional Image Upload</Form.Label>
 	 			<Form.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
 	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
