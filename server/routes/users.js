@@ -3,15 +3,17 @@ const router = express.Router();
 const data = require("../data");
 const userData = data.users
 
-
+/**
+ * Checks if the user name provided is unique or not
+ */
 router.post("/checkUserName", async (req, res) => {
     try {
         console.log("checkUser Called")
         let body = req.body;
-        if (!body.userName) throw`Error: "userName not provided`
+        if (!body.userName) throw `Error: "userName not provided`
         if (typeof body.userName != 'string') throw `Error: "userName should be of type string`
 
-        let status = await userData.checkUserName(body.userName);
+        let status = await userData.checkUserName(body.userName.toLowerCase());
         res.json({ flag: status })
     } catch (e) {
         res.send({ Error: e })
@@ -19,7 +21,9 @@ router.post("/checkUserName", async (req, res) => {
 })
 
 
-//add user to the database
+/**
+ * Adds new user to the database with given object
+ */
 router.post("/addUser", async (req, res) => {
 
 
@@ -28,18 +32,25 @@ router.post("/addUser", async (req, res) => {
         let usr = req.body;
         if (!usr) throw `Error: "Request body not provided`
         if (!usr.email) throw `Error: "email address not provided`
-        if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
+        if (typeof usr.email != 'string') throw `Error: "email should be of type string`
         if (!usr.name) throw `Error: "name not provided`
-        if (typeof usr.name != 'string') throw `Error: "name should be of type stirng`
-        await userData.addUser(usr)
-        res.send("good job")
+        if (typeof usr.name != 'string') throw `Error: "name should be of type string`
+        let status = await userData.addUser(usr);
+        if (status) {
+            res.json(status)
+        } else { 
+            throw `Error: user not inserted to database`
+        }
     } catch (e) {
         res.json({ Error: e })
     }
 
 
 });
-//get user from email
+
+/**
+ * Get user object based on the email provided
+ */
 router.post("/getUser", async (req, res) => {
 
     try {
@@ -56,7 +67,9 @@ router.post("/getUser", async (req, res) => {
 
 })
 
-//get all users
+/**
+ * Get array of all available users
+ */
 router.get("/getAll", async (req, res) => {
     try {
         let usr = await userData.getAllUsers();
@@ -67,6 +80,89 @@ router.get("/getAll", async (req, res) => {
 
 })
 
+/**
+ * Adds Liked question id to the given user
+ */
+router.post("/addLikedQuestionId", async (req, res) => {
+
+
+    try {
+        let body = req.body;
+        if (!body.email) throw "user email is not provided";
+        if (!body.question_id) throw "question_id not provided";
+        let usr = await userData.addLikedQuestionId(body.email, body.question_id);
+        res.json(usr);
+    } catch (e) {
+        console.log(e);
+        res.json({ Error: e })
+    }
+
+
+})
+
+/**
+ * Removed liked question id from the user
+ */
+router.post("/removeLikedQuestionId", async (req, res) => {
+
+
+    try {
+        let body = req.body;
+        if (!body.email) throw "user email is not provided";
+        if (!body.question_id) throw "question_id not provided";
+        let usr = await userData.removeLikedQuestionId(body.email, body.question_id);
+        res.json(usr);
+    } catch (e) {
+        console.log(e);
+        res.json({ Error: e })
+    }
+
+
+})
+
+/**
+ * Adds tag id to the given user
+ */
+router.post("/addTagId", async (req, res) => {
+
+
+    try {
+        let body = req.body;
+        if (!body.email) throw "user email is not provided";
+        if (!body.tag_id) throw "tag_id not provided";
+        let usr = await userData.addTag(body.email, body.tag_id);
+        res.json(usr);
+    } catch (e) {
+        console.log(e);
+        res.json({ Error: e })
+    }
+
+
+})
+
+/**
+ * Removes tag id to the given user
+ */
+router.post("/removeTagId", async (req, res) => {
+
+
+    try {
+        let body = req.body;
+        if (!body.email) throw "user email is not provided";
+        if (!body.tag_id) throw "tag_id not provided";
+        let usr = await userData.removeTag(body.email, body.tag_id);
+        res.json(usr);
+    } catch (e) {
+        console.log(e);
+        res.json({ Error: e })
+    }
+
+
+})
+
+/**
+ * Adds question id to the gven user
+ */
 router.post("/addQuestionId", async (req, res) => {
 
 
@@ -83,6 +179,9 @@ router.post("/addQuestionId", async (req, res) => {
 
 
 })
+/**
+ * Adds comment id to the gven user
+ */
 router.post("/addCommentId", async (req, res) => {
 
 
@@ -100,6 +199,9 @@ router.post("/addCommentId", async (req, res) => {
 
 })
 
+/**
+ * Removes question id from the gven user
+ */
 router.post("/removeQuestionId", async (req, res) => {
 
 
@@ -117,6 +219,9 @@ router.post("/removeQuestionId", async (req, res) => {
 
 })
 
+/**
+ * Removes comment id from the user
+ */
 router.post("/removeCommentId", async (req, res) => {
 
 
@@ -134,6 +239,9 @@ router.post("/removeCommentId", async (req, res) => {
 
 })
 
+/**
+ * Adds voted comment id to the given user
+ */
 router.post("/addVotedCommentId", async (req, res) => {
 
 
@@ -151,6 +259,9 @@ router.post("/addVotedCommentId", async (req, res) => {
 
 })
 
+/**
+ * Removes voted comment id from the given user
+ */
 router.post("/removeVotedCommentId", async (req, res) => {
 
 
@@ -169,7 +280,9 @@ router.post("/removeVotedCommentId", async (req, res) => {
 })
 
 
-
+/**
+ * Adds followed question id to the given
+ */
 router.post("/addFollowedQuestionId", async (req, res) => {
 
 
@@ -186,6 +299,10 @@ router.post("/addFollowedQuestionId", async (req, res) => {
 
 
 })
+
+/**
+ * Removes followed question id to the given
+ */
 router.post("/removeFollowedQuestionId", async (req, res) => {
 
 

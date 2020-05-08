@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import axios from 'axios';
+
 
 async function doChangePassword(email, oldPassword, newPassword) {
     let credential = firebase.auth.EmailAuthProvider.credential(email, oldPassword);
