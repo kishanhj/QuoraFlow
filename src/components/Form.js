@@ -45,7 +45,7 @@ function QuestionForm(props) {
 		},[]
 	)
 	const formSubmit = async (event) => {
-        //disable form's default behavior
+		//disable form's default behavior
 		try{
 			
 			const formdata= new FormData()
@@ -107,10 +107,6 @@ function QuestionForm(props) {
 		}
 		catch(e){
 			if (e.response) {
-				/*
-				 * The request was made and the server responded with a
-				 * status code that falls out of the range of 2xx
-				 */
 				
 				seterr(true)
 			} 
@@ -134,41 +130,6 @@ function QuestionForm(props) {
 		
     }
 	
-	// return (
-	// 	<div>
-	// 		<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
-	// 			<Form1.Group>
-    // 			<Form1.Label>Question</Form1.Label>
-    // 			<Form1.Control required id='question' name='question' type="text" placeholder="Question Title"  />
-  	// 			</Form1.Group>
-	// 			<Form1.Group>
-   	// 			<Form1.Label>Description</Form1.Label>
-    // 			<Form1.Control required as="textarea" rows="3" id='description' name='description' placeholder="Add a description."/>
-  	// 			</Form1.Group>
-	// 			<Form1.Label>Tags</Form1.Label>
-	// 			<ReactTags 
-	// 				inputFieldPosition="inline"
-	// 				tags={tags}
-    //                 suggestions={suggestions}
-    //                 handleDelete={handleDelete}
-    //                 handleAddition={handleAddition}
-	// 				delimiters={delimiters}
-	// 				allowDeleteFromEmptyInput={false}
-
-	// 				 />  
-	// 			<br/>
-	// 			<br/>
-	// 			<br/>
-	// 			<Form1.Label>Optional Image Upload</Form1.Label>
-	// 			<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
-	// 			<Button variant="primary" type="submit">
-    // 				Submit
-  	// 			</Button>
-	// 		</Form1>
-              
-
-	// 	</div>
-	// );
 	return (
 		<Formik
       validationSchema={QuestionSchema}

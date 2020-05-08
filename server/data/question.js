@@ -59,7 +59,6 @@ const getquestion = async(id)=>{
 
 
 const createquestion = async(title,description,tags,userid,image)=>{
-    console.log(1)
     valid(title,"Title");
     valid(description,"Description")
     valid(tags,"Tags")
@@ -126,6 +125,8 @@ const updatequestion = async(id , newquestion)=>{
     
     if(newquestion.tags){
         if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
+        console.log(newquestion.tags)
+        if(newquestion.tags.length >3 || newquestion.tags.length <1 ) throw "There must be only 3 tags"
         updateq.tags=newquestion.tags
     }
     const questioncollection = await questions()

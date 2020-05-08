@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Form1 from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import bsCustomFileInput from 'bs-custom-file-input'
-import Card from 'react-bootstrap/Card'
+import Alert from 'react-bootstrap/Alert'
 import { WithContext as ReactTags } from 'react-tag-input';
 
 const KeyCodes = {
@@ -18,6 +18,7 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 
 function EditForm(props) {
+	const [ err, seterr ] = useState(false);
     const [ getData, setgetData ] = useState({});
 	const [image ,selectimage]=useState(null);
 	const [oldimage,setoldimage]=useState(undefined);
@@ -57,12 +58,12 @@ function EditForm(props) {
 
     },[bsCustomFileInput.init()])
     
-	const formSubmit = async (e) => {
-        //disable form's default behavior
-    
-		e.preventDefault();
-		
-		const formdata= new FormData()
+	const formSubmit = async (event) => {
+		//disable form's default behavior
+		event.preventDefault();
+			
+		try
+		{const formdata= new FormData()
 		//get references to form fields.
 		let question = document.getElementById('question').value;
 		let description = document.getElementById('description').value;
@@ -108,7 +109,10 @@ function EditForm(props) {
 		  }})
 		const { }=await Axios.post(`http://localhost:8080/tags/addtags`, tagdata)
 		props.history.push(`/questions/display/${props.match.params.id}`)
-		
+		}
+		catch(e){
+			seterr(true)
+		}
 		
 		// document.getElementById('question').value = '';
 		// document.getElementById('description').value = '';
@@ -156,11 +160,11 @@ function EditForm(props) {
 			<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
 				<Form1.Group>
     			<Form1.Label>Question</Form1.Label>
-    			<Form1.Control id='question' name='question' type="text" value={getData && getData.title} onChange={handleTitle} placeholder="Question Title" />
+    			<Form1.Control required id='question' name='question' type="text" value={getData && getData.title} onChange={handleTitle} placeholder="Question Title" minLength={10} maxLength={1000} />
   				</Form1.Group>
 				<Form1.Group>
    				<Form1.Label>Description</Form1.Label>
-    			<Form1.Control as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description."/>
+    			<Form1.Control required as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description." minLength={10} maxLength={10000} />
   				</Form1.Group>
 				<Form1.Label>Tags</Form1.Label>
 				<ReactTags 
@@ -171,7 +175,8 @@ function EditForm(props) {
                     handleAddition={handleAddition}
 					delimiters={delimiters}
 
-					 />  
+					 />
+				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 4 tags</Alert>:<p></p>}   
 				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
 				<br/>
@@ -183,25 +188,9 @@ function EditForm(props) {
   				</Button>
 			</Form1>
 		</div>
-		/* // 
-		// 	<form id='simple-form' onSubmit={formSubmit}  encType="multipart/form-data">
-		// 		<label>
-		// 			Question:
-		// 			<input id='question' name='question' type='text' value={getData && getData.title} onChange={handleTitle} placeholder='Question Title' />
-		// 		</label>
-		// 		<br />
-		// 		<label>
-		// 			Description:
-		// 			<textarea id='description' name='description' type='text' value={getData && getData.description} onChange={ handleDescription} placeholder='Desciption' />
-		// 		</label>
-        //         <br/>
-        //         <label>Optional Image :{getData && getData.image}<input name="image" onChange={e => selectimage(e.target.files[0])} type="file" id="image" accept="image/*" /></label>
-		// 		<br/>
-		// 		<input type='submit' value='Submit' />
-				
-		// 	</form>
-		// </div> */
-    );
+		
+	);
+	
     
     } 
 
