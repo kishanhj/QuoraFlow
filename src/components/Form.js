@@ -1,13 +1,14 @@
 import React ,{useState,useEffect} from 'react';
-import { useForm } from "react-hook-form";
+import { Formik } from 'formik';
 import axios from 'axios';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Form1 from 'react-bootstrap/Form';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import bsCustomFileInput from 'bs-custom-file-input'
 import { WithContext as ReactTags } from 'react-tag-input';
+import * as yup from 'yup';
 
 const KeyCodes = {
 	comma: 188,
@@ -16,8 +17,12 @@ const KeyCodes = {
    
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-function Form(props) {
-	const { register, errors, handleSubmit } = useForm();
+const QuestionSchema = yup.object({
+	question: yup.string().min(10).max(1000).required(),
+	description: yup.string().min(10).max(10000).required()
+  });
+
+function QuestionForm(props) {
 	const [ postData, setPostData ] = useState({});
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
@@ -39,10 +44,10 @@ function Form(props) {
 			bsCustomFileInput.init()
 		},[]
 	)
-	const formSubmit = async (e) => {
+	const formSubmit = async (event) => {
         //disable form's default behavior
 		try{
-			e.preventDefault();
+			
 			const formdata= new FormData()
 			//get references to form fields.
 			let question = document.getElementById('question').value;
@@ -105,13 +110,9 @@ function Form(props) {
 			props.history.push(`/questions/display/${data._id}`)
 		}
 		catch(e){
-			console.log(errors)
+			console.log(e)
 
 		}
-		
-		
-		
-        
 	};
 
 	const handleimagechange=(e)=>{
@@ -130,73 +131,117 @@ function Form(props) {
 		
     }
 	
-    
-	// let tags=["Computers","Electronics","Cooking","Machine Learning","Aritficial Intelligence","BodyBuilding"]
-	
-	// let Li=tags.map((tag)=>{
-	// 	return (
-	// 		<label key={tag}><input  type="checkbox" id={tag} name="tags" value={tag}></input>{tag}</label>)
-	// 		})
+	// return (
+	// 	<div>
+	// 		<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
+	// 			<Form1.Group>
+    // 			<Form1.Label>Question</Form1.Label>
+    // 			<Form1.Control required id='question' name='question' type="text" placeholder="Question Title"  />
+  	// 			</Form1.Group>
+	// 			<Form1.Group>
+   	// 			<Form1.Label>Description</Form1.Label>
+    // 			<Form1.Control required as="textarea" rows="3" id='description' name='description' placeholder="Add a description."/>
+  	// 			</Form1.Group>
+	// 			<Form1.Label>Tags</Form1.Label>
+	// 			<ReactTags 
+	// 				inputFieldPosition="inline"
+	// 				tags={tags}
+    //                 suggestions={suggestions}
+    //                 handleDelete={handleDelete}
+    //                 handleAddition={handleAddition}
+	// 				delimiters={delimiters}
+	// 				allowDeleteFromEmptyInput={false}
+
+	// 				 />  
+	// 			<br/>
+	// 			<br/>
+	// 			<br/>
+	// 			<Form1.Label>Optional Image Upload</Form1.Label>
+	// 			<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
+	// 			<Button variant="primary" type="submit">
+    // 				Submit
+  	// 			</Button>
+	// 		</Form1>
+              
+
+	// 	</div>
+	// );
 	return (
-		<div>
-			<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
-				<Form1.Group>
-    			<Form1.Label>Question</Form1.Label>
-    			<Form1.Control id='question' name='question' type="text" placeholder="Question Title" required/>
-				
-					{errors.question?.type === "required" && <Alert key="questiondanger" variant='danger'>Question has be entered</Alert>}
-  				
-				
-      			{errors.question?.type === "maxLength" && "Your input exceed maxLength"}
-  				</Form1.Group>
-				<Form1.Group>
-   				<Form1.Label>Description</Form1.Label>
-    			<Form1.Control as="textarea" rows="3" id='description' name='description' placeholder="Add a description." required/>
-				{errors.description?.type === "required" && <Alert key="descriptiondanger" variant='danger'>A Desciption has be entered</Alert>}
-  				</Form1.Group>
-				<Form1.Label>Tags</Form1.Label>
-				<ReactTags 
-					inputFieldPosition="inline"
-					tags={tags}
-                    suggestions={suggestions}
-                    handleDelete={handleDelete}
-                    handleAddition={handleAddition}
-					delimiters={delimiters}
-					allowDeleteFromEmptyInput={false}
+		<Formik
+      validationSchema={QuestionSchema}
+      onSubmit={formSubmit}
+      initialValues={{
+        question: '',
+        description: '',
+	  }}
+	  validator={() => ({})}
+    >
+      {({
+        handleSubmit,
+        handleChange,
+        handleBlur,
+        values,
+        touched,
+        isValid,
+		errors,
+		isSubmitting
+      }) => (
+        <Form noValidate onSubmit={handleSubmit}>
+			<Form.Group>
+     			<Form.Label>Question</Form.Label>
+     			<Form.Control
+                type="text"
+                placeholder="question"
+				name="question"
+				id='question'
+                value={values.question}
+                onChange={handleChange}
+                isInvalid={!!errors.question}
+              />
 
-					 />  
-				<br/>
-				<br/>
-				<br/>
-				<Form1.Label>Optional Image Upload</Form1.Label>
-				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
-				<Button variant="primary" type="submit">
-    				Submit
-  				</Button>
-			</Form1>
-			
-			{/* <form id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
-				<label>
-					Question:
-					<input id='question' name='question' type='text' placeholder='Question Title' />
-				</label>
-				<br />
-				<label>
-					Description:
-					<textarea id='description' name='description' type='text' placeholder='Desciption' />
-				</label>
-				<div className="tagschecbox">
-					Tags  :  
-					{Li}	
-				</div>
-				<label>Optional Image :<input name="image" onChange={e => selectimage(e.target.files[0])} type="file" id="image" accept="image/*" /></label>
-				<br/>
-				<input type='submit' value='Submit' />
+              <Form.Control.Feedback type="invalid">
+                {errors.question}
+              </Form.Control.Feedback>
+  	 			</Form.Group>
+	 			<Form.Group>
+   	 			<Form.Label>Description</Form.Label>
+					<Form.Control
+				as="textarea" 
+				rows="3"
+				onChange={handleChange}
+				name="description"
+				id="description"
+                value={values.description}
+                isInvalid={!!errors.description}
+              />
+			  <Form.Control.Feedback type="invalid">
+                {errors.description}
+              </Form.Control.Feedback>
+     			
+  	 			</Form.Group>
+	 			<Form.Label>Tags</Form.Label>
+	 			<ReactTags 
+	 				inputFieldPosition="inline"
+	 				tags={tags}
+                     suggestions={suggestions}
+                     handleDelete={handleDelete}
+                     handleAddition={handleAddition}
+	 				delimiters={delimiters}
+	 				allowDeleteFromEmptyInput={false}
 
-				
-			</form> */}
-		</div>
-	);
+	 				 />  
+	 			<br/>
+	 			<br/>
+	 			<br/>
+	 			<Form.Label>Optional Image Upload</Form.Label>
+	 			<Form.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
+	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
+     				Submit
+  	 			</Button>
+        </Form>
+      )}
+    </Formik>
+	)
 }
 
-export default Form;
+export default QuestionForm;

@@ -59,6 +59,7 @@ const getquestion = async(id)=>{
 
 
 const createquestion = async(title,description,tags,userid,image)=>{
+    console.log(1)
     valid(title,"Title");
     valid(description,"Description")
     valid(tags,"Tags")

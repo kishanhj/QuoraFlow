@@ -15,6 +15,7 @@
         "express-handlebars": "^4.0.3",
         "express-session": "^1.17.1",
         "firebase": "^7.14.0",
+        "formik": "^2.1.4",
         "method-override": "^3.0.0",
         "mongodb": "^3.5.6",
         "multer": "^1.4.2",
@@ -31,7 +32,8 @@
         "react-scripts": "3.4.0",
         "react-tag-input": "^6.4.2",
         "socket.io": "^2.3.0",
-        "xss": "^1.0.6"
+        "xss": "^1.0.6",
+        "yup": "^0.28.5"
     },
     "scripts": {
         "start": "react-scripts start",

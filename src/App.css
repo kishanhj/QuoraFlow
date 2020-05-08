@@ -84,4 +84,18 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+.Tag-header{
+  display: inline-block;
+}
+.Tag-list{
+  display: inline-block;
+  padding-left: 0;
+}
+
+.grey-font{
+  font-size: small;
+  color: grey;
+}
+
+
 

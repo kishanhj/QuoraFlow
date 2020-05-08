@@ -97,14 +97,15 @@ function Questiondisplay(props) {
                 </Row>
                 <Row>
                     <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
-                    <Col xs large="2"> <p>{timestamp}</p></Col>
-                    <Col md="auto"><span className="title">Tags:</span></Col>
-                    <Col md="auto">
-                        
-                        <ul>{gettags && gettags.map((tag)=>{
+                    <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
+                    <Col><p className="Tag-header grey-font">Tags:</p>
+                        <ul className="Tag-list">{gettags && gettags.map((tag)=>{
                             return <li  className="tag" key={tag}>{tag}</li>
                         })}</ul>
                     </Col>
+                </Row>
+                <Row>
+                    <CommentBox questionId={props.match.params.id} />
                 </Row>
             </Container>
 
@@ -133,11 +134,9 @@ function Questiondisplay(props) {
                 </Row>
                 <Row>
                     <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
-                    <Col xs large="2"> <p>{timestamp}</p></Col>
-                    <Col md="auto"><span className="title">Tags:</span></Col>
-                    <Col md="auto">
-                        
-                        <ul>{gettags && gettags.map((tag)=>{
+                    <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
+                    <Col><p className="Tag-header grey-font">Tags:</p>
+                        <ul className="Tag-list">{gettags && gettags.map((tag)=>{
                             return <li  className="tag" key={tag}>{tag}</li>
                         })}</ul>
                     </Col>
