@@ -19,5 +19,6 @@ const getCollectionFn = (collection) => {
 module.exports = {
   Questions: getCollectionFn('Questions'),
   Tags:getCollectionFn('Tags'),
-  Comments: getCollectionFn('Comments')
+  Comments: getCollectionFn('Comments'),
+  Users: getCollectionFn('Users')
 };

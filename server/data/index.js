@@ -1,6 +1,7 @@
 const mongocollection = require('../config/mongoCollections');
 const questions= require("./question")
-const tags= require("./tags")
+const tags = require("./tags")
+const users = require("./users")
 
 
 // async function main(){
@@ -20,5 +21,6 @@ const tags= require("./tags")
 
 module.exports={
     questions,
-    tags
+    tags,
+    users
 }
