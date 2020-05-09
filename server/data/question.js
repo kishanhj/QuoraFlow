@@ -68,7 +68,7 @@ const createquestion = async(title,description,tags,userid,image)=>{
     if(typeof description !== "string" || description.length === 0) throw "Invalid description entered"
     if( description.length === 0) throw "Invalid description entered"
     if(Array.isArray(tags) !== true) throw "Invalid Tags entered"
-    if(tags.length>10 || tags.length==0 ) throw "There must be only 3 tags"
+    if(tags.length>10 || tags.length<1 ) throw "There must be atleast 1 tag max of 10 tags"
     if(image!=undefined){
         if(typeof image !=='string') throw  "Invalid image path"
     }
@@ -127,7 +127,7 @@ const updatequestion = async(id , newquestion)=>{
     if(newquestion.tags){
         if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
         console.log(newquestion.tags)
-        if(newquestion.tags.length >3 || newquestion.tags.length <1 ) throw "There must be only 3 tags"
+        if(newquestion.tags.length >10 || newquestion.tags.length <1 ) throw "There must be atleast 1 tag max of 10 tags"
         updateq.tags=newquestion.tags
     }
     const questioncollection = await questions()
