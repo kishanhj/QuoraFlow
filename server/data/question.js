@@ -4,8 +4,7 @@ const questions = mongocollection.Questions
 const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
-const config= require("../config/amazonsecretKeys")
-const awskeys= config.awsconfig
+require("dotenv").config();
 const path =require("path")
 const elasticSearchAPI = require("../elasticSearch/searchAPI");
 
@@ -16,8 +15,8 @@ const elasticSearchAPI = require("../elasticSearch/searchAPI");
     
 // })
 aws.config.update({
-    accessKeyId: awskeys.AWS_ACCESS_KEY_ID,
-    secretAccessKey: awskeys.AWS_SECRET_KEY_ID,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_KEY_ID,
     region: 'us-east-1'
    });
 const s3=new aws.S3();

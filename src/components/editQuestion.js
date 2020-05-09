@@ -1,4 +1,4 @@
-import React ,{useState,useEffect} from 'react';
+import React ,{useState,useEffect,useContext} from 'react';
 import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import '../App.css';
@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import bsCustomFileInput from 'bs-custom-file-input'
 import Alert from 'react-bootstrap/Alert'
 import { WithContext as ReactTags } from 'react-tag-input';
+import { AuthContext } from '../firebase/Auth'
 
 const KeyCodes = {
 	comma: 188,
@@ -18,7 +19,10 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 
 function EditForm(props) {
+	const { currentUser } = useContext(AuthContext);
 	const [ err, seterr ] = useState(false);
+	const [isOwner ,setisOwner] =useState(undefined)
+	const [ postData, setpostData]=useState(true);
     const [ getData, setgetData ] = useState({});
 	const [image ,selectimage]=useState(null);
 	const [oldimage,setoldimage]=useState(undefined);
@@ -37,18 +41,41 @@ function EditForm(props) {
         ()=>{
         console.log("question rendered")
         async function getdata(){
-            const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
-			setgetData(data)
-			setoldimage(data.image)
-			let edittags=[]
-			for(let i=0;i<data.tags.length;i++){
-				edittags.push({id:data.tags[i],text:data.tags[i]})
-			} 
-			settags(edittags)
-			setoldtags(data.tags)
-			if(data.image!==null){
-				setimagename(data.image.split('/')[3])
+			try{
+				const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
+				setgetData(data)
+				setoldimage(data.image)
+				if(currentUser!==undefined && data.userid===currentUser.email){
+					setisOwner({isowner:true})
+				}
+				else{
+					setisOwner({isowner:false})
+				}
+				let edittags=[]
+				for(let i=0;i<data.tags.length;i++){
+					edittags.push({id:data.tags[i],text:data.tags[i]})
+				} 
+				settags(edittags)
+				setoldtags(data.tags)
+				if(data.image!==null){
+					setimagename(data.image.split('/')[3])
+				}
+
 			}
+			catch(e){
+				setpostData(false)
+                if (e.response) {
+                        /*
+                        * The request was made and the server responded with a
+                        * status code that falls out of the range of 2xx
+                        */
+                    console.log(e.response.data);
+                    console.log(e.response.status);
+                	console.log(e.response.headers);
+                
+                }
+			}
+            
 			
         }
         getdata()
@@ -153,6 +180,17 @@ function EditForm(props) {
 	const handledeleteimage=(e)=>{
 		setoldimage(null)
 	}
+
+	if (currentUser==undefined) {
+			return <Redirect to='/signin'></Redirect>
+	}
+
+    if(postData===false){
+        return(<Redirect to='/notfound'/>)
+	}
+	if(isOwner && isOwner.isowner===false){
+        return(<Redirect to='/notfound'/>)
+    }
 	
 	
 	return (
@@ -192,6 +230,6 @@ function EditForm(props) {
 	);
 	
     
-    } 
+} 
 
 export default EditForm;
