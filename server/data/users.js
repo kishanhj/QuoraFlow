@@ -215,7 +215,7 @@ async function addQuestionId(email, q_id) {
     if (!check) throw `Error: no user exists with the email ${email}`
     const userCollection = await users();
 
-    let usr = await userCollection.updateOne({ "email": email }, { "$push": { "questions": q_id } })
+    let usr = await userCollection.updateOne({ "email": email }, { $addToSet: { "questions": q_id } })
     if (usr.modifiedCount > 0) {
         return await getUser(email);
     }
