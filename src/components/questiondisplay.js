@@ -18,6 +18,7 @@ function Questiondisplay(props) {
     const { currentUser } = useContext(AuthContext);	
     const [ getData, setgetData ] = useState({});
     const [hasliked ,sethasliked] = useState(false);
+    const [isOwner, setisOwner]= useState(false)
     const [ gettags, settags]=useState([]);
     const [ postData, setpostData]=useState(true);
     const [timestamp, settimestamp]=useState(undefined)
@@ -34,6 +35,7 @@ function Questiondisplay(props) {
                     settags(data.tags)
                     setlike(data.likes.length)
                     settimestamp(new Date(data.timestamp).toUTCString())
+                    setisOwner(data.userid==currentUser.email)
                     const likedata  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
                     sethasliked(likedata.data.like)
                     
@@ -85,22 +87,6 @@ function Questiondisplay(props) {
         
 
     }
-    const checklike=(e)=>{
-        async function getlike(){
-            try{
-                const { data }  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
-                console.log(data)
-                console.log(1)
-            }
-            catch(e){
-                console.log("could not update like")
-            }
-
-        }
-        getlike()
-        
-
-    }
 
     if(postData===false){
         return(<Redirect to='/notfound'/>)
@@ -113,14 +99,15 @@ function Questiondisplay(props) {
     if(getData && getData.image){
         return (
             <div className="App=body">
-                <Nav variant="pills" >
+                {isOwner?<Nav variant="pills" >
                     <Nav.Item>
                         <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
                     </Nav.Item>
-                </Nav>
+                </Nav>:<p></p>}
+                
                 <Container>
                 <Row><h1>{getData && getData.title}</h1></Row>
                 <Row>  
@@ -151,14 +138,14 @@ function Questiondisplay(props) {
 
 	return (
 		<div className="App-body">
-            <Nav variant="pills" >
+            {isOwner?<Nav variant="pills" >
                     <Nav.Item>
                         <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
                     </Nav.Item>
-            </Nav>
+                </Nav>:<p></p>}
             
 
             <Container>
