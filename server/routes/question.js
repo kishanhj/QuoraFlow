@@ -2,6 +2,7 @@ const express= require("express")
 const router = express.Router();
 const data = require("../data");
 const questionData= data.questions
+const userData =data.users;
 
 
 
@@ -92,6 +93,9 @@ router.post("/",questionData.upload.single('image'),async function(req,res){
         
         tags=questiondata.tags.split(",")
        const postquestion= await questionData.createquestion(questiondata.title,questiondata.description,tags,questiondata.userid,image)
+       console.log(postquestion)
+       const addingTouser =await userData.addQuestionId(postquestion.userid,String(postquestion._id))
+       
        res.status(200).json(postquestion)
        return;
 
@@ -163,8 +167,82 @@ router.patch("/like/:id/:userid",async function(req,res){
         return;
     }
     try{
-        const updatelike = await questionData.updatelike(req.params.id ,req.params.userid)
+        await userData.getUser(req.params.userid)
+    }
+    catch(e){
+        console.log(1)
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        if(await questionData.getlike(req.params.id,req.params.userid)){
+            const updatelike = await questionData.unlike(req.params.id ,req.params.userid)
+            res.status(200).json(updatelike)
+            return;
+        }
+        else{
+            const updatelike = await questionData.updatelike(req.params.id ,req.params.userid)
+            res.status(200).json(updatelike)
+            return;
+
+        }
+        
+    }
+    catch(e){
+        res.status(400).json({error:e})
+        return;
+    }
+
+})
+
+router.delete("/like/:id/:userid",async function(req,res){
+    try{
+        await questionData.getquestion(req.params.id)
+
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        await userData.getUser(req.params.userid)
+    }
+    catch(e){
+        console.log(1)
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        const updatelike = await questionData.unlike(req.params.id ,req.params.userid)
         res.status(200).json(updatelike)
+        return;
+    }
+    catch(e){
+        res.status(400).json({error:e})
+        return;
+    }
+
+})
+
+router.get("/like/:id/:userid",async function(req,res){
+    try{
+        await questionData.getquestion(req.params.id)
+
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        await userData.getUser(req.params.userid)
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        const glike = await questionData.getlike(req.params.id,req.params.userid)
+        res.status(200).json({like:glike})
         return;
     }
     catch(e){

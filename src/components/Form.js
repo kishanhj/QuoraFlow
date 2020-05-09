@@ -1,4 +1,5 @@
-import React ,{useState,useEffect} from 'react';
+import React ,{useState,useEffect,useContext} from 'react';
+import { Redirect } from 'react-router-dom'
 import { Formik } from 'formik';
 import axios from 'axios';
 import '../App.css';
@@ -9,6 +10,7 @@ import Alert from 'react-bootstrap/Alert'
 import bsCustomFileInput from 'bs-custom-file-input'
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as yup from 'yup';
+import { AuthContext } from '../firebase/Auth'
 
 const KeyCodes = {
 	comma: 188,
@@ -23,6 +25,7 @@ const QuestionSchema = yup.object({
   });
 
 function QuestionForm(props) {
+	const { currentUser } = useContext(AuthContext);
 	const [ err, seterr ] = useState(false);
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
@@ -41,6 +44,7 @@ function QuestionForm(props) {
 
 	useEffect(
 		()=>{
+			console.log(currentUser)
 			bsCustomFileInput.init()
 		},[]
 	)
@@ -71,9 +75,9 @@ function QuestionForm(props) {
 				description:description,
 				tags:tags,
 				image:image,
-				userid:"2g3bfy46346"
+				userid:currentUser.email
 			};
-			formdata.append("userid","2g3bfy46346")
+			formdata.append("userid",currentUser.email)
 			if(image !==null){
 				formdata.append("image",image)
 
@@ -128,6 +132,11 @@ function QuestionForm(props) {
             return[...prevState,tag]
         })
 		
+	}
+	if (currentUser==undefined) {
+        console.log('Redirect called');
+       
+        return <Redirect to='/signin'></Redirect>
     }
 	
 	return (

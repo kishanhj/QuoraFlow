@@ -68,10 +68,11 @@ const createquestion = async(title,description,tags,userid,image)=>{
     if(typeof description !== "string" || description.length === 0) throw "Invalid description entered"
     if( description.length === 0) throw "Invalid description entered"
     if(Array.isArray(tags) !== true) throw "Invalid Tags entered"
-    if(tags.length >3 || tags.length <1 ) throw "There must be only 3 tags"
+    if(tags.length>10 || tags.length==0 ) throw "There must be only 3 tags"
     if(image!=undefined){
         if(typeof image !=='string') throw  "Invalid image path"
     }
+    if (typeof userid!== "string") throw "Invalid userid entered"
 
     newquestion={
         title: title,
@@ -157,6 +158,36 @@ const updatelike=async(id,userid)=>{
 
 }
 
+const unlike=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions() 
+    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$pull:{likes:String(userid)}}) 
+    return await getquestion(String(id))
+
+}
+
+const getlike=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    const question = await getquestion(id)
+    if(question.likes.length>0){
+        for(let i=0;i<question.likes.length;i++){
+            if(userid == question.likes[i]){
+                return true
+            }
+        }
+
+    }
+    return false
+    
+}
+
 module.exports={
     createquestion,
     getallquestions,
@@ -164,6 +195,8 @@ module.exports={
     deletequestion,
     updatequestion,
     upload,
-    updatelike
+    updatelike,
+    getlike,
+    unlike
 
 }

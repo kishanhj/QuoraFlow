@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useContext} from 'react';
 import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import '../App.css';
@@ -10,11 +10,14 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CommentBox } from './Comment'
+import { AuthContext } from '../firebase/Auth'
+
 
 
 function Questiondisplay(props) {
-	
+    const { currentUser } = useContext(AuthContext);	
     const [ getData, setgetData ] = useState({});
+    const [hasliked ,sethasliked] = useState(false);
     const [ gettags, settags]=useState([]);
     const [ postData, setpostData]=useState(true);
     const [timestamp, settimestamp]=useState(undefined)
@@ -22,60 +25,56 @@ function Questiondisplay(props) {
     useEffect(
         ()=>{
        
-        console.log("question rendered")
-        async function getdata(){
-            try{
-                const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
-               
-                setgetData(data)
-                settags(data.tags)
-                setlike(data.likes.length)
-                console.log(new Date(data.timestamp).toUTCString())
-                settimestamp(new Date(data.timestamp).toUTCString())
+            console.log("question rendered")
+            async function getdata(){
+                try{
+                    const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
                 
-               
-               
-            }
-            catch(e){
-                setpostData(false)
-                if (e.response) {
-                    /*
-                     * The request was made and the server responded with a
-                     * status code that falls out of the range of 2xx
-                     */
-                    console.log(e.response.data);
-                    console.log(e.response.status);
-                    console.log(e.response.headers);
-                } else if (e.request) {
-                    /*
-                     * The request was made but no response was received, `error.request`
-                     * is an instance of XMLHttpRequest in the browser and an instance
-                     * of http.ClientRequest in Node.js
-                     */
-                    console.log(e.request);
-                } else {
-                    // Something happened in setting up the request and triggered an Error
-                    console.log('Error', e.message);
+                    setgetData(data)
+                    settags(data.tags)
+                    setlike(data.likes.length)
+                    settimestamp(new Date(data.timestamp).toUTCString())
+                    const likedata  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
+                    sethasliked(likedata.data.like)
+                    
+                    
+                
+                
                 }
-                console.log(e);
+                catch(e){
+                    setpostData(false)
+                    if (e.response) {
+                        /*
+                        * The request was made and the server responded with a
+                        * status code that falls out of the range of 2xx
+                        */
+                        console.log(e.response.data);
+                        console.log(e.response.status);
+                        console.log(e.response.headers);
+                
+                    }
+                }
+            
+            
             }
-            
-            
-        }
         getdata()
         
         
 
 
-    },[props.match.params.id])
-
+        },[props.match.params.id])
+    
     const handlelike=(e)=>{
-        const userid="testuserid68"
         async function addlike(){
             try{
-                const { data }  = await Axios.patch(`http://localhost:8080/questions/like/${props.match.params.id}/${userid}`)
-                console.log(data)
+                const { data }  = await Axios.patch(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
                 setlike(data.likes.length)
+                if(hasliked===true){
+                    sethasliked(false)
+                }
+                else{
+                    sethasliked(true)
+                }
             }
             catch(e){
                 console.log("could not update like")
@@ -83,6 +82,22 @@ function Questiondisplay(props) {
 
         }
         addlike()
+        
+
+    }
+    const checklike=(e)=>{
+        async function getlike(){
+            try{
+                const { data }  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
+                console.log(data)
+                console.log(1)
+            }
+            catch(e){
+                console.log("could not update like")
+            }
+
+        }
+        getlike()
         
 
     }
@@ -115,7 +130,7 @@ function Questiondisplay(props) {
                     <Col><Image src={`${getData && getData.image}`} thumbnail/></Col>
                 </Row>
                 <Row>
-                    <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
+                    <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>like {like}</Button>}</Col>
                     <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
                     <Col><p className="Tag-header grey-font">Tags:</p>
                         <ul className="Tag-list">{gettags && gettags.map((tag)=>{
@@ -152,7 +167,7 @@ function Questiondisplay(props) {
                     <Col><p>{getData && getData.description}</p></Col>
                 </Row>
                 <Row>
-                    <Col><Button onClick={handlelike}>Likes {like}</Button></Col>
+                    <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>like {like}</Button>}</Col>
                     <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
                     <Col><p className="Tag-header grey-font">Tags:</p>
                         <ul className="Tag-list">{gettags && gettags.map((tag)=>{
