@@ -9,6 +9,7 @@ import bsCustomFileInput from 'bs-custom-file-input'
 import Alert from 'react-bootstrap/Alert'
 import { WithContext as ReactTags } from 'react-tag-input';
 import { AuthContext } from '../firebase/Auth'
+import { useForm } from 'react-hook-form'
 
 const KeyCodes = {
 	comma: 188,
@@ -28,6 +29,7 @@ function EditForm(props) {
 	const [oldimage,setoldimage]=useState(undefined);
 	const [imagename, setimagename]=useState('');
 	const [tags,settags]=useState([ ])
+	const { register, errors, handleSubmit } = useForm();
 	const [suggestions,setsuggestions]=useState([
 	   { id: 'Computer Science', text: 'Computer Science' },
 	   { id: 'Electronics', text: 'Electronics' },
@@ -87,7 +89,7 @@ function EditForm(props) {
     
 	const formSubmit = async (event) => {
 		//disable form's default behavior
-		event.preventDefault();
+		
 			
 		try
 		{const formdata= new FormData()
@@ -111,6 +113,9 @@ function EditForm(props) {
 		}
 		else{
 			formdata.append("image",oldimage)
+		}
+		for(let i of formdata.entries()){
+			console.log(i[0]+" "+i[1])
 		}
 		
 
@@ -195,14 +200,16 @@ function EditForm(props) {
 	
 	return (
 		<div>
-			<Form1 id='simple-form' onSubmit={formSubmit} encType="multipart/form-data">
+			<Form1 id='simple-form' onSubmit={handleSubmit(formSubmit)} encType="multipart/form-data">
 				<Form1.Group>
     			<Form1.Label>Question</Form1.Label>
-    			<Form1.Control required id='question' name='question' type="text" value={getData && getData.title} onChange={handleTitle} placeholder="Question Title" minLength={10} maxLength={1000} />
+    			<Form1.Control id='question' name='question' type="text" value={getData && getData.title} onChange={handleTitle} placeholder="Question Title" ref={register({ required: true, maxLength: 2000,minLength:10 })} />
+				{errors.question && <Alert variant={'danger'}>The Question field is required with a min of 10 characters and max of 2000 characters</Alert>}
   				</Form1.Group>
 				<Form1.Group>
    				<Form1.Label>Description</Form1.Label>
-    			<Form1.Control required as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description." minLength={10} maxLength={10000} />
+    			<Form1.Control as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description." ref={register({ required: true, maxLength: 20000,minLength:10 })} />
+				{errors.description && <Alert variant={'danger'}>The Description field is required with a min of 10 characters and max of 20000 characters</Alert>}
   				</Form1.Group>
 				<Form1.Label>Tags</Form1.Label>
 				<ReactTags 
@@ -214,7 +221,7 @@ function EditForm(props) {
 					delimiters={delimiters}
 
 					 />
-				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 4 tags</Alert>:<p></p>}   
+				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 10 tags</Alert>:<p></p>}   
 				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
 				<br/>
