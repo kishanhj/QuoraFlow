@@ -10,6 +10,7 @@ import DashBoard from "./components/dashboard";
 import Search from "./components/Search";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import TagPage from "./components/TagPage";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
 
@@ -34,6 +35,7 @@ function App() {
             <Route exact path="/questions/delete/:id" exact component={DeleteQuestion} />
             <Route exact path="/notfound" component={PagenotFound} status={404} />
             <Route exact path="/search" component={Search} />
+            <Route exact path="/tag/:id" component={TagPage} />
             {/* <CommentList comments={comments} /> */}
           </div>
         </div>

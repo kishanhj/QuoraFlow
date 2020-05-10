@@ -1,14 +1,172 @@
 .SearchCard {
-    border: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    max-width: 850px;
+}
+
+.resultTitle {
+    border-bottom: 1px solid black;
     padding: 5px;
     margin: 5px;
     max-width: 850px;
 }
 
 .matched_word {
-    background-color: yellow;
+    background-color: #dfeffa;
+}
+
+.search-body{
+    display: inline-block;
+    margin-left: 5%;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.cap {
+    text-transform: capitalize;
 }
 
 .SearchCard_title {
     font-weight: bold;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.tag_img {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    border-radius: 5px;
+}
+
+.tag_img_main{
+    width: 80px;
+    height: 80px;
+    margin-right: 8px;
+    border-radius: 5px;
+}
+
+.tag_heading {
+    display: flex;
+    justify-content: left;
+    padding: 5px;
+    border: 1px solid black;
+}
+
+.tag_heading_2 {
+    padding-left: 10px;
+}
+
+.tag_title {
+    padding-bottom: 10px;
+    /* padding-top: 7px; */
+    font-size: 30px;
+    text-transform: capitalize;
+}
+
+.SearchCard_title:first-letter {
+    text-transform: capitalize;
+} 
+
+.SearchCard_tag {
+    text-transform: capitalize;
+}
+
+.follow_button {
+    background-color: transparent;
+    border: unset;
+    padding: 4px;
+    border-radius: 5px;
+    font-style: italic;
+    font-weight: 500;
+    color: dodgerblue;
+}
+
+.question_card {
+    border: 1px solid black;
+    margin-top: 8px;
+    padding: 5px;
+    padding-left: 10px;
+    box-shadow: lightgrey;
+}
+
+.qc_user_img {
+    width: 70px;
+    height: 70px;
+}
+
+.qc_user_wrap {
+    display: flex;
+    text-transform: capitalize;
+    /* border: 1px solid black; */
+}
+
+.qc_wrap_title {
+    align-self: flex-start;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+.qc_wrap_answered {
+    align-self: flex-end;
+    padding-top: 8px;
+    padding-left: 20px;
+    font-size: small;
+    color: gray;
+}
+
+.qc_queston_title :first-letter {
+    text-transform: capitalize;
+} 
+
+.qc_queston_title {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.qc_queston_desc {
+    /* font-size: 15px; */
+}
+
+.tag_body_main {
+    max-width: 50%;
+    min-width: 50%;
+    margin-left: 25%;
+}
+
+.tag_user_img {
+    width: 50px;
+    height: 50px;
+}
+
+.tag_body{
+    display: flex;
+}
+
+.tag_body_followers {
+    max-width: 25%;
+    min-width: 15%;
+    margin-left: 5%;
+    /* border: 1px solid black; */
+    align-items: center;
+}
+
+.tag_follower_heading{
+    padding-left: 25%;
+}
+.tag_user {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.tag_user_name {
+    padding-left: 10px;
+    font-weight: 500;
 }

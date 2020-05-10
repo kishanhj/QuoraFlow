@@ -14,7 +14,7 @@ module.exports = {
     questionIndex : "quora-flow-question",
     tagIndex : "quora-flow-tag",
     questionType : "question",
-    tagType : "tag",
+    tagType : "tags",
     search : "_search",
     slash : "/",
     buildAWSBasicAuthenticationHash,

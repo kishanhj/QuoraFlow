@@ -22,6 +22,25 @@ const addQuestion = async (questionDB) => {
     res = await axios.post(url, question);
 }
 
+const addTag = async (tagID,tagTitle) => {
+
+    const tag = {
+        "id": tagID,
+        "title": tagTitle
+    }
+
+    var url = "", res = {};
+
+    if (sConfig.useAws) {
+        var created = await crudAWSWrap(addTagAWS,tag);
+        if(created) console.log("Tag Index created");
+        return;
+    }
+
+    url = sConfig.baseUrl + sConfig.slash + sConfig.tagIndex + sConfig.slash + sConfig.tagType;
+    res = await axios.post(url, tag);
+}
+
 const updateQuestion = async (questionDB) => {
 
     const question = {
@@ -106,8 +125,30 @@ const addQuestionAWS = async (question,successCallback,errorCallback) => {
 
     request.method = 'POST';
     request.path += sConfig.questionIndex + '/' + sConfig.questionType + '/' + question.id;
-    console.log(request.path);
     request.body = JSON.stringify(question);
+    request.headers['host'] = sConfig.awsDomain;
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
+
+    var client = new AWS.HttpClient();
+    client.handleRequest(request, null, function (response) {
+            successCallback('201' == response.statusCode);
+    }, function (error) {
+        console.log(error);
+        errorCallback(false);
+    });
+
+}
+
+const addTagAWS = async (tag,successCallback,errorCallback) => {
+
+    var region = 'us-east-1';
+    var endpoint = new AWS.Endpoint(sConfig.awsDomain);
+    var request = new AWS.HttpRequest(endpoint, region);
+
+    request.method = 'POST';
+    request.path += sConfig.tagIndex + '/' + sConfig.tagType + '/' + tag.id;
+    request.body = JSON.stringify(tag);
     request.headers['host'] = sConfig.awsDomain;
     request.headers['Content-Type'] = 'application/json';
     request.headers['Authorization'] = sConfig.buildAWSBasicAuthenticationHash();
@@ -177,5 +218,5 @@ const doNormalSearchAWS = async (query,successCallback,errorCallback) => {
 
 
 module.exports = {
-    addQuestion, doNormalSearch,updateQuestion
+    addQuestion, doNormalSearch,updateQuestion,addTag
 }
