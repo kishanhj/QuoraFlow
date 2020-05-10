@@ -78,10 +78,40 @@ const getAllTagsData = async (id) => {
     
 }
 
+const getTag = async (id) => {
+    if(!id) throw "Must provide an ID";
+
+    
+    const tagcollection = await tags();
+    const tag = await tagcollection.findOne({_id:ObjectID(id)});
+    const questions = [];
+    for(var qid of tag.questionid){
+        var question = undefined;
+
+        try {
+            question = await questionsDataAPI.getquestion(qid.toString());
+        }catch(err){
+            continue;
+        }
+        
+        if(question) questions.push(question);
+    }
+
+    const data = {
+        "id" : id,
+        "title" : tag.tag,
+        "tag" : tag,
+        "questions" : questions
+    }
+    
+    return data;
+}
+
 
 module.exports={
     addtags,
     removetags,
-    getAllTagsData
+    getAllTagsData,
+    getTag
 }
 

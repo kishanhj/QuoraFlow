@@ -137,7 +137,7 @@
 .tag_body_main {
     max-width: 50%;
     min-width: 50%;
-    margin-left: 25%;
+    margin-left: 5%;
 }
 
 .tag_user_img {
@@ -167,6 +167,32 @@
 }
 
 .tag_user_name {
+    padding-left: 10px;
+    font-weight: 500;
+}
+
+.following_tag_img{
+    width: 40px;
+    height: 40px;
+}
+
+.following_tag_list{
+    max-width: 25%;
+    min-width: 15%;
+    margin-left: 5%;
+    /* border: 1px solid black; */
+    align-items: center;
+    margin-top: 5px;
+}
+
+.following_tag{
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+.following_tag_name {
     padding-left: 10px;
     font-weight: 500;
 }

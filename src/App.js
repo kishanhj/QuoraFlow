@@ -6,13 +6,14 @@ import Question from "./components/questiondisplay";
 import EditQuestion from "./components/editQuestion";
 import DeleteQuestion from "./components/deleteQuestion";
 import PagenotFound from "./components/pageNotFound";
-import DashBoard from "./components/dashboard";
+import DashBoard from "./components/Dashboard";
 import Search from "./components/Search";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import TagPage from "./components/TagPage";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
+import LandingPage from './components/LandingPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <DashBoard></DashBoard>
           <div className="App-body">
             {/* <Route exact path="/home" exact component={DashBoard}/> */}
+            <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signin" component={SignIn} />
             <Route exact path="/questions" exact component={Form} />

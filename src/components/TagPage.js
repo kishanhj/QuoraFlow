@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { Redirect } from "react-router-dom";
 import QuestionCard from "./QuestionCard";
+import FollowingTags from "./FollowingTags";
 
 
 const TagPage = (props) => {
@@ -61,6 +62,7 @@ const TagPage = (props) => {
 
     return (
         <div className="tag_body">
+            <FollowingTags data={[{id:"5eb63a7674dfbc6c81c626b8",tag:"general"}]}/>
             <div className='tag_body_main'>
                 {buildHeading()}
                 {tagData && tagData.questions.map((q) => 
