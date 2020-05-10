@@ -125,8 +125,7 @@ const updatequestion = async(id , newquestion)=>{
     
     if(newquestion.tags){
         if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
-        console.log(newquestion.tags)
-        if(newquestion.tags.length >10 || newquestion.tags.length <1 ) throw "There must be atleast 1 tag max of 10 tags"
+        if(newquestion.tags.length >10 || newquestion.tags.length <1 || newquestion.tags[0]==='') throw "There must be atleast 1 tag max of 10 tags"
         updateq.tags=newquestion.tags
     }
     const questioncollection = await questions()
