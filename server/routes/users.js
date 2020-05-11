@@ -3,21 +3,47 @@ const router = express.Router();
 const data = require("../data");
 const userData = data.users
 
-router.post("/checkuser", async (req, res) => { 
+
+/**
+ * Checks if the user is an admin based on the email provided
+ */
+router.post("/isAdmin", async (req, res) => {
     try {
-        
         let usr = req.body;
-        console.log('checuser called' + usr.email)
+        if (!usr) throw `Error: "Request body not provided`
+        if (!usr.email) throw `Error: "email address not provided`
+        if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
+        let status = await userData.adminCheck(usr.email);
+        if (!status) {
+            res.json({ flag: false });
+        }
+        else { 
+            res.json({ flag: true });
+        }
+
+
+    } catch (e) {
+        res.json({ Error: e })
+    }
+})
+
+/**
+ * checks if user exists in the database
+ */
+router.post("/checkuser", async (req, res) => {
+    try {
+
+        let usr = req.body;
         if (!usr) throw `Error: "Request body not provided`
         if (!usr.email) throw `Error: "email address not provided`
         if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
 
         let status = await userData.checkUser(usr.email)
         if (!status) res.json({ flag: false })
-        else res.json({ flag: true})
-        
-    } catch (e) { 
-        res.json({Error:e})
+        else res.json({ flag: true })
+
+    } catch (e) {
+        res.json({ Error: e })
     }
 
 })
@@ -61,7 +87,7 @@ router.post("/addUser", async (req, res) => {
         let status = await userData.addUser(usr);
         if (status) {
             res.json(status)
-        } else { 
+        } else {
             throw `Error: user not inserted to database`
         }
     } catch (e) {
@@ -343,7 +369,7 @@ router.post("/removeFollowedQuestionId", async (req, res) => {
 
 })
 
-router.get("/userInfo/:email",async (req,res) => {
+router.get("/userInfo/:email", async (req, res) => {
     try {
         const email = req.params.email;
         if (!email) throw "user email is not provided";
@@ -351,7 +377,7 @@ router.get("/userInfo/:email",async (req,res) => {
         res.status(200).json(userInfo);
     } catch (error) {
         console.log(error);
-        res.status(400).json({error : error});
+        res.status(400).json({ error: error });
     }
 })
 

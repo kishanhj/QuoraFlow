@@ -2,6 +2,23 @@ const mongocollection = require('../config/mongoCollections');
 const ObjectID = require("mongodb").ObjectID
 const users = mongocollection.Users
 
+
+/**
+ * Checks if the user is an admin based on email
+ * @param {email address of the user} email
+ * @return boolean
+ */
+async function adminCheck(email) { 
+    console.log(email)
+    if (!email) throw "user's email is required";
+    if (typeof email != 'string') { throw `Error: email should be of type string` }
+    let check = await getUser(email);
+    console.log(check)
+    if (!check) throw `Error: no user exists with the email ${email}`
+    return check.isadmin;
+
+}
+
 /**
  * Adds the user to the database
  * @param {Object of user to be added} usrObj 
@@ -468,4 +485,4 @@ async function getUserInfo(email){
 
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser }
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck }
