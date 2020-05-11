@@ -4,8 +4,7 @@ const questions = mongocollection.Questions
 const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
-const config= require("../config/amazonsecretKeys")
-const awskeys= config.awsconfig
+require("dotenv").config();
 const path =require("path")
 const elasticSearchAPI = require("../elasticSearch/searchAPI");
 
@@ -16,8 +15,8 @@ const elasticSearchAPI = require("../elasticSearch/searchAPI");
     
 // })
 aws.config.update({
-    accessKeyId: awskeys.AWS_ACCESS_KEY_ID,
-    secretAccessKey: awskeys.AWS_SECRET_KEY_ID,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_KEY_ID,
     region: 'us-east-1'
    });
 const s3=new aws.S3();
@@ -68,10 +67,11 @@ const createquestion = async(title,description,tags,userid,image)=>{
     if(typeof description !== "string" || description.length === 0) throw "Invalid description entered"
     if( description.length === 0) throw "Invalid description entered"
     if(Array.isArray(tags) !== true) throw "Invalid Tags entered"
-    if(tags.length >3 || tags.length <1 ) throw "There must be only 3 tags"
+    if(tags.length>10 || tags.length<1 ) throw "There must be atleast 1 tag max of 10 tags"
     if(image!=undefined){
         if(typeof image !=='string') throw  "Invalid image path"
     }
+    if (typeof userid!== "string") throw "Invalid userid entered"
 
     newquestion={
         title: title,
@@ -85,7 +85,8 @@ const createquestion = async(title,description,tags,userid,image)=>{
         image:image,
         likes:[],
         report:[],
-        followers:[]
+        followers:[],
+        sync:1
 
     }
     const questioncollection = await questions()
@@ -125,10 +126,11 @@ const updatequestion = async(id , newquestion)=>{
     
     if(newquestion.tags){
         if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
-        console.log(newquestion.tags)
-        if(newquestion.tags.length >3 || newquestion.tags.length <1 ) throw "There must be only 3 tags"
+        if(newquestion.tags.length >10 || newquestion.tags.length <1 || newquestion.tags[0]==='') throw "There must be atleast 1 tag max of 10 tags"
         updateq.tags=newquestion.tags
     }
+
+    updateq.sync=2
     const questioncollection = await questions()
     const updatedInfo = await questioncollection.updateOne({_id:ObjectID(id)},{$set:updateq})
     const updatedquestion =  await getquestion(String(id));
@@ -140,7 +142,7 @@ const deletequestion=async(id)=>{
     if(typeof id !=="string") throw "id is not of correct type"
     await getquestion(id)
     const questioncollection = await questions()
-    const Deletedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:{isdeleted:true}})
+    const Deletedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:{isdeleted:true,sync:3}})
     return;
 
 }
@@ -157,6 +159,36 @@ const updatelike=async(id,userid)=>{
 
 }
 
+const unlike=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions() 
+    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$pull:{likes:String(userid)}}) 
+    return await getquestion(String(id))
+
+}
+
+const getlike=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    const question = await getquestion(id)
+    if(question.likes.length>0){
+        for(let i=0;i<question.likes.length;i++){
+            if(userid == question.likes[i]){
+                return true
+            }
+        }
+
+    }
+    return false
+    
+}
+
 module.exports={
     createquestion,
     getallquestions,
@@ -164,6 +196,8 @@ module.exports={
     deletequestion,
     updatequestion,
     upload,
-    updatelike
+    updatelike,
+    getlike,
+    unlike
 
 }

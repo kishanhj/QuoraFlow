@@ -37,7 +37,8 @@ const Search = (props) => {
 
     return (
     <div id="search-body" className="search-body">
-        {results && results.map((q) => <SearchCard data={q} key={makeid()}/>)}
+            <div className="resultTitle" >Results for : <span className='title'>{query}</span> </div>
+            {results && results.map((q) => <SearchCard data={q} key={makeid()}/>)}
     </div>
     );
 }

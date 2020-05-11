@@ -2,7 +2,7 @@ const express= require("express")
 const router = express.Router();
 const data = require("../data");
 const ObjectID= require("mongodb").ObjectID
-const tagsdata= data.tags
+const tagsdataAPI= data.tags
 
 
 router.post("/addtags",async function(req,res){
@@ -14,7 +14,7 @@ router.post("/addtags",async function(req,res){
 
         let tagsarray=t.tagarray.split(",")
 
-        await tagsdata.addtags(tagsarray,ObjectID(t.questionID))
+        await tagsdataAPI.addtags(tagsarray,ObjectID(t.questionID))
         res.sendStatus(200)
         return;
 
@@ -34,7 +34,7 @@ router.delete("/removetags",async function(req,res){
 
         let tagsarray=t.tagarray.split(",")
 
-        await tagsdata.removetags(tagsarray,ObjectID(t.questionID))
+        await tagsdataAPI.removetags(tagsarray,ObjectID(t.questionID))
         res.sendStatus(200)
         return;
 
@@ -44,5 +44,17 @@ router.delete("/removetags",async function(req,res){
 
     }
 })
+
+router.get("/main/:id", async (req,res) => {
+    try{
+        if(!req.params.id) throw "Must provide an ID";
+
+        const tagsData = await tagsdataAPI.getAllTagsData(req.params.id);
+        res.status(200).json(tagsData);
+    }catch(err){
+        console.log(err);
+        res.status(400).json({"error":err});
+    }
+});
 
 module.exports=router

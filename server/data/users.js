@@ -233,7 +233,7 @@ async function addQuestionId(email, q_id) {
     if (!check) throw `Error: no user exists with the email ${email}`
     const userCollection = await users();
 
-    let usr = await userCollection.updateOne({ "email": email }, { "$push": { "questions": q_id } })
+    let usr = await userCollection.updateOne({ "email": email }, { $addToSet: { "questions": q_id } })
     if (usr.modifiedCount > 0) {
         return await getUser(email);
     }
@@ -434,6 +434,38 @@ async function removeVotedCommentId(email, c_id) {
 
 }
 
+async function getUserInfo(email){
+    if (!email) throw "user's email is required";
+    const tagDataAPI = require("./tags");
+    const userData = await getUser(email);
+    const {tags} = userData;
+    const questions = [];
+    const tagObjList = [];
+
+    for(var tagID of tags){
+        var tagData = undefined;
+
+        try {
+            tagData = await tagDataAPI.getTag(tagID);
+        } catch (error) {
+            continue;
+        }
+
+        if(!tagData) continue;
+
+        tagObjList.push(tagData.tag);
+        questions.push.apply(questions,tagData.questions);
+    }
+
+    questions.sort((a,b) => b.timestamp - a.timestamp);
+    const data = {
+        tags : tagObjList,
+        questions : questions
+    }
+
+    return data;
+}
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, checkUser }
+
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser }

@@ -21,16 +21,29 @@ const SearchCard = (props) => {
         return `/questions/display/${data._source.id}`;
     }
 
-    if(data._type === 'tag')
+    const getTagLink = () => {
+        return `/tag/${data._source.id}`;
+    }
+
+    const getFollowLink = () => {
+        if(false)
+            return "Following";
+        return "Follow";
+    }
+
+    if(data._type === 'tags')
         return(
             <div className = 'SearchCard'>
-                <p>Nope</p>
+                <div className='SearchCard_title_wrap'> 
+                   <img src="/imgs/tag.png" className='tag_img'/>Tag : <Link className='SearchCard_title title SearchCard_tag' to={getTagLink()}>{title}</Link>
+                </div>
+                <button className="follow_button">{getFollowLink()}</button>
             </div>
         );  
     
     return(
         <div className = 'SearchCard'>
-            <div className='SearchCard_title'> 
+            <div className='SearchCard_title title'> 
                 <Link to={getQuestionLink()}>{title}</Link>
             </div>
             <div className='SearchCard_desc'> {description} </div>

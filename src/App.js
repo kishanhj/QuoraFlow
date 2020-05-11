@@ -6,14 +6,16 @@ import Question from "./components/questiondisplay";
 import EditQuestion from "./components/editQuestion";
 import DeleteQuestion from "./components/deleteQuestion";
 import PagenotFound from "./components/pageNotFound";
-import DashBoard from "./components/dashboard";
+import DashBoard from "./components/Dashboard";
 import Search from "./components/Search";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import TagPage from "./components/TagPage";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
 import UserName from "./components/UserName"
 
+import LandingPage from './components/LandingPage';
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
           <DashBoard></DashBoard>
           <div className="App-body">
             {/* <Route exact path="/home" exact component={DashBoard}/> */}
+            <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signin" component={SignIn} />
             <Route exact path="/questions" exact component={Form} />
@@ -37,6 +40,7 @@ function App() {
             <Route exact path="/notfound" component={PagenotFound} status={404} />
             <Route exact path="/search" component={Search} />
             <Route exact path="/username" component={UserName} />
+            <Route exact path="/tag/:id" component={TagPage} />
             {/* <CommentList comments={comments} /> */}
           </div>
         </div>

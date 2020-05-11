@@ -48,8 +48,7 @@ const Dashboard = (props) => {
          </Nav>
          <Form inline>
             <FormControl id= "search" type="text" placeholder="Search" className="mr-sm-2" />
-                    <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>
-                    <SignOut />
+            <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>        
          </Form>
         </Navbar>
         <br />
