@@ -2,6 +2,11 @@ const mongocollection = require('../config/mongoCollections');
 const ObjectID = require("mongodb").ObjectID
 const users = mongocollection.Users
 
+const redis = require("redis");
+const client = redis.createClient();
+const bluebird = require("bluebird");
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
 
 /**
  * Checks if the user is an admin based on email
@@ -66,6 +71,7 @@ async function addTag(email, t_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$push": { "tags": t_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -94,6 +100,7 @@ async function removeTag(email, t_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$pull": { "tags": t_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email)
         return await getUser(email);
     }
     else {
@@ -175,10 +182,14 @@ async function getUser(email) {
     if (!email) { throw `Error: Email is not provided for the user` }
     if (typeof email != 'string') { throw `Error: email should be of type string` }
 
-    let usrToRtrn = await userCollection.findOne({ "email": email })
+    let usrToRtrn = await checkRedis(email);
+    if(usrToRtrn) return usrToRtrn;
+
+    usrToRtrn = await userCollection.findOne({ "email": email })
     if (!usrToRtrn) {
         throw `Error: No user found with email ${email}`
     }
+    addPersonToRedisMap(email,usrToRtrn);
     return usrToRtrn;
 
 }
@@ -252,6 +263,7 @@ async function addQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { $addToSet: { "questions": q_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -280,6 +292,7 @@ async function removeQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "questions": q_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -307,6 +320,7 @@ async function addCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$push": { "comments": c_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -334,6 +348,7 @@ async function removeCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "comments": c_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -362,6 +377,7 @@ async function addFollowedQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$push": { "questions_followed": q_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -391,6 +407,7 @@ async function removeFollowedQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "questions_followed": q_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -416,6 +433,7 @@ async function addVotedCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$push": { "voted_comments": c_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -442,6 +460,7 @@ async function removeVotedCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "voted_comments": c_id } })
     if (usr.modifiedCount > 0) {
+        removePersonToRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -449,6 +468,24 @@ async function removeVotedCommentId(email, c_id) {
     }
 
 
+}
+
+async function checkRedis(email){
+    const user = await client.hgetAsync("Users",email);
+    // console.log("checkRedis : ",user);
+    if(user)
+        return JSON.parse(user);
+}
+
+async function addPersonToRedisMap(email,user){
+    const userString = JSON.stringify(user);
+    // console.log("addPersonToRedisMap : ",userString,email);
+    client.hsetAsync("Users", email, userString);
+}
+
+async function removePersonToRedisMap(email){
+    // console.log("removePersonToRedisMap : ",email);
+    client.hdelAsync("Users", email);
 }
 
 async function getUserInfo(email){
