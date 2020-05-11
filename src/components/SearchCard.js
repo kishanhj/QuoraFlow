@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from "react";
 import ReactHtmlParser from 'react-html-parser'; 
 import { Link } from "react-router-dom";
+import FollowTagButton from "./FollowTagButton";
 
 const stringValidator = (value) => {
     if(!value || typeof value != 'string' || value === ''){
@@ -25,11 +26,6 @@ const SearchCard = (props) => {
         return `/tag/${data._source.id}`;
     }
 
-    const getFollowLink = () => {
-        if(false)
-            return "Following";
-        return "Follow";
-    }
 
     if(data._type === 'tags')
         return(
@@ -37,7 +33,7 @@ const SearchCard = (props) => {
                 <div className='SearchCard_title_wrap'> 
                    <img src="/imgs/tag.png" className='tag_img'/>Tag : <Link className='SearchCard_title title SearchCard_tag' to={getTagLink()}>{title}</Link>
                 </div>
-                <button className="follow_button">{getFollowLink()}</button>
+                <FollowTagButton tagID={data._source.id} />
             </div>
         );  
     

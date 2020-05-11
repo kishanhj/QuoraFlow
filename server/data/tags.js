@@ -42,13 +42,17 @@ const removetags=async(tagarray ,questionid)=>{
 
 }
 
-const getAllTagsData = async (id) => {
+const getAllTagsData = async (id,email) => {
     
     if(!id) throw "Must provide an Id";
     if(typeof id !=="string") throw "id is not of correct type"
+    if(!email) throw "Must provide an Id";
+    if(typeof email !=="string") throw "email is not of correct type"
 
     const tagcollection = await tags();
     const tag = await tagcollection.findOne({_id:ObjectID(id)});
+    const usersCollection = mongocollection.Users;
+    const usersDB = await usersCollection();
 
     const questions = [];
     for(var qid of tag.questionid){
@@ -56,40 +60,73 @@ const getAllTagsData = async (id) => {
 
         try {
             question = await questionsDataAPI.getquestion(qid.toString());
+            question.userName = await usersDB.find({email : question.userid}).project({userName:1,_id:0}).toArray();
+            question.userName = question.userName[0].userName;
         }catch(err){
+            console.log(err);
             continue;
         }
         
         if(question) questions.push(question);
     }
 
-    const usersCollection = mongocollection.Users;
-    const usersDB = await usersCollection();
     const followers = await usersDB.find({ tags : { $elemMatch : {$eq : id } }}).project({userName:1,_id:0}).toArray();
+    const userTagIDs = await usersDB.find({email : email}).project({tags:1,_id:0}).toArray();
+
+    const userTags = [];
+    for(var tagID of userTagIDs[0].tags){
+        var tagData = undefined;
+        try {
+            tagData = await tagcollection.findOne({_id:ObjectID(tagID)},{tag:1,_id:1});
+        } catch (error) {
+            console.log(error);
+            continue;
+        }
+
+        if(!tagData) continue;
+        userTags.push(tagData);
+    }
 
     const data = {
         "id" : id,
         "title" : tag.tag,
         "questions" : questions,
-        "followers" : followers
+        "followers" : followers,
+        "userTags" : userTags
     }
     
     return data;
     
 }
 
+const getTagFollowers = async (id) => {
+
+    if(!id) throw "Must provide an Id";
+    if(typeof id !=="string") throw "id is not of correct type"
+
+    const usersCollection = mongocollection.Users;
+    const usersDB = await usersCollection();
+    const followers = await usersDB.find({ tags : { $elemMatch : {$eq : id } }}).project({userName:1,email:1,_id:0}).toArray();
+    return followers;
+} 
+
 const getTag = async (id) => {
     if(!id) throw "Must provide an ID";
 
-    
     const tagcollection = await tags();
     const tag = await tagcollection.findOne({_id:ObjectID(id)});
+    
+    const usersCollection = mongocollection.Users;
+    const usersDB = await usersCollection();
+
     const questions = [];
     for(var qid of tag.questionid){
         var question = undefined;
 
         try {
             question = await questionsDataAPI.getquestion(qid.toString());
+            question.userName = await usersDB.find({email : question.userid}).project({userName:1,_id:0}).toArray();
+            question.userName = question.userName[0].userName;
         }catch(err){
             continue;
         }
@@ -124,6 +161,7 @@ module.exports={
     removetags,
     getAllTagsData,
     getTag,
-    getTagbyname
+    getTagbyname,
+    getTagFollowers
 }
 

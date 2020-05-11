@@ -483,6 +483,32 @@ async function getUserInfo(email){
     return data;
 }
 
+const getUserTags = async (email) => {
+    if(!email) throw "Must provide an email";
+    
+    const usersCollection = mongocollection.Users;
+    const usersDB = await usersCollection();
+    const userTagIDs = await usersDB.find({email : email}).project({tags:1,_id:0}).toArray();
+
+    const tags = mongocollection.Tags;
+    const tagcollection = await tags();
+    const userTags = [];
+    for(var tagID of userTagIDs[0].tags){
+        var tagData = undefined;
+        try {
+            tagData = await tagcollection.findOne({_id:ObjectID(tagID)},{tag:1,_id:1});
+        } catch (error) {
+            console.log(error);
+            continue;
+        }
+
+        if(!tagData) continue;
+        userTags.push(tagData);
+    }
+    
+    return userTags;
+}
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck }
+
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck,getUserTags }

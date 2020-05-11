@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const QuestionCard = (props) => {
     const [question,setQuestion] = useState(props.data);
-    const {tags,userid} = question;
+    const {tags,userName} = question;
 
     const getQuestionLink = () => {
         return `/questions/display/${question._id}`;
@@ -26,7 +26,7 @@ const QuestionCard = (props) => {
             <div className='qc_user_wrap'>
                 <img className='qc_user_img' src='/imgs/user.png'></img>
                 <div className="">
-                    <div className = "qc_wrap_title title">{userid}</div>
+                    <div className = "qc_wrap_title title">{userName}</div>
                     <div className = "qc_wrap_answered">{getAnswered()}</div>
                 </div>
             </div>

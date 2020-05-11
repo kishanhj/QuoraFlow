@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import { Redirect } from "react-router-dom";
 import QuestionCard from "./QuestionCard";
 import FollowingTags from "./FollowingTags";
+import { AuthContext } from "../firebase/Auth";
+import FollowTagButton from "./FollowTagButton";
 
 
 const TagPage = (props) => {
     // const [id,setId] = useState(props.match.params.id);
+    const { currentUser } = useContext(AuthContext);
     const [tagData,setTagData] = useState(undefined);
 
     useEffect(() => {
         const getData = async () => {
             try{
-                const {data} = await Axios.get(`http://localhost:8080/tags/main/${props.match.params.id}`);
-                console.log(data);
+                const {data} = await Axios.get(`http://localhost:8080/tags/main/${props.match.params.id}/${currentUser.email}`);
                 setTagData(data);
             } catch(e){
                 setTagData(null);
@@ -40,7 +42,8 @@ const TagPage = (props) => {
                 <img src="/imgs/tag.png" className='tag_img_main'/>
                 <div className="tag_heading_2">
                     <div className="tag_title title">{tagData.title}</div>
-                    <button className = "follow_button">{getFollowLink()}</button>
+                    <FollowTagButton tagID={tagData.id} />
+                    {/* <button className = "follow_button">{getFollowLink()}</button> */}
                 </div>
             </div>
         )
@@ -62,7 +65,7 @@ const TagPage = (props) => {
 
     return (
         <div className="tag_body">
-            <FollowingTags data={[{id:"5eb63a7674dfbc6c81c626b8",tag:"general"}]}/>
+            <FollowingTags data={tagData.userTags}/>
             <div className='tag_body_main'>
                 {buildHeading()}
                 {tagData && tagData.questions.map((q) => 

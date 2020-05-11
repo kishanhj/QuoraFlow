@@ -381,6 +381,18 @@ router.get("/userInfo/:email", async (req, res) => {
     }
 })
 
+router.get("/userInfo/tags/:email",async (req,res) => {
+    try {
+        const email = req.params.email;
+        if (!email) throw "user email is not provided";
+        let userInfo = await userData.getUserTags(email);
+        res.status(200).json(userInfo);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({error : error});
+    }
+})
+
 
 
 
