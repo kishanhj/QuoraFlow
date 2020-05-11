@@ -85,7 +85,8 @@ const createquestion = async(title,description,tags,userid,image)=>{
         image:image,
         likes:[],
         report:[],
-        followers:[]
+        followers:[],
+        sync:1
 
     }
     const questioncollection = await questions()
@@ -128,6 +129,8 @@ const updatequestion = async(id , newquestion)=>{
         if(newquestion.tags.length >10 || newquestion.tags.length <1 || newquestion.tags[0]==='') throw "There must be atleast 1 tag max of 10 tags"
         updateq.tags=newquestion.tags
     }
+
+    updateq.sync=2
     const questioncollection = await questions()
     const updatedInfo = await questioncollection.updateOne({_id:ObjectID(id)},{$set:updateq})
     const updatedquestion =  await getquestion(String(id));
@@ -139,7 +142,7 @@ const deletequestion=async(id)=>{
     if(typeof id !=="string") throw "id is not of correct type"
     await getquestion(id)
     const questioncollection = await questions()
-    const Deletedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:{isdeleted:true}})
+    const Deletedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$set:{isdeleted:true,sync:3}})
     return;
 
 }

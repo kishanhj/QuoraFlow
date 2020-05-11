@@ -113,6 +113,7 @@ function QuestionForm(props) {
 			if (e.response) {
 				
 				seterr(true)
+				console.log(e.response.data)
 			} 
 
 		}
