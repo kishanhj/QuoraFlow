@@ -6,7 +6,8 @@ const users = require("./users")
 
 // async function main(){
 //     try{
-//         const animalinfo= await tags.removetags(['General','Computer Science'],ObjectID('5eaa05a126b8682632dbf612'))
+//         const animalinfo= await tags.getTagbyname('Abin')
+//         console.log(animalinfo)
 
 //     }
 //     catch(e){

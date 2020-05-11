@@ -14,7 +14,7 @@ const addtags=async(tagarray ,questionid)=>{
 
     const tagcollection = await tags()
     for (let i=0;i<tagarray.length;i++){
-        const info = await tagcollection.updateOne({tag:tagarray[i]},{$addToSet:{questionid:questionid}},{upsert:true});
+        const info = await tagcollection.updateOne({tag:tagarray[i]},{$addToSet:{questionid:questionid},$set:{sync:1}},{upsert:true});
         if(null != info.upsertedId){
             console.log("in elas",info.upsertedId._id,tagarray[i]);
             elasticSearchApi.addTag(info.upsertedId._id,tagarray[i]);
@@ -107,11 +107,23 @@ const getTag = async (id) => {
     return data;
 }
 
+const getTagbyname= async(name)=>{
+    if(!name || typeof(name)!=="string") throw "Name is not properly defined"
+        const tagcollection = await tags();
+        const tag =await tagcollection.findOne({tag:name})
+        if(!tag) throw "No tag with that name found"
+        return tag
+
+   
+
+}
+
 
 module.exports={
     addtags,
     removetags,
     getAllTagsData,
-    getTag
+    getTag,
+    getTagbyname
 }
 
