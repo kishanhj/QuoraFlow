@@ -167,6 +167,24 @@ async function getUser(email) {
 }
 
 /**
+ * To check if user exists based on the email address provided 
+ * @param {email address of the required user} email 
+ * * @returns {user obj based on the email}
+ */
+async function checkUser(email) {
+    const userCollection = await users();
+    if (!email) { throw `Error: Email is not provided for the user` }
+    if (typeof email != 'string') { throw `Error: email should be of type string` }
+
+    let usrToRtrn = await userCollection.findOne({ "email": email })
+    if (!usrToRtrn) {
+        return false
+    }
+    return true;
+
+}
+
+/**
  * To check if the provided userName is unique or not
  * @param {string to check if an user with the userName exists in the database} userName 
  * @returns boolean
@@ -450,4 +468,4 @@ async function getUserInfo(email){
 
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo }
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser }
