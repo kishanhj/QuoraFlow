@@ -1,18 +1,41 @@
-import React, { useContext } from 'react'
+import React, { useContext ,useState, useLayoutEffect} from 'react'
 import SocialSignIn from './SocialSignIn'
 import { Redirect } from 'react-router-dom'
 import { AuthContext } from '../firebase/Auth'
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/FirebaseFunctions'
 import axios from 'axios';
 
-
-
-
-
-
-
 function SignIn() {
     const { currentUser } = useContext(AuthContext);
+    const [userCheck, setUserCheck] = useState()
+    useLayoutEffect(() => {
+        const getData = async () => {
+            try {
+                if (currentUser) {
+                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
+                    if (!status.data.flag)
+                        setUserCheck(1)
+                    else {
+                        setUserCheck(2);
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        getData();
+    }, [currentUser]);
+
+    if (currentUser != null) {
+        console.log(userCheck)
+        if (userCheck == 1) {
+            return <Redirect to='/username' />;
+        }
+        else if (userCheck == 2) {
+            return <Redirect to='/questions' />;
+        }
+    }
+
     const handleLogin = async (event) => {
         event.preventDefault();
         let { email, password1 } = event.target.elements;
@@ -37,11 +60,8 @@ function SignIn() {
 
         }
     }
-    //if user is authenticated redirect to main page
-    if (currentUser) {
-        console.log('Redirect called');
-        return <Redirect to='/questions' />;
-    }
+    
+    
     return (<div>
         <h1>
             Sign In

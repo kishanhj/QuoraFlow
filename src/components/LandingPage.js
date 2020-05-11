@@ -11,8 +11,9 @@ const LandingPage = (props) => {
 
     useEffect(() => {
         const getData = async () => {
-            const {data} = await Axios.get(`http://localhost:8080/users/userInfo/${currentUser.email}`);
-            setUserData(data);
+            if(currentUser)
+            {const {data} = await Axios.get(`http://localhost:8080/users/userInfo/${currentUser.email}`);
+            setUserData(data);}
         }
         getData();
     },[]);

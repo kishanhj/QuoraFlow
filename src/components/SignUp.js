@@ -1,21 +1,54 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions';
 import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
 import axios from 'axios';
+import SignOut from "./SignOut"
+
+
+
+
 function SignUp() {
     const { currentUser } = useContext(AuthContext);
     const [pwMatch, setPwMatch] = useState('');
     const [userNameCheck, setUserNameCheck] = useState('');
-    
+    const [userCheck, setUserCheck] = useState()
+
+    useLayoutEffect(() => {
+        const getData = async () => {
+            try {
+                if (currentUser) {
+                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
+                    if (!status.data.flag)
+                        setUserCheck(1)
+                    else {
+                        setUserCheck(2);
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        getData();
+    }, [currentUser]);
+
+    if (currentUser != null) {
+        console.log(userCheck)
+        if (userCheck == 1) {
+            return <Redirect to='/username' />;
+        }
+        else if (userCheck == 2) {
+            return <Redirect to='/questions' />;
+        }
+    }
 
     const handleSignUp = async (e) => {
         e.preventDefault();
         const { userName, email, password1, password2 } = e.target.elements;
 
         try {
-            let status= await axios.post("http://localhost:8080/users/checkUserName", { userName: userName.value });
+            let status = await axios.post("http://localhost:8080/users/checkUserName", { userName: userName.value });
             console.log(status.data.flag)
             console.log(typeof status.data.flag)
             if (status.data.flag === false) {
@@ -44,21 +77,16 @@ function SignUp() {
         } catch (e) {
             console.log(e)
             alert(e);
-            
+
         }
     };
-    //redirect to main page if user authenticated
-    if (currentUser) {
-        console.log('Redirect called');
-        console.log(currentUser)
-        return <Redirect to='/questions'></Redirect>
-    }
+
     return (
         <div>
             <h1>
                 Sign Up
             </h1>
-            
+
             {pwMatch && <h4 className='error'>{pwMatch}</h4>}
             {userNameCheck && <h4 className='error'>{userNameCheck}</h4>}
             <form onSubmit={handleSignUp}>
@@ -90,6 +118,7 @@ function SignUp() {
             </form>
             <br />
             <SocialSignIn></SocialSignIn>
+            <SignOut />
         </div>
     );
 

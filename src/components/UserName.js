@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
+import SignOut from "./SignOut"
 //useEffect
 
 function UserName() {
@@ -52,6 +53,7 @@ function UserName() {
                 </div>
                 <br />
                 <button id='submitButton' name='submitButton' type='submit' >Sign Up</button>
+                <SignOut />
             </form>
         </div>
     )
