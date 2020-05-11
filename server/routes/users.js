@@ -3,6 +3,29 @@ const router = express.Router();
 const data = require("../data");
 const userData = data.users
 
+router.post("/checkuser", async (req, res) => { 
+    try {
+        
+        let usr = req.body;
+        console.log('checuser called' + usr.email)
+        if (!usr) throw `Error: "Request body not provided`
+        if (!usr.email) throw `Error: "email address not provided`
+        if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
+
+        let status = await userData.checkUser(usr.email)
+        if (!status) res.json({ flag: false })
+        else res.json({ flag: true})
+        
+    } catch (e) { 
+        res.json({Error:e})
+    }
+
+})
+
+
+
+
+
 /**
  * Checks if the user name provided is unique or not
  */

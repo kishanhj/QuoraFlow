@@ -12,6 +12,8 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
+import UserName from "./components/UserName"
+
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
             <Route exact path="/questions/delete/:id" exact component={DeleteQuestion} />
             <Route exact path="/notfound" component={PagenotFound} status={404} />
             <Route exact path="/search" component={Search} />
+            <Route exact path="/username" component={UserName} />
             {/* <CommentList comments={comments} /> */}
           </div>
         </div>

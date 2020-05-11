@@ -2,6 +2,7 @@ import React, { useState , useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Button, Navbar, FormControl, Form, Nav } from 'react-bootstrap';
 import queryString from 'query-string'
+import SignOut from "./SignOut"
 
 
 const Dashboard = (props) => {
@@ -41,11 +42,14 @@ const Dashboard = (props) => {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/">Answer</Nav.Link>
             <Nav.Link href="/">Notifications</Nav.Link>
-            <Nav.Link href="/questions">Add Question</Nav.Link>
+                    <Nav.Link href="/questions">Add Question</Nav.Link>
+                    
+                    
          </Nav>
          <Form inline>
             <FormControl id= "search" type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>
+                    <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>
+                    <SignOut />
          </Form>
         </Navbar>
         <br />
