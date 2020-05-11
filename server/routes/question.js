@@ -3,7 +3,7 @@ const router = express.Router();
 const data = require("../data");
 const questionData= data.questions
 const userData =data.users;
-
+const tagData = data.tags;
 
 
 router.get("/" ,async function(req,res){
@@ -36,7 +36,15 @@ router.get("/:id" ,async function(req,res){
         return;
     }
     try{
+        let tags=[]
         const question= await questionData.getquestion(req.params.id)
+        if(question.tags.length>0){
+            for(let i=0;i<question.tags.length;i++){
+                let tag=await tagData.getTagbyname(question.tags[i])
+                tags.push({_id:tag._id,tag:tag.tag})
+            }
+        }
+        question.tags=tags
         if(question.isdeleted===false){
             res.status(200).json(question)
             return;
