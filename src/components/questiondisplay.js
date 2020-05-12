@@ -95,12 +95,17 @@ function Questiondisplay(props) {
 
     }
 
+
     if(postData===false){
         return(<Redirect to='/notfound'/>)
     }
     if(getData && getData.isdeleted===true){
         return (<Redirect to='/notfound'/>)
 
+    }
+
+    if (currentUser==undefined) {
+        return <Redirect to='/signin'></Redirect>
     }
    
 
