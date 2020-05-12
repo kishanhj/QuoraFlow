@@ -55,7 +55,7 @@ function EditForm(props) {
 				}
 				let edittags=[]
 				for(let i=0;i<data.tags.length;i++){
-					edittags.push({id:data.tags[i],text:data.tags[i]})
+					edittags.push({id:data.tags[i].tag,text:data.tags[i].tag})
 				} 
 				settags(edittags)
 				setoldtags(data.tags)
