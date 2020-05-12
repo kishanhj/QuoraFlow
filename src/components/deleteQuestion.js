@@ -18,7 +18,7 @@ function Deletequestion(props){
                 try{
                     const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
                     setgetData(data)
-                    if(currentUser!==undefined && data.userid===currentUser.email){
+                    if(currentUser!==null && data.userid===currentUser.email){
                         sethasdeleted(true)
                         setisOwner({isowner:true})
                         const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`)
@@ -46,9 +46,9 @@ function Deletequestion(props){
             getdata()   
 
         }
-    ,[])
+    ,[props.match.params.id])
 
-    if(currentUser===undefined){
+    if(currentUser===null){
         return <Redirect to='/signin'></Redirect>
     }
 
