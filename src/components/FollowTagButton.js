@@ -14,7 +14,6 @@ const FollowTagButton = (props) => {
             const {data} = await Axios.get(`http://localhost:8080/tags/followers/${props.tagID}`);
             setTagData(data)
             clickChange = false;
-            console.log(data);
         }
         getData();
     });

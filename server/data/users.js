@@ -493,7 +493,7 @@ async function getUserInfo(email){
     const tagDataAPI = require("./tags");
     const userData = await getUser(email);
     const {tags} = userData;
-    const questions = [];
+    var questions = [];
     const tagObjList = [];
 
     for(var tagID of tags){
@@ -511,6 +511,7 @@ async function getUserInfo(email){
         questions.push.apply(questions,tagData.questions);
     }
 
+    questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
     questions.sort((a,b) => b.timestamp - a.timestamp);
     const data = {
         tags : tagObjList,
