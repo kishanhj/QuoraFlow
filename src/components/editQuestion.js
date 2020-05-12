@@ -20,6 +20,7 @@ const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 
 function EditForm(props) {
+	const [issubmitting ,setissubmitting]=useState(false)
 	const { currentUser } = useContext(AuthContext);
 	const [ err, seterr ] = useState(false);
 	const [isOwner ,setisOwner] =useState(undefined)
@@ -92,57 +93,60 @@ function EditForm(props) {
 		
 			
 		try
-		{const formdata= new FormData()
-		//get references to form fields.
-		let question = document.getElementById('question').value;
-		let description = document.getElementById('description').value;
-		formdata.append("title",question)
-		formdata.append("description",description)
-		let tagtext=[]
-		
-		for (let i in tags){
+		{
+			setissubmitting(true)
+			const formdata= new FormData()
+			//get references to form fields.
+			let question = document.getElementById('question').value;
+			let description = document.getElementById('description').value;
+			formdata.append("title",question)
+			formdata.append("description",description)
+			let tagtext=[]
 			
-			tagtext.push(tags[i].text)
-		}
-		
-		formdata.append("tags",tagtext)
-        
-		if(image !==null){
-			formdata.append("image",image)
+			for (let i in tags){
+				
+				tagtext.push(tags[i].text)
+			}
+			
+			formdata.append("tags",tagtext)
+			
+			if(image !==null){
+				formdata.append("image",image)
 
-		}
-		else{
-			formdata.append("image",oldimage)
-		}
-		for(let i of formdata.entries()){
-			console.log(i[0]+" "+i[1])
-		}
-		
+			}
+			else{
+				formdata.append("image",oldimage)
+			}
+			for(let i of formdata.entries()){
+				console.log(i[0]+" "+i[1])
+			}
+			
 
-		const { data } = await Axios.patch(`http://localhost:8080/questions/${props.match.params.id}`, formdata, {
-			headers: {
-				'accept': 'application/json',
-     			'Accept-Language': 'en-US,en;q=0.8',
-     			'Content-Type': 'multipart/form-data',
-			   }
-			   
-		});
-		const tagdata={
-			tagarray:tagtext,
-			questionID:data._id
+			const { data } = await Axios.patch(`http://localhost:8080/questions/${props.match.params.id}`, formdata, {
+				headers: {
+					'accept': 'application/json',
+					'Accept-Language': 'en-US,en;q=0.8',
+					'Content-Type': 'multipart/form-data',
+				}
+				
+			});
+			const tagdata={
+				tagarray:tagtext,
+				questionID:data._id
 
-		}
-		
-		
-		
-		const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
-			tagarray:oldtags,
-			questionID:data._id
-		  }})
-		const { }=await Axios.post(`http://localhost:8080/tags/addtags`, tagdata)
-		props.history.push(`/questions/display/${props.match.params.id}`)
+			}
+			
+			
+			
+			const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
+				tagarray:oldtags,
+				questionID:data._id
+			}})
+			const { }=await Axios.post(`http://localhost:8080/tags/addtags`, tagdata)
+			props.history.push(`/questions/display/${props.match.params.id}`)
 		}
 		catch(e){
+			setissubmitting(false)
 			seterr(true)
 		}
 		
@@ -228,7 +232,7 @@ function EditForm(props) {
 				{oldimage? <Button variant="outline-primary" onClick={handledeleteimage}>{imagename} X</Button>: null}
 				
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange}   accept="image/*" custom/>  
-				<Button variant="primary" type="submit">
+				<Button disabled={issubmitting} variant="primary" type="submit">
     				Submit
   				</Button>
 			</Form1>
