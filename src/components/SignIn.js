@@ -1,6 +1,6 @@
-import React, { useContext ,useState, useLayoutEffect} from 'react'
+import React, { useContext, useState, useLayoutEffect } from 'react'
 import SocialSignIn from './SocialSignIn'
-import { Redirect } from 'react-router-dom'
+import { Redirect, NavLink } from 'react-router-dom'
 import { AuthContext } from '../firebase/Auth'
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/FirebaseFunctions'
 import axios from 'axios';
@@ -42,7 +42,7 @@ function SignIn() {
 
         try {
             await doSignInWithEmailAndPassword(email.value, password1.value);
-            
+
         } catch (e) {
             alert(e);
         }
@@ -60,8 +60,8 @@ function SignIn() {
 
         }
     }
-    
-    
+
+
     return (<div>
         <h1>
             Sign In
@@ -83,12 +83,19 @@ function SignIn() {
             </div>
 
             <button id='submitButton' name='submitButton' type='submit' >Sign In</button>
+            <button className='forgotPassword' onClick={passwordReset}>Forgot Password?</button>
+            <SocialSignIn></SocialSignIn>
         </form>
         <br />
+        <label>New user?
+         <nav>
+                <NavLink to='/signup'>Register new account</NavLink>
+            </nav>
+        </label>
 
-        <button className='forgotPassword' onClick={passwordReset}>Forgot Password?</button>
+
         <br />
-        <SocialSignIn></SocialSignIn>
+
     </div>);
 }
 export default SignIn;
