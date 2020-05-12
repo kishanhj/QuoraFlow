@@ -27,7 +27,7 @@ const LandingPage = (props) => {
 
     return(
         <div className="tag_body">
-            <FollowingTags data={userData.tags}/>
+            <FollowingTags/>
             <div className='tag_body_main'>
                 {userData && userData.questions.map((q) => 
                     <QuestionCard data={q} key={q._id} />

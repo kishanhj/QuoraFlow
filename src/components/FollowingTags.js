@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {Link} from "react-router-dom"
+import { AuthContext } from "../firebase/Auth";
+import Axios from "axios";
 
 const FollowingTags = (props) => {
-    const [tags,setTags] = useState(props.data);
-    //console.log(props);
+    const { currentUser } = useContext(AuthContext);
+    const [tags,setTags] = useState(undefined);
+
+    useEffect( () => {
+        const getData = async () => {
+            const {data} = await Axios.get(`http://localhost:8080/users/userInfo/tags/${currentUser.email}`);
+            setTags(data);
+        }
+        getData();
+    });
+
+    if(undefined == tags)
+        return (<div className='loader'></div>);
 
     const getTagLink = (id) => {
         return `/tag/${id}`;

@@ -45,12 +45,24 @@ router.delete("/removetags",async function(req,res){
     }
 })
 
-router.get("/main/:id", async (req,res) => {
+router.get("/main/:id/:email", async (req,res) => {
     try{
         if(!req.params.id) throw "Must provide an ID";
+        if(!req.params.email) throw "Must provide email";
 
-        const tagsData = await tagsdataAPI.getAllTagsData(req.params.id);
+        const tagsData = await tagsdataAPI.getAllTagsData(req.params.id,req.params.email);
         res.status(200).json(tagsData);
+    }catch(err){
+        console.log(err);
+        res.status(400).json({"error":err});
+    }
+});
+
+router.get("/followers/:id", async (req,res) => {
+    try{
+        if(!req.params.id) throw "Must provide an ID";
+        const tagFollowers = await tagsdataAPI.getTagFollowers(req.params.id);
+        res.status(200).json(tagFollowers);
     }catch(err){
         console.log(err);
         res.status(400).json({"error":err});
