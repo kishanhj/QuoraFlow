@@ -55,11 +55,14 @@ function EditForm(props) {
 					setisOwner({isowner:false})
 				}
 				let edittags=[]
+				let oldtags=[]
 				for(let i=0;i<data.tags.length;i++){
 					edittags.push({id:data.tags[i].tag,text:data.tags[i].tag})
+					oldtags.push(data.tags[i].tag)
 				} 
+				
 				settags(edittags)
-				setoldtags(data.tags)
+				setoldtags(oldtags)
 				if(data.image!==null){
 					setimagename(data.image.split('/')[3])
 				}

@@ -17,11 +17,24 @@ function Deletequestion(props){
             async function getdata(){
                 try{
                     const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
+                    const admin= await Axios.post(`http://localhost:8080/users/isAdmin`, {email:currentUser.email});
                     setgetData(data)
-                    if(currentUser!==null && data.userid===currentUser.email){
-                        sethasdeleted(true)
-                        setisOwner({isowner:true})
-                        const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`)
+                    if(currentUser!==null){
+                        if(data.userid===currentUser.email || admin.data.flag){
+                            setisOwner({isowner:true})
+                            const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`)
+                            sethasdeleted(true)
+                            let oldtags=[]
+                            for(let i=0;i<data.tags.length;i++){
+                                oldtags.push(data.tags[i].tag)
+                            }
+                            const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
+				                tagarray:oldtags,
+				                questionID:data._id
+			                }})
+
+                        }
+                        
                     }
                     else{
                         setisOwner({isowner:false})
@@ -36,8 +49,6 @@ function Deletequestion(props){
                         * status code that falls out of the range of 2xx
                         */
                         console.log(e.response.data);
-                        console.log(e.response.status);
-                        console.log(e.response.headers);
                 
                     }
                 }
