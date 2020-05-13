@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions';
 import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
@@ -119,6 +119,13 @@ function SignUp() {
             <br />
             <SocialSignIn></SocialSignIn>
             <SignOut />
+            <br/>
+            <label>Existing user?
+                <nav>
+                    <NavLink to='/signin'>Go to Sign-in page</NavLink>
+                </nav>
+            </label>
+            
         </div>
     );
 
