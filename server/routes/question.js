@@ -205,6 +205,8 @@ router.patch("/like/:id/:userid",async function(req,res){
 
 })
 
+
+
 router.get("/like/:id/:userid",async function(req,res){
     try{
         await questionData.getquestion(req.params.id)
@@ -224,6 +226,73 @@ router.get("/like/:id/:userid",async function(req,res){
     try{
         const glike = await questionData.getlike(req.params.id,req.params.userid)
         res.status(200).json({like:glike})
+        return;
+    }
+    catch(e){
+        res.status(400).json({error:e})
+        return;
+    }
+
+})
+
+
+router.patch("/report/:id/:userid",async function(req,res){
+    try{
+        await questionData.getquestion(req.params.id)
+
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        await userData.getUser(req.params.userid)
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        if(await questionData.getreport(req.params.id,req.params.userid)){
+            const updatereport = await questionData.unreport(req.params.id ,req.params.userid)
+            res.status(200).json(updatereport)
+            return;
+        }
+        else{
+            const updatereport = await questionData.updatereport(req.params.id ,req.params.userid)
+            res.status(200).json(updatereport)
+            return;
+
+        }
+        
+    }
+    catch(e){
+        res.status(400).json({error:e})
+        return;
+    }
+
+})
+
+
+router.get("/report/:id/:userid",async function(req,res){
+    try{
+        await questionData.getquestion(req.params.id)
+
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        await userData.getUser(req.params.userid)
+    }
+    catch(e){
+        res.status(404).json({error:e})
+        return;
+    }
+    try{
+        const glike = await questionData.getreport(req.params.id,req.params.userid)
+        res.status(200).json({report:glike})
         return;
     }
     catch(e){

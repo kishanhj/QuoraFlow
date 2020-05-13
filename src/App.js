@@ -14,6 +14,7 @@ import TagPage from "./components/TagPage";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
 import UserName from "./components/UserName"
+import Questiondeleted from "./components/QuestionDeleted"
 
 import LandingPage from './components/LandingPage';
 
