@@ -17,7 +17,7 @@ const QuestionCard = (props) => {
     }
 
     return (
-        <div className="question_card">
+        <div className="question_card card">
             {/* //tags */}
             <div className="qc_tag_wrap">
                 {tags && tags.map( (tag) => <div className='tag cap' key={tag}> {tag} </div>)}

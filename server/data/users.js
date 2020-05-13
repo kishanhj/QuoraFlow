@@ -491,8 +491,8 @@ async function removeUserFromRedisMap(email){
 async function getUserInfo(email){
     if (!email) throw "user's email is required";
     const tagDataAPI = require("./tags");
-    const userData = await getUser(email);
-    const {tags} = userData;
+    const {tags} = await getUser(email);
+
     var questions = [];
     const tagObjList = [];
 

@@ -13,6 +13,12 @@ const stringValidator = (value) => {
 
 const SearchCard = (props) => {
     const [data,setData] = useState(props.data);
+    const [refreshCount,setRefreshCount] = useState(0);
+
+    const refreshData = {
+        refreshCount : refreshCount,
+        setRefreshCount : setRefreshCount
+    }
     var title = data._source.title,description = data._source.description;
 
     if(data.highlight.title) title = ReactHtmlParser(data.highlight.title);
@@ -33,7 +39,7 @@ const SearchCard = (props) => {
                 <div className='SearchCard_title_wrap'> 
                    <img src="/imgs/tag.png" className='tag_img'/>Tag : <Link className='SearchCard_title title SearchCard_tag' to={getTagLink()}>{title}</Link>
                 </div>
-                <FollowTagButton tagID={data._source.id} />
+                <FollowTagButton tagID={data._source.id} refreshData={refreshData}/>
             </div>
         );  
     

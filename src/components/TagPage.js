@@ -37,7 +37,7 @@ const TagPage = (props) => {
 
     const buildHeading = () => {
         return (
-            <div className="tag_heading">
+            <div className="tag_heading card" key={tagData.id}>
                 <img src="/imgs/tag.png" className='tag_img_main'/>
                 <div className="tag_heading_2">
                     <div className="tag_title title">{tagData.title}</div>
