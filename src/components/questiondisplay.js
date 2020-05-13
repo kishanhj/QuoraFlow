@@ -18,6 +18,7 @@ function Questiondisplay(props) {
     const { currentUser } = useContext(AuthContext);	
     const [ getData, setgetData ] = useState({});
     const [hasliked ,sethasliked] = useState(false);
+    const [hasreport ,sethasreport] = useState(false);
     const [isOwner, setisOwner]= useState(false)
     const [isAdmin, setisAdmin]= useState(false)
     const [ gettags, settags]=useState(undefined);
@@ -45,6 +46,8 @@ function Questiondisplay(props) {
                     setisOwner(data.userid==currentUser.email)
                     const likedata  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
                     sethasliked(likedata.data.like)
+                    const reportdata  = await Axios.get(`http://localhost:8080/questions/report/${props.match.params.id}/${currentUser.email}`)
+                    sethasreport(reportdata.data.report)
                     
                     
                 
@@ -95,12 +98,33 @@ function Questiondisplay(props) {
 
     }
 
+    const handlereport=(e)=>{
+        async function addlike(){
+            try{
+                const { data }  = await Axios.patch(`http://localhost:8080/questions/report/${props.match.params.id}/${currentUser.email}`)
+                if(hasreport===true){
+                    sethasreport(false)
+                }
+                else{
+                    sethasreport(true)
+                }
+            }
+            catch(e){
+                console.log("could not update report")
+            }
+
+        }
+        addlike()
+        
+
+    }
+
 
     if(postData===false){
         return(<Redirect to='/notfound'/>)
     }
     if(getData && getData.isdeleted===true){
-        return (<Redirect to='/notfound'/>)
+        return (<Redirect to='/deletedquestion'/>)
 
     }
 
@@ -122,7 +146,7 @@ function Questiondisplay(props) {
                 {isAdmin?<Button variant="warning"href={`/questions/delete/${props.match.params.id}`}>Delete Question</Button>:null}
                 
                 <Container>
-                <Row><h1>{getData && getData.title}</h1></Row>
+                <Row><Col><h1>{getData && getData.title}</h1></Col><Col>{hasreport?<Button onClick={handlereport}>Unreport</Button>:<Button onClick={handlereport}>Report</Button>}</Col></Row>
                 <Row>  
                     <Col><p>{getData && getData.description}</p></Col>
                 </Row>

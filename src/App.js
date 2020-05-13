@@ -14,6 +14,7 @@ import TagPage from "./components/TagPage";
 import { AuthProvider } from "./firebase/Auth"
 import PrivateRoute from "./components/PrivateRoute"
 import UserName from "./components/UserName"
+import Questiondeleted from "./components/QuestionDeleted"
 
 import LandingPage from './components/LandingPage';
 
@@ -41,6 +42,7 @@ function App() {
             <Route exact path="/search" component={Search} />
             <Route exact path="/username" component={UserName} />
             <Route exact path="/tag/:id" component={TagPage} />
+            <Route exact path="/deletedquestion" component={Questiondeleted} />
             {/* <CommentList comments={comments} /> */}
           </div>
         </div>

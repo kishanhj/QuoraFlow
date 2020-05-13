@@ -86,7 +86,8 @@ const createquestion = async(title,description,tags,userid,image)=>{
         likes:[],
         report:[],
         followers:[],
-        sync:1
+        sync:1,
+        report:[]
 
     }
     const questioncollection = await questions()
@@ -159,6 +160,7 @@ const updatelike=async(id,userid)=>{
 
 }
 
+
 const unlike=async(id,userid)=>{
     if(!id) throw "No id is provided"
     if(typeof id !=="string") throw "id is not of correct type"
@@ -170,6 +172,31 @@ const unlike=async(id,userid)=>{
     return await getquestion(String(id))
 
 }
+
+const updatereport=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions() 
+    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$addToSet:{report:String(userid)}}) 
+    return await getquestion(String(id))
+
+}
+
+const unreport=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions() 
+    const updatedquestion = await questioncollection.updateOne({_id:ObjectID(id)},{$pull:{report:String(userid)}}) 
+    return await getquestion(String(id))
+
+}
+
 
 const getlike=async(id,userid)=>{
     if(!id) throw "No id is provided"
@@ -189,6 +216,25 @@ const getlike=async(id,userid)=>{
     
 }
 
+
+const getreport=async(id,userid)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    if(!userid) throw "No user id is provided"
+    if(typeof userid !=="string") throw "user id is not of correct type"
+    const question = await getquestion(id)
+    if(question.report.length>0){
+        for(let i=0;i<question.report.length;i++){
+            if(userid == question.report[i]){
+                return true
+            }
+        }
+
+    }
+    return false
+    
+}
+
 module.exports={
     createquestion,
     getallquestions,
@@ -198,6 +244,9 @@ module.exports={
     upload,
     updatelike,
     getlike,
-    unlike
+    unlike,
+    updatereport,
+    unreport,
+    getreport
 
 }
