@@ -8,6 +8,12 @@ import QuestionCard from "./QuestionCard";
 const LandingPage = (props) => {
     const { currentUser } = useContext(AuthContext);
     const [userData,setUserData] = useState(undefined);
+    const [refreshCount,setRefreshCount] = useState(0);
+
+    const refreshData = {
+        refreshCount : refreshCount,
+        setRefreshCount : setRefreshCount
+    }
 
     useEffect(() => {
         const getData = async () => {
@@ -27,7 +33,7 @@ const LandingPage = (props) => {
 
     return(
         <div className="tag_body">
-            <FollowingTags/>
+            <FollowingTags refreshData={refreshData}/>
             <div className='tag_body_main'>
                 {userData && userData.questions.map((q) => 
                     <QuestionCard data={q} key={q._id} />

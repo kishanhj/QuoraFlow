@@ -175,6 +175,7 @@
 .following_tag_img{
     width: 40px;
     height: 40px;
+    border-radius: 10px;
 }
 
 .following_tag_list{
@@ -196,4 +197,7 @@
 .following_tag_name {
     padding-left: 10px;
     font-weight: 500;
+    text-transform: capitalize;
+    color: gray;
+    max-height: min-content;
 }

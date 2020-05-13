@@ -24,6 +24,7 @@ const FollowingTags = (props) => {
 
     return (
         <div className='following_tag_list' key="following_tag_list">
+            <h5 className="tag_follower_heading">My Tags</h5>
             {tags && tags.map( (tag) =>
                 <Link className='following_tag' key={tag.tag} to={getTagLink(tag._id)}>
                     <img className="following_tag_img" src="/imgs/tag.png" />
