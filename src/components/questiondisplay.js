@@ -19,6 +19,7 @@ function Questiondisplay(props) {
     const [ getData, setgetData ] = useState({});
     const [hasliked ,sethasliked] = useState(false);
     const [isOwner, setisOwner]= useState(false)
+    const [isAdmin, setisAdmin]= useState(false)
     const [ gettags, settags]=useState(undefined);
     const [ postData, setpostData]=useState(true);
     const [timestamp, settimestamp]=useState(undefined)
@@ -30,6 +31,12 @@ function Questiondisplay(props) {
             async function getdata(){
                 try{
                     const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
+                    if(currentUser){
+                        const admin= await Axios.post(`http://localhost:8080/users/isAdmin`, {email:currentUser.email});
+                        console.log(admin.data.flag)
+                        setisAdmin(admin.data.flag)
+                    }
+                    
                 
                     setgetData(data)
                     settags(data.tags)
@@ -88,6 +95,7 @@ function Questiondisplay(props) {
 
     }
 
+
     if(postData===false){
         return(<Redirect to='/notfound'/>)
     }
@@ -95,27 +103,31 @@ function Questiondisplay(props) {
         return (<Redirect to='/notfound'/>)
 
     }
+
+    if (currentUser==undefined) {
+        return <Redirect to='/signin'></Redirect>
+    }
    
-    if(getData && getData.image){
+
         return (
             <div className="App=body">
-                {isOwner?<Nav variant="pills" >
+                {isOwner?<Nav className="ml-auto" variant="tabs" >
                     <Nav.Item>
                         <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
                     </Nav.Item>
-                </Nav>:<p></p>}
+                </Nav>:null}
+                {isAdmin?<Button variant="warning"href={`/questions/delete/${props.match.params.id}`}>Delete Question</Button>:null}
                 
                 <Container>
                 <Row><h1>{getData && getData.title}</h1></Row>
                 <Row>  
                     <Col><p>{getData && getData.description}</p></Col>
                 </Row>
-                <Row>  
-                    <Col><Image src={`${getData && getData.image}`} thumbnail/></Col>
-                </Row>
+                {getData && getData.image ? <Row> <Col><Image src={`${getData && getData.image}`} thumbnail/></Col></Row>:null }
+                
                 <Row>
                     <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>like {like}</Button>}</Col>
                     <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
@@ -133,43 +145,6 @@ function Questiondisplay(props) {
                 
             </div>
         );
-
-    }
-
-	return (
-		<div className="App-body">
-            {isOwner?<Nav variant="pills" >
-                    <Nav.Item>
-                        <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
-                    </Nav.Item>
-                </Nav>:<p></p>}
-            
-
-            <Container>
-                <Row><h1>{getData && getData.title}</h1></Row>
-                <Row>  
-                    <Col><p>{getData && getData.description}</p></Col>
-                </Row>
-                <Row>
-                    <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>like {like}</Button>}</Col>
-                    <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
-                    <Col><p className="Tag-header grey-font">Tags:</p>
-                        <ul className="Tag-list">{gettags && gettags.map((tag)=>{
-                            return <li  className="tag" key={tag.tag}><a href={`/tag/${tag._id}`}>{tag.tag}</a></li>
-                        })}</ul>
-                    </Col>
-                </Row>
-                <Row>
-                    <CommentBox questionId={props.match.params.id} />
-                </Row>
-            </Container>
-            
-  
-		</div>
-	);
 }
 
 export default Questiondisplay;
