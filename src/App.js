@@ -42,6 +42,7 @@ function App() {
             <PrivateRoute exact path="/search" component={Search} />
             <PrivateRoute exact path="/username" component={UserName} />
             <PrivateRoute exact path="/tag/:id" component={TagPage} />
+            <Route exact path="/deleted" component={Questiondeleted}/>
             {/* <CommentList comments={comments} /> */}
           </div>
         </div>

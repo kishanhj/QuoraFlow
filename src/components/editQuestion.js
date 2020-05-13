@@ -200,6 +200,12 @@ function EditForm(props) {
     if(postData===false){
         return(<Redirect to='/notfound'/>)
 	}
+
+	if(getData && getData.isdeleted===true){
+        return (<Redirect to='/deleted'/>)
+
+	}
+	
 	if(isOwner && isOwner.isowner===false){
         return(<Redirect to='/notfound'/>)
     }

@@ -45,16 +45,8 @@ router.get("/:id" ,async function(req,res){
             }
         }
         question.tags=tags
-        if(question.isdeleted===false){
             res.status(200).json(question)
             return;
-
-        }
-        else{
-            res.status(404).json({error:"Sorry, the question has been deleted"})
-            return;
-        }
-        
 
     }
     catch(e){
@@ -291,8 +283,8 @@ router.get("/report/:id/:userid",async function(req,res){
         return;
     }
     try{
-        const glike = await questionData.getreport(req.params.id,req.params.userid)
-        res.status(200).json({report:glike})
+        const greport = await questionData.getreport(req.params.id,req.params.userid)
+        res.status(200).json({report:greport})
         return;
     }
     catch(e){

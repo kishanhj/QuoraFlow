@@ -124,7 +124,7 @@ function Questiondisplay(props) {
         return(<Redirect to='/notfound'/>)
     }
     if(getData && getData.isdeleted===true){
-        return (<Redirect to='/deletedquestion'/>)
+        return (<Redirect to='/deleted'/>)
 
     }
 
