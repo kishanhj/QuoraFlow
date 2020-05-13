@@ -5,7 +5,6 @@ import { AuthContext } from "../firebase/Auth";
 const FollowTagButton = (props) => {
     const { currentUser } = useContext(AuthContext);
     const [tagData,setTagData] = useState(undefined);
-    const [reload,setReload] = useState(0);
     var doesUserFollow = false;
 
     useEffect(() => {
@@ -14,7 +13,7 @@ const FollowTagButton = (props) => {
             setTagData(data)
         }
         getData();
-    },[reload]);
+    },[props.refreshData.refreshCount]);
 
     if(undefined == tagData)
         return (<div className='loader'></div>);
@@ -43,7 +42,7 @@ const FollowTagButton = (props) => {
         else
             await Axios.post(`http://localhost:8080/users/addTagId`,body);
 
-        setReload(reload+1);
+        props.refreshData.setRefreshCount(props.refreshData.refreshCount+1);
     }
 
     return (  

@@ -8,9 +8,14 @@ import FollowTagButton from "./FollowTagButton";
 
 
 const TagPage = (props) => {
-    // const [id,setId] = useState(props.match.params.id);
     const { currentUser } = useContext(AuthContext);
     const [tagData,setTagData] = useState(undefined);
+    const [refreshCount,setRefreshCount] = useState(0);
+
+    const refreshData = {
+        refreshCount : refreshCount,
+        setRefreshCount : setRefreshCount
+    }
 
     useEffect(() => {
         const getData = async () => {
@@ -22,7 +27,7 @@ const TagPage = (props) => {
             }
         }
         getData();
-    },[props.match.params.id]);
+    },[props.match.params.id,refreshCount]);
 
     if(null === tagData)
         return (<Redirect to='/notfound'></Redirect>)
@@ -36,7 +41,7 @@ const TagPage = (props) => {
                 <img src="/imgs/tag.png" className='tag_img_main'/>
                 <div className="tag_heading_2">
                     <div className="tag_title title">{tagData.title}</div>
-                    <FollowTagButton tagID={tagData.id} />
+                    <FollowTagButton tagID={tagData.id} refreshData={refreshData}/>
                 </div>
             </div>
         )
@@ -58,7 +63,7 @@ const TagPage = (props) => {
 
     return (
         <div className="tag_body">
-            <FollowingTags data={tagData.userTags}/>
+            <FollowingTags data={tagData.userTags} refreshData={refreshData} />
             <div className='tag_body_main'>
                 {buildHeading()}
                 {tagData && tagData.questions.map((q) => 

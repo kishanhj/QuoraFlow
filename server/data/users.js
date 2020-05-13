@@ -71,7 +71,7 @@ async function addTag(email, t_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$push": { "tags": t_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -100,7 +100,7 @@ async function removeTag(email, t_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$pull": { "tags": t_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email)
+        removeUserFromRedisMap(email)
         return await getUser(email);
     }
     else {
@@ -189,7 +189,7 @@ async function getUser(email) {
     if (!usrToRtrn) {
         throw `Error: No user found with email ${email}`
     }
-    addPersonToRedisMap(email,usrToRtrn);
+    addUserToRedisMap(email,usrToRtrn);
     return usrToRtrn;
 
 }
@@ -263,7 +263,7 @@ async function addQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { $addToSet: { "questions": q_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -292,7 +292,7 @@ async function removeQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "questions": q_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -320,7 +320,7 @@ async function addCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$push": { "comments": c_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -348,7 +348,7 @@ async function removeCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "comments": c_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -377,7 +377,7 @@ async function addFollowedQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ "email": email }, { "$push": { "questions_followed": q_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -407,7 +407,7 @@ async function removeFollowedQuestionId(email, q_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "questions_followed": q_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -433,7 +433,7 @@ async function addVotedCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$push": { "voted_comments": c_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -460,7 +460,7 @@ async function removeVotedCommentId(email, c_id) {
 
     let usr = await userCollection.updateOne({ email: email }, { "$pull": { "voted_comments": c_id } })
     if (usr.modifiedCount > 0) {
-        removePersonToRedisMap(email);
+        removeUserFromRedisMap(email);
         return await getUser(email);
     }
     else {
@@ -477,13 +477,13 @@ async function checkRedis(email){
         return JSON.parse(user);
 }
 
-async function addPersonToRedisMap(email,user){
+async function addUserToRedisMap(email,user){
     const userString = JSON.stringify(user);
     // console.log("addPersonToRedisMap : ",userString,email);
     client.hsetAsync("Users", email, userString);
 }
 
-async function removePersonToRedisMap(email){
+async function removeUserFromRedisMap(email){
     // console.log("removePersonToRedisMap : ",email);
     client.hdelAsync("Users", email);
 }
