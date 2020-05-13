@@ -32,6 +32,7 @@
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.4.0",
         "react-tag-input": "^6.4.2",
+        "redis": "^3.0.2",
         "socket.io": "^2.3.0",
         "xss": "^1.0.6",
         "yup": "^0.28.5"

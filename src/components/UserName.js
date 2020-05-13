@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useLayoutEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
@@ -8,7 +8,29 @@ import SignOut from "./SignOut"
 function UserName() {
     const { currentUser } = useContext(AuthContext);
     const [userNameCheck, setUserNameCheck] = useState('');
-    const [userCheck, setUserCheck] = useState(false);
+    const [userCheck, setUserCheck] = useState();
+
+
+    useLayoutEffect(() => {
+        const getData = async () => {
+            try {
+                if (currentUser) {
+                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
+                    if (!status.data.flag)
+                        setUserCheck(1)
+                    else {
+                        setUserCheck(2);
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        getData();
+    }, [currentUser,userCheck]);
+
+
+
     const handleUserName = async (e) => { 
         e.preventDefault();
         const { userName } = e.target.elements;
@@ -25,7 +47,7 @@ function UserName() {
 
             let check = await axios.post("http://localhost:8080/users/addUser", payload);
             console.log(check)
-            setUserCheck(true)
+            setUserCheck(2)
         }
         catch (e) {
             console.log(e)
@@ -36,8 +58,11 @@ function UserName() {
         console.log('Redirect called');
         return <Redirect to='/signup'></Redirect>
     }
-    if(userCheck) { 
-        return <Redirect to='/questions'></Redirect>
+    if (currentUser != null) {
+        console.log(userCheck)
+        if (userCheck == 2) {
+            return <Redirect to='/questions' />;
+        }
     }
     
     return (
