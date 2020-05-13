@@ -30,12 +30,6 @@ const TagPage = (props) => {
     if(undefined === tagData)
         return (<div className='loader'></div>);
 
-    const getFollowLink = () => {
-        if(false)
-            return `Following`;
-        return `Follow ${tagData.followers.length}`;
-    }
-
     const buildHeading = () => {
         return (
             <div className="tag_heading">
@@ -43,7 +37,6 @@ const TagPage = (props) => {
                 <div className="tag_heading_2">
                     <div className="tag_title title">{tagData.title}</div>
                     <FollowTagButton tagID={tagData.id} />
-                    {/* <button className = "follow_button">{getFollowLink()}</button> */}
                 </div>
             </div>
         )

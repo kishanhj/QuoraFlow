@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState, useEffect,useContext } from 'react';
+import { Link, Redirect,useHistory } from 'react-router-dom';
 import { Button, Navbar, FormControl, Form, Nav } from 'react-bootstrap';
 import queryString from 'query-string'
 import SignOut from "./SignOut"
+import { AuthContext } from '../firebase/Auth'
 
 
 const Dashboard = (props) => {
-
+    const { currentUser } = useContext(AuthContext);
     const [searchQuery, setSearchQuery] = useState("");
+    const history = useHistory();
     const search = (query) => {
         setSearchQuery(query);
     }
@@ -49,7 +51,7 @@ const Dashboard = (props) => {
                 <Form inline>
                     <FormControl id="search" type="text" placeholder="Search" className="mr-sm-2" />
                     <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>
-                    <SignOut />
+                    {currentUser?<SignOut />:<Button variant="outline-info" onClick={() => history.push('/signin')}>SignIn</Button>}
                 </Form>
             </Navbar>
             <br />

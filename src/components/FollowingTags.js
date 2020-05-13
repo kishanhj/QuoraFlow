@@ -13,7 +13,7 @@ const FollowingTags = (props) => {
             setTags(data);
         }
         getData();
-    });
+    },[]);
 
     if(undefined == tags)
         return (<div className='loader'></div>);
