@@ -23,17 +23,12 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App">
-          {/* <header className="App-header">
-          <h1>Add question</h1>
-          <Link className="showlink" to="/questions">Add question</Link>
-      </header>
-      <CommentList comments={comments} />  */}
           <DashBoard></DashBoard>
           <div className="App-body">
-            {/* <Route exact path="/home" exact component={DashBoard}/> */}
-            <PrivateRoute exact path="/" component={LandingPage} />
+            <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signin" component={SignIn} />
+            <PrivateRoute exact path="/answer" component={LandingPage} />
             <PrivateRoute exact path="/questions" exact component={Form} />
             <PrivateRoute exact path="/questions/display/:id" exact component={Question} />
             <PrivateRoute exact path="/questions/edit/:id" exact component={EditQuestion} />

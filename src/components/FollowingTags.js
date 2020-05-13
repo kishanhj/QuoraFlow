@@ -15,7 +15,7 @@ const FollowingTags = (props) => {
         getData();
     },[props.refreshData.refreshCount]);
 
-    if(undefined == tags)
+    if(undefined === tags)
         return (<div className='loader'></div>);
 
     const getTagLink = (id) => {

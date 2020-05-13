@@ -15,7 +15,6 @@ const makeid = () => {
 
 const Search = (props) => {
 
-    const values = queryString.parse(props.location.search)
     const [query,setQuery] = useState("");
     const [results,setResults] = useState(undefined);
 

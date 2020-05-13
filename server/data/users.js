@@ -490,6 +490,10 @@ async function removeUserFromRedisMap(email){
 
 async function getUserInfo(email){
     if (!email) throw "user's email is required";
+
+    if("guest" === email)
+        return getGuestInfo();
+    
     const tagDataAPI = require("./tags");
     const {tags} = await getUser(email);
 
@@ -512,9 +516,29 @@ async function getUserInfo(email){
     }
 
     questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
-    questions.sort((a,b) => b.timestamp - a.timestamp);
+    questions.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     const data = {
         tags : tagObjList,
+        questions : questions
+    }
+
+    return data;
+}
+
+const getGuestInfo = async () => {
+    const tags = mongocollection.Tags;
+    const tagcollection = await tags();
+    const tagDataAPI = require("./tags");
+
+    const generalTag = await tagcollection.findOne({tag:'General'});
+    const tagData =  await tagDataAPI.getTag(generalTag._id);
+
+    var questions = [];
+    questions.push.apply(questions,tagData.questions);
+    questions.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+
+    const data = {
         questions : questions
     }
 
