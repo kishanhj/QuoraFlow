@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Axios from "axios";
 import { AuthContext } from "../firebase/Auth";
 
 const FollowTagButton = (props) => {
     const { currentUser } = useContext(AuthContext);
     const [tagData,setTagData] = useState(undefined);
+    const [reload,setReload] = useState(0);
     var doesUserFollow = false;
-    var clickChange = true;
 
     useEffect(() => {
-        if(!clickChange) return;
         const getData = async () => {
             const {data} = await Axios.get(`http://localhost:8080/tags/followers/${props.tagID}`);
             setTagData(data)
-            clickChange = false;
         }
         getData();
-    });
+    },[reload]);
 
     if(undefined == tagData)
         return (<div className='loader'></div>);
@@ -34,22 +32,22 @@ const FollowTagButton = (props) => {
         return `Follow ${tagData.length}`;
     }
 
-    const onClick = () => {
+    const onClick = async () => {
         const body = {
             "tag_id" : props.tagID,
             "email" : currentUser.email
         }
 
         if(doesUserFollow)
-            Axios.post(`http://localhost:8080/users/removeTagId`,body);
+            await Axios.post(`http://localhost:8080/users/removeTagId`,body);
         else
-            Axios.post(`http://localhost:8080/users/addTagId`,body);
+            await Axios.post(`http://localhost:8080/users/addTagId`,body);
 
-        clickChange = true;
+        setReload(reload+1);
     }
 
     return (  
-        <button className = "follow_button" onClick = {() => onClick()}>
+        <button className = "follow_button" onClick = {() => onClick()}> 
             {getFollowLink()} </button>
     );
 }
