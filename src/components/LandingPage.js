@@ -17,9 +17,13 @@ const LandingPage = (props) => {
 
     useEffect(() => {
         const getData = async () => {
-            if(currentUser)
-            {const {data} = await Axios.get(`http://localhost:8080/users/userInfo/${currentUser.email}`);
-            setUserData(data);}
+            if(currentUser){
+                const {data} = await Axios.get(`http://localhost:8080/users/userInfo/${currentUser.email}`);
+                setUserData(data);
+            } else {
+                const {data} = await Axios.get(`http://localhost:8080/users/userInfo/guest`);
+                setUserData(data);
+            } 
         }
         getData();
     },[]);
@@ -31,9 +35,14 @@ const LandingPage = (props) => {
     if(undefined === userData)
         return (<div className='loader'></div>);
 
+    const buildFollowingTags = () => {
+        if(currentUser)
+            return <FollowingTags refreshData={refreshData}/>
+    }
+
     return(
         <div className="tag_body">
-            <FollowingTags refreshData={refreshData}/>
+            {buildFollowingTags()}
             <div className='tag_body_main'>
                 {userData && userData.questions.map((q) => 
                     <QuestionCard data={q} key={q._id} />

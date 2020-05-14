@@ -40,21 +40,13 @@ router.get("/:id" ,async function(req,res){
         const question= await questionData.getquestion(req.params.id)
         if(question.tags.length>0){
             for(let i=0;i<question.tags.length;i++){
-                let tag=await tagData.getTagbyname(question.tags[i])
-                tags.push({_id:tag._id,tag:tag.tag})
+                let tag=await tagData.getTagbyname(question.tags[i].toLowerCase())
+                tags.push({_id:tag._id,tag:question.tags[i]})
             }
         }
         question.tags=tags
-        if(question.isdeleted===false){
             res.status(200).json(question)
             return;
-
-        }
-        else{
-            res.status(404).json({error:"Sorry, the question has been deleted"})
-            return;
-        }
-        
 
     }
     catch(e){
@@ -67,9 +59,6 @@ router.get("/:id" ,async function(req,res){
 router.post("/",questionData.upload.single('image'),async function(req,res){
     
     try{
-        
-
-        console.log(req.body)
         let image=undefined
         if(req.file){
             image=String(req.file.location)
@@ -291,8 +280,8 @@ router.get("/report/:id/:userid",async function(req,res){
         return;
     }
     try{
-        const glike = await questionData.getreport(req.params.id,req.params.userid)
-        res.status(200).json({report:glike})
+        const greport = await questionData.getreport(req.params.id,req.params.userid)
+        res.status(200).json({report:greport})
         return;
     }
     catch(e){

@@ -1,5 +1,5 @@
-import React, { useState, useEffect,useContext } from 'react';
-import { Link, Redirect,useHistory } from 'react-router-dom';
+import React, { useState,useContext } from 'react';
+import { Redirect,useHistory } from 'react-router-dom';
 import { Button, Navbar, FormControl, Form, Nav } from 'react-bootstrap';
 import queryString from 'query-string'
 import SignOut from "./SignOut"
@@ -12,15 +12,6 @@ const Dashboard = (props) => {
     const history = useHistory();
     const search = (query) => {
         setSearchQuery(query);
-    }
-
-    const getQueryFromParams = () => {
-        // return "test";
-        if (props.location && props.location.search) {
-            const values = queryString.parse(props.location.search);
-            return values.q;
-        }
-        return "";
     }
 
     const searchRedirect = () => {
@@ -42,7 +33,7 @@ const Dashboard = (props) => {
                 <Navbar.Brand href="/">QuoraFlow</Navbar.Brand>
                 <Nav className="mr-auto">
                     <Nav.Link href="/">Home</Nav.Link>
-                    <Nav.Link href="/">Answer</Nav.Link>
+                    <Nav.Link href="/answer">Answer</Nav.Link>
                     <Nav.Link href="/">Notifications</Nav.Link>
                     <Nav.Link href="/questions">Add Question</Nav.Link>
 

@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CommentBox } from './Comment'
 import { AuthContext } from '../firebase/Auth'
+import { titleCase } from "title-case";
 
 
 
@@ -118,24 +119,24 @@ function Questiondisplay(props) {
         
 
     }
+    if (currentUser==undefined) {
+        return (<Redirect to='/signin'></Redirect>)
+    }
 
 
     if(postData===false){
         return(<Redirect to='/notfound'/>)
     }
     if(getData && getData.isdeleted===true){
-        return (<Redirect to='/deletedquestion'/>)
+        return (<Redirect to='/deleted'/>)
 
     }
-
-    if (currentUser==undefined) {
-        return <Redirect to='/signin'></Redirect>
-    }
+   
    
 
         return (
             <div className="App=body">
-                {isOwner?<Nav className="ml-auto" variant="tabs" >
+                {isOwner?<Nav className="justify-content-end" variant="tabs" >
                     <Nav.Item>
                         <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
                     </Nav.Item>

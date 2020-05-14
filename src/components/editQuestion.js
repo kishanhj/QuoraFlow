@@ -55,11 +55,14 @@ function EditForm(props) {
 					setisOwner({isowner:false})
 				}
 				let edittags=[]
+				let oldtags=[]
 				for(let i=0;i<data.tags.length;i++){
 					edittags.push({id:data.tags[i].tag,text:data.tags[i].tag})
+					oldtags.push(data.tags[i].tag)
 				} 
+				
 				settags(edittags)
-				setoldtags(data.tags)
+				setoldtags(oldtags)
 				if(data.image!==null){
 					setimagename(data.image.split('/')[3])
 				}
@@ -197,6 +200,12 @@ function EditForm(props) {
     if(postData===false){
         return(<Redirect to='/notfound'/>)
 	}
+
+	if(getData && getData.isdeleted===true){
+        return (<Redirect to='/deleted'/>)
+
+	}
+	
 	if(isOwner && isOwner.isowner===false){
         return(<Redirect to='/notfound'/>)
     }

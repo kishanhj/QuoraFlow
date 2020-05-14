@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import { AuthContext } from "../firebase/Auth";
 
@@ -15,12 +15,12 @@ const FollowTagButton = (props) => {
         getData();
     },[props.refreshData.refreshCount]);
 
-    if(undefined == tagData)
+    if(undefined === tagData)
         return (<div className='loader'></div>);
 
     const getFollowLink = () => {
         for(var i = 0; i < tagData.length; i++) {
-            if (tagData[i].email == currentUser.email) {
+            if (tagData[i].email === currentUser.email) {
                 doesUserFollow = true;
                 break;
             }
