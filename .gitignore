@@ -20,6 +20,8 @@ server/node_modules
 .env.production.local
 .env
 
+quoraoverflow-firebase-adminsdk-98d62-e218222843.json
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

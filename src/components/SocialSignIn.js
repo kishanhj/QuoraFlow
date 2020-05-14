@@ -1,8 +1,7 @@
 
 import React from 'react'
 import { doSocialSignIn } from '../firebase/FirebaseFunctions'
-import axios from "axios"
-import {AuthProvider} from "../firebase/Auth"
+
 
 const SocialSignIn = () => {
 

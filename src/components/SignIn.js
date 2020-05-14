@@ -29,10 +29,10 @@ function SignIn() {
     if (currentUser != null) {
         console.log(userCheck)
         if (userCheck == 1) {
-            return <Redirect to='/username' />;
+            return <Redirect to='/username' />
         }
         else if (userCheck == 2) {
-            return <Redirect to='/questions' />;
+            return <Redirect to='/' />;
         }
     }
 

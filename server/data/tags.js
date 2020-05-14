@@ -155,6 +155,12 @@ const getTagbyname= async(name)=>{
 
 }
 
+async function getAllTags(){ 
+    const tagcollection = await tags();
+    const allTag = await tagcollection.find({}).toArray();
+    return allTag;
+}
+
 
 module.exports={
     addtags,
@@ -162,6 +168,7 @@ module.exports={
     getAllTagsData,
     getTag,
     getTagbyname,
-    getTagFollowers
+    getTagFollowers,
+    getAllTags
 }
 

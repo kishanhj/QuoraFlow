@@ -5,7 +5,7 @@ const app = express();
 const expstatic = express.static(__dirname + "/public");
 const methodOverride = require('method-override');
 const xss=require("xss")
-
+const admin = require('firebase-admin')
 const configRoutes = require("./routes");
 const exphbs = require("express-handlebars");
 const session = require('express-session')
@@ -49,6 +49,30 @@ app.use(session({
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+
+var serviceAccount = require("./quoraoverflow-firebase-adminsdk-98d62-e218222843.json");
+
+var defaultApp = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+console.log(defaultApp.name);  // '[DEFAULT]'
+// app.use("/", checkAuth)
+
+
+function checkAuth(req, res, next) {
+  if (req.headers.authtoken) {
+    admin.auth().verifyIdToken(req.headers.authtoken)
+      .then(() => {
+        next()
+      }).catch(() => {
+        res.status(403).send('Unauthorized')
+      });
+  } else {
+    res.status(403).send('Unauthorized')
+  }
+}
+
 
 configRoutes(app);
 

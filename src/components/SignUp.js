@@ -39,7 +39,7 @@ function SignUp() {
             return <Redirect to='/username' />;
         }
         else if (userCheck == 2) {
-            return <Redirect to='/questions' />;
+            return <Redirect to='/username' />;
         }
     }
 
