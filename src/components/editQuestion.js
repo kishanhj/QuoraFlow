@@ -108,7 +108,7 @@ function EditForm(props) {
 			
 			for (let i in tags){
 				
-				tagtext.push(tags[i].text.toLowerCase())
+				tagtext.push(tags[i].text)
 			}
 			
 			formdata.append("tags",tagtext)

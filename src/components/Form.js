@@ -63,7 +63,7 @@ function QuestionForm(props) {
 			let tagtext=[]
 				for (let i in tags){
 				
-					tagtext.push(tags[i].text.toLowerCase())
+					tagtext.push(tags[i].text)
 				}
 
 			

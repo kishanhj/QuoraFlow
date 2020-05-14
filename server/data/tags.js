@@ -11,7 +11,7 @@ const addtags=async(tagarray ,questionid)=>{
     if(!questionid) throw "No Question id has been defined"
     if(!Array.isArray(tagarray)) throw "Tags not of array type"
     if(typeof(questionid)===ObjectID) throw "Question id not of ObjectId type"
-
+    tagarray=tagarray.map(x => x.toLowerCase())
     const tagcollection = await tags()
     for (let i=0;i<tagarray.length;i++){
         const info = await tagcollection.updateOne({tag:tagarray[i]},{$addToSet:{questionid:questionid},$set:{sync:1}},{upsert:true});
@@ -31,7 +31,7 @@ const removetags=async(tagarray ,questionid)=>{
     if(!questionid) throw "No Question id has been defined"
     if(!Array.isArray(tagarray)) throw "Tags not of array type"
     if(typeof(questionid)===ObjectID) throw "Question id not of ObjectId type"
-
+    tagarray=tagarray.map(x => x.toLowerCase())
     const tagcollection = await tags()
     for (let i=0;i<tagarray.length;i++){
         await tagcollection.update({tag:tagarray[i]},{ $pull: { questionid: questionid } })

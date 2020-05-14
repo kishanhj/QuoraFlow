@@ -40,8 +40,8 @@ router.get("/:id" ,async function(req,res){
         const question= await questionData.getquestion(req.params.id)
         if(question.tags.length>0){
             for(let i=0;i<question.tags.length;i++){
-                let tag=await tagData.getTagbyname(question.tags[i])
-                tags.push({_id:tag._id,tag:tag.tag})
+                let tag=await tagData.getTagbyname(question.tags[i].toLowerCase())
+                tags.push({_id:tag._id,tag:question.tags[i]})
             }
         }
         question.tags=tags
