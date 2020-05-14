@@ -59,9 +59,6 @@ router.get("/:id" ,async function(req,res){
 router.post("/",questionData.upload.single('image'),async function(req,res){
     
     try{
-        
-
-        console.log(req.body)
         let image=undefined
         if(req.file){
             image=String(req.file.location)

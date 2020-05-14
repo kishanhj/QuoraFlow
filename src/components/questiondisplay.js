@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CommentBox } from './Comment'
 import { AuthContext } from '../firebase/Auth'
+import { titleCase } from "title-case";
 
 
 
@@ -118,6 +119,9 @@ function Questiondisplay(props) {
         
 
     }
+    if (currentUser==undefined) {
+        return (<Redirect to='/signin'></Redirect>)
+    }
 
 
     if(postData===false){
@@ -127,15 +131,12 @@ function Questiondisplay(props) {
         return (<Redirect to='/deleted'/>)
 
     }
-
-    if (currentUser==undefined) {
-        return <Redirect to='/signin'></Redirect>
-    }
+   
    
 
         return (
             <div className="App=body">
-                {isOwner?<Nav className="ml-auto" variant="tabs" >
+                {isOwner?<Nav className="justify-content-end" variant="tabs" >
                     <Nav.Item>
                         <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
                     </Nav.Item>
@@ -157,7 +158,7 @@ function Questiondisplay(props) {
                     <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
                     <Col><p className="Tag-header grey-font">Tags:</p>
                         <ul className="Tag-list">{gettags && gettags.map((tag)=>{
-                            return <li  className="tag" key={tag.tag}><a href={`/tag/${tag._id}`}>{tag.tag}</a></li>
+                            return <li  className="tag" key={tag.tag}><a href={`/tag/${tag._id}`}>{titleCase(tag.tag)}</a></li>
                         })}</ul>
                     </Col>
                 </Row>
