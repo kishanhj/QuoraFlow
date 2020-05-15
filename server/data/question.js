@@ -22,6 +22,9 @@ aws.config.update({
 
 const s3=new aws.S3();
 
+function isValid(str){
+    return !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(str);
+   }
 
 const upload = multer({
     storage: multerS3({
@@ -69,6 +72,9 @@ const createquestion = async(title,description,tags,userid,image)=>{
     if( description.length === 0) throw "Invalid description entered"
     if(Array.isArray(tags) !== true) throw "Invalid Tags entered"
     if(tags.length>10 || tags.length<1 ) throw "There must be atleast 1 tag max of 10 tags"
+    for(let i=0;i<tags.length;i++){
+        if(!isValid(tags[i])) throw "Tags must not have special characters"
+    }
     if(image!=undefined){
         if(typeof image !=='string') throw  "Invalid image path"
     }
@@ -129,6 +135,13 @@ const updatequestion = async(id , newquestion)=>{
     if(newquestion.tags){
         if(!Array.isArray(newquestion.tags)) throw "tags is not of Array type"
         if(newquestion.tags.length >10 || newquestion.tags.length <1 || newquestion.tags[0]==='') throw "There must be atleast 1 tag max of 10 tags"
+        for(let i=0;i<newquestion.tags.length;i++){
+            if(!isValid(newquestion.tags[i])){
+                
+                throw "Tags must not have special characters"
+            } 
+            
+        }
         updateq.tags=newquestion.tags
     }
 

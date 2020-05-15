@@ -27,6 +27,7 @@ const QuestionSchema = yup.object({
 function QuestionForm(props) {
 	const { currentUser } = useContext(AuthContext);
 	const [ err, seterr ] = useState(false);
+	const [errmsg ,seterrmsg]=useState(undefined)
 	const [image ,selectimage]=useState(null)
 	const [formsubmit,setformsubmit]=useState(false)
 	const [tags,settaags]=useState([
@@ -113,7 +114,8 @@ function QuestionForm(props) {
 			if (e.response) {
 				
 				seterr(true)
-				console.log(e.response.data)
+				seterrmsg({msg:e.response.data.error})
+				console.log(e.response.data.error)
 			} 
 
 		}
@@ -193,7 +195,7 @@ function QuestionForm(props) {
               </Form.Control.Feedback>
      			
   	 			</Form.Group>
-	 			<Form.Label>Tags</Form.Label>
+	 			<Form.Label>Tags(cannot have duplicate tags and no special characters):</Form.Label>
 	 			<ReactTags 
 	 				inputFieldPosition="inline"
 	 				tags={tags}
@@ -204,7 +206,7 @@ function QuestionForm(props) {
 	 				allowDeleteFromEmptyInput={false}
 
 	 				 /> 
-				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 4 tags</Alert>:<p></p>} 
+				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>} 
 	 			<br/>
 	 			<br/>
 	 			<br/>

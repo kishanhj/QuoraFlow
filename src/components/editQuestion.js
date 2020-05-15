@@ -23,6 +23,7 @@ function EditForm(props) {
 	const [issubmitting ,setissubmitting]=useState(false)
 	const { currentUser } = useContext(AuthContext);
 	const [ err, seterr ] = useState(false);
+	const [errmsg ,seterrmsg]=useState(undefined)
 	const [isOwner ,setisOwner] =useState(undefined)
 	const [ postData, setpostData]=useState(true);
     const [ getData, setgetData ] = useState({});
@@ -151,6 +152,7 @@ function EditForm(props) {
 		catch(e){
 			setissubmitting(false)
 			seterr(true)
+			seterrmsg({msg:e.response.data.error})
 		}
 		
 		// document.getElementById('question').value = '';
@@ -224,7 +226,7 @@ function EditForm(props) {
     			<Form1.Control as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description." ref={register({ required: true, maxLength: 20000,minLength:10 })} />
 				{errors.description && <Alert variant={'danger'}>The Description field is required with a min of 10 characters and max of 20000 characters</Alert>}
   				</Form1.Group>
-				<Form1.Label>Tags</Form1.Label>
+				<Form1.Label>Tags(cannot have duplicate tags and no special characters):</Form1.Label>
 				<ReactTags 
 					inputFieldPosition="inline"
 					tags={tags}
@@ -234,7 +236,7 @@ function EditForm(props) {
 					delimiters={delimiters}
 
 					 />
-				{err?<Alert variant={'danger'}>There must be a minimum of 1 tag and maximum of 10 tags</Alert>:<p></p>}   
+				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>}   
 				<br/>
 				<Form1.Label>Optional Image Upload</Form1.Label>
 				<br/>

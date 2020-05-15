@@ -6,7 +6,7 @@ const users = require("./users")
 
 // async function main(){
 //     try{
-//         const animalinfo= await tags.getTagbyname('Abin')
+//         const animalinfo= await tags.getTagbyname('<ALERT>')
 //         console.log(animalinfo)
 
 //     }

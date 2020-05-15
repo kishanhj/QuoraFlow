@@ -127,7 +127,6 @@ router.patch("/:id",questionData.upload.single('image'),async function(req,res){
         return;
     }
     try{
-        console.log(questiondata)
         questiondata.tags=questiondata.tags.split(",")
         const updatequestion= await questionData.updatequestion(req.params.id,questiondata)
         res.status(200).json(updatequestion)
