@@ -41,7 +41,7 @@ async function addComment(parentId, userId, text, isParentQuestion) {
     const commentsCollection = await getCommentsCollection();
 
     const comment = {
-        userId: ObjectID(userId),
+        userId: userId,
         text,
         upVotes: 0,
         downVotes: 0,

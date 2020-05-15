@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import settings from "../settings.json";
 import "./Comment.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AuthContext } from '../firebase/Auth'
 
 const ReplyBox = ({
     questionId,
@@ -13,6 +14,7 @@ const ReplyBox = ({
     text = '',
     onCancel,
 }) => {
+    const { currentUser } = useContext(AuthContext);
     const [input, setInput] = useState(text ? text : '');
 
     async function handleEdit() {
@@ -37,8 +39,12 @@ const ReplyBox = ({
             api += "/" + commentId;
         }
 
+        if (!currentUser) {
+            return;
+        }
+
         const res = await axios.post(api, {
-            userId: "5ea947287a55ecdb578d9237",
+            userId: currentUser.email,
             text: input,
         });
 

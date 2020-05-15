@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import ReplyBox from "./ReplyBox.jsx";
 import settings from "../settings.json";
 import "./Comment.css";
+import { AuthContext } from '../firebase/Auth'
 
 const UP_CODE = "\u25B2";
 const DOWN_CODE = "\u25BC";
@@ -23,6 +24,7 @@ const countChildren = (comment) => {
 };
 
 const Comment = ({ questionId, comment, reply, refresh }) => {
+    const { currentUser } = useContext(AuthContext);
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -41,7 +43,7 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
         }
     }
 
-    async function removeComment(commentId) {
+    async function removeComment() {
         const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id;
         try {
             const res = await axios.delete(api);
@@ -55,18 +57,21 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
     }
 
     comment.points = comment.upVotes - comment.downVotes;
+    const currentUserId = currentUser.email;
 
     return (
         <div className="Comment">
             <div className="Comment-header">
-                <button className="Comment-vote-btn" onClick={() => handleVote("UP")}>
-                    {UP_CODE}
-                </button>{" "}
-                <span className="Comment-points">{comment.points}</span>{" "}
-                <button className="Comment-vote-btn" onClick={() => handleVote("DOWN")}>
-                    {DOWN_CODE}
-                </button>
-                <span className="Comment-user"> {comment.userId} </span>{" "}
+                {!comment.isRemoved && (<>
+                    <button className="Comment-vote-btn" onClick={() => handleVote("UP")}>
+                        {UP_CODE}
+                    </button>{" "}
+                    <span className="Comment-points">{comment.points}</span>{" "}
+                    <button className="Comment-vote-btn" onClick={() => handleVote("DOWN")}>
+                        {DOWN_CODE}
+                    </button>
+                    <span className="Comment-user"> {comment.userId} </span>{" "}
+                </>)}
                 <span className="Comment-time"> {comment.dateAdded} </span>{" "}
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
@@ -94,20 +99,23 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                                     onReply={() => { reply.setReplyParent(null); refresh() }}
                                     onCancel={() => reply.setReplyParent(null)}
                                 />
-                            ) : (
+                            ) : (!comment.isRemoved &&
                                 <>
                                     <button className="btn btn-link Comment-btn-link" onClick={() => reply.setReplyParent(comment.id)}>
                                         reply
                                     </button>
-                                    {BULLET_CODE}
-                                    <button className="btn btn-link Comment-btn-link"
-                                            onClick={() => setIsEditing(true)}>
-                                        edit
-                                    </button>
-                                    {BULLET_CODE}
-                                    <button className="btn btn-link Comment-btn-link link-red" onClick={() => removeComment(comment.id)}>
-                                        delete
-                                    </button>
+                                    {currentUserId === comment.userId &&
+                                    <>
+                                        {BULLET_CODE}
+                                        <button className="btn btn-link Comment-btn-link"
+                                                onClick={() => setIsEditing(true)}>
+                                            edit
+                                        </button>
+                                        {BULLET_CODE}
+                                        <button className="btn btn-link Comment-btn-link link-red" onClick={() => removeComment()}>
+                                            delete
+                                        </button>
+                                    </>}
                                 </>
                             )}
                         </div>
