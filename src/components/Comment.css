@@ -55,7 +55,7 @@
     background: none;
 }
 
-.link-red {
+.link-red, .link-red:hover {
     color: #DC3545;
 }
 
