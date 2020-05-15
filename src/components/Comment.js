@@ -100,7 +100,7 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                                     onReply={() => { reply.setReplyParent(null); refresh() }}
                                     onCancel={() => reply.setReplyParent(null)}
                                 />
-                            ) : (!comment.isRemoved &&
+                            ) : (!comment.isRemoved && !isEditing &&
                                 <>
                                     <button className="btn btn-link Comment-btn-link" onClick={() => reply.setReplyParent(comment.id)}>
                                         reply
