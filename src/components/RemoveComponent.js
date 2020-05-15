@@ -1,9 +1,12 @@
 import React, {useState,useEffect,useContext} from 'react';
 
 class RemoveComponent extends React.Component {
+   constructor(props){
+      super(props)
+   }
    render() {
       return (
-        <button {...this.props}>
+        <button data-tag={this.props.tag} className={this.props.className} onClick={this.props.onClick}>
         X
         </button>
       )
