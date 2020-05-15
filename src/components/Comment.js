@@ -29,12 +29,13 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
+    const currentUserId = currentUser.email;
     const childrenCount = countChildren(comment) + 1;
 
     async function handleVote(direction) {
         const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id + "/vote";
         try {
-            const res = await axios.post(api, { direction });
+            const res = await axios.post(api, { direction, userId: currentUserId });
             const data = res.data;
             if (data.ok) {
                 refresh();
@@ -58,7 +59,6 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
     }
 
     comment.points = comment.upVotes - comment.downVotes;
-    const currentUserId = currentUser.email;
 
     return (
         <div className="Comment">

@@ -147,7 +147,8 @@ router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
     const {
-        direction
+        direction,
+        userId, // Shuold be a backend session
     } = req.body;
 
     if (direction !== 'UP' && direction !== 'DOWN') {
@@ -160,9 +161,16 @@ router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
 
     let success = null;
     try {
-        success = await comments.addVote(commentId, 'TODO', direction);
+        success = await comments.addVote(commentId, userId, direction);
     } catch (e) {
         console.error(e);
+    }
+
+    if (!success) {
+        res.status(404).json({
+            ok: false,
+            error: 'Not Found'
+        })
     }
 
     res.json({
