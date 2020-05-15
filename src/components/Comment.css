@@ -57,6 +57,8 @@
 .Comment-vote-btn {
     border: 0px;
     background: none;
+    font-size: 1.3em;
+    vertical-align: middle;
 }
 
 .link-red, .link-red:hover {

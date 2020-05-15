@@ -76,7 +76,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
                     <button className={"Comment-vote-btn " + (vote === 'DOWN' ? 'text-primary' : '')} onClick={() => handleVote("DOWN")}>
                         {DOWN_CODE}
                     </button>
-                    <span className="Comment-user"> {comment.userId} </span>{" "}
+                    <span className="Comment-user"> {comment.userName} </span>{" "}
                 </>)}
                 <span className="Comment-time"> {moment(comment.dateAdded).fromNow()} </span>{" "}
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
