@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import settings from "../settings.json";
 import "./Comment.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ReplyBox = ({
     questionId,
@@ -31,12 +32,12 @@ const ReplyBox = ({
     }
 
     return (
-        <div>
+        <div className="ReplyBox">
             <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
             ></textarea>
-            <button onClick={handleReply}>Reply</button>
+            <button className="btn btn-primary btn-sm" onClick={handleReply}>Reply</button>
         </div>
     );
 };

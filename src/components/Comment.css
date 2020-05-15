@@ -4,6 +4,9 @@
 
 .Comment-content {
     padding: 0.1em 0 0.1em 0em;
+    font-family: inherit;
+    font-size: inherit;
+    margin-bottom: 0em;
 }
 
 .Comment-header {
@@ -24,11 +27,11 @@
 }
 
 .Comment {
-    margin-top: 1em;
+    margin-top: 0.5em;
 }
 
 .Comment .Comment {
-    margin-top: 1em;
+    margin-top: 0.5em;
     margin-left: 1.5em;
 }
 
@@ -37,7 +40,25 @@
 }
 
 .Comment-user {
-    color: #427AA1;
     font-weight: bold;
     text-decoration: none;
+}
+
+.Comment-btn-link {
+    padding: 0;
+    font-size: inherit;
+    font-weight: bold;
+}
+
+.Comment-vote-btn {
+    border: 0px;
+    background: none;
+}
+
+.link-red {
+    color: #DC3545;
+}
+
+.ReplyBox, .ReplyBox textarea {
+    width: 100%;
 }

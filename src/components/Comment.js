@@ -6,6 +6,7 @@ import "./Comment.css";
 
 const UP_CODE = "\u25B2";
 const DOWN_CODE = "\u25BC";
+const BULLET_CODE = "\u2022";
 
 const countChildren = (comment) => {
     const sub = comment.comments;
@@ -33,7 +34,6 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
             const data = res.data;
             if (data.ok) {
                 refresh();
-                // TODO: refresh or update state
             }
         } catch (e) {
             console.error("Failed to vote comment", e);
@@ -70,9 +70,19 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                                     onReply={() => { reply.setReplyParent(null); refresh() }}
                                 />
                             ) : (
-                                <button className="btn btn-link Comment-btn-reply-child" onClick={() => reply.setReplyParent(comment.id)}>
-                                    reply
-                                </button>
+                                <>
+                                    <button className="btn btn-link Comment-btn-link" onClick={() => reply.setReplyParent(comment.id)}>
+                                        reply
+                                    </button>
+                                    {BULLET_CODE}
+                                    <button className="btn btn-link Comment-btn-link" onClick={() => reply.setReplyParent(comment.id)}>
+                                        edit
+                                    </button>
+                                    {BULLET_CODE}
+                                    <button className="btn btn-link Comment-btn-link link-red" onClick={() => reply.setReplyParent(comment.id)}>
+                                        delete
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
