@@ -47,6 +47,7 @@ async function addComment(parentId, userId, text, isParentQuestion) {
         downVotes: 0,
         dateAdded: new Date(),
         comments: [],
+        isRemoved: false,
     }
     const insertInfo = await commentsCollection.insertOne(comment);
 
@@ -62,6 +63,35 @@ async function addComment(parentId, userId, text, isParentQuestion) {
     }, {
         $push: {
             comments: insertInfo.insertedId
+        }
+    });
+
+    if (updateInfo.matchedCount === 0) {
+        throw new Error('Failed to add comment');
+    }
+
+    return true;
+}
+
+/**
+ * @param wasRemoved: true if removed by mod, as opposed to deletion by user
+ */
+async function removeComment(commentId, wasRemoved) {
+    const commentsCollection = await getCommentsCollection();
+    const comment = await commentsCollection.findOne({
+        _id: ObjectID(commentId)
+    });
+
+    if (!comment) {
+        throw new Error('Comment not found');
+    }
+
+    const updateInfo = await commentsCollection.updateOne({
+        _id: ObjectID(commentId)
+    }, {
+        $set: {
+            text: wasRemoved ? '[removed]' : '[deleted]',
+            isRemoved: true,
         }
     });
 
@@ -100,4 +130,5 @@ module.exports = {
     getCommentTree,
     addComment,
     addVote,
+    removeComment,
 };

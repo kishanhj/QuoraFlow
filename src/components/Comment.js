@@ -40,6 +40,19 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
         }
     }
 
+    async function removeComment(commentId) {
+        const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id;
+        try {
+            const res = await axios.delete(api);
+            const data = res.data;
+            if (data.ok) {
+                refresh()
+            }
+        } catch (e) {
+            console.error("Failed to remove comment", e);
+        }
+    }
+
     comment.points = comment.upVotes - comment.downVotes;
 
     return (
@@ -61,7 +74,7 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
             {!hidden && (
                 <>
                     <div>
-                        <pre className="Comment-content">{comment.text}</pre>
+                        <pre className={"Comment-content " + (comment.isRemoved ? 'Comment-deleted': '')}>{comment.text}</pre>
                         <div className="Comment-footer">
                             {reply.replyParent === comment.id ? (
                                 <ReplyBox
@@ -79,7 +92,7 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                                         edit
                                     </button>
                                     {BULLET_CODE}
-                                    <button className="btn btn-link Comment-btn-link link-red" onClick={() => reply.setReplyParent(comment.id)}>
+                                    <button className="btn btn-link Comment-btn-link link-red" onClick={() => removeComment(comment.id)}>
                                         delete
                                     </button>
                                 </>

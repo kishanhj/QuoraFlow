@@ -82,6 +82,33 @@ router.post('/:questionId/comments/:commentId', async (req, res) => {
     });
 });
 
+router.delete('/:questionId/comments/:commentId', async (req, res) => {
+    const questionId = req.params.questionId;
+    const commentId = req.params.commentId;
+
+    // TODO: check if user is admin
+    const wasRemovedByAdmin = false;
+
+    let success = null;
+    try {
+        success = await comments.removeComment(commentId, wasRemovedByAdmin);
+    } catch (e) {
+        console.log('Failed to remove comment', e);
+    }
+
+    if (!success) {
+        res.status(404).json({
+            ok: false,
+            error: 'Not Found',
+        });
+        return;
+    }
+
+    res.json({
+        ok: true,
+    })
+});
+
 router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
