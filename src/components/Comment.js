@@ -4,6 +4,7 @@ import ReplyBox from "./ReplyBox.jsx";
 import settings from "../settings.json";
 import "./Comment.css";
 import { AuthContext } from '../firebase/Auth'
+import moment from 'moment';
 
 const UP_CODE = "\u25B2";
 const DOWN_CODE = "\u25BC";
@@ -72,7 +73,7 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                     </button>
                     <span className="Comment-user"> {comment.userId} </span>{" "}
                 </>)}
-                <span className="Comment-time"> {comment.dateAdded} </span>{" "}
+                <span className="Comment-time"> {moment(comment.dateAdded).fromNow()} </span>{" "}
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
                 </span>{" "}
