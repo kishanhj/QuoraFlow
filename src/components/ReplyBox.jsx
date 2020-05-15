@@ -9,8 +9,25 @@ const ReplyBox = ({
     commentId,
     isParentQuestion = false,
     onReply,
+    edit = false,
+    text = '',
+    onCancel,
 }) => {
-    const [input, setInput] = useState("");
+    const [input, setInput] = useState(text ? text : '');
+
+    async function handleEdit() {
+        let api =
+            settings.backendEndpoint + "questions/" + questionId + "/comments/" + commentId;
+
+        const res = await axios.patch(api, {
+            text: input,
+        });
+
+        if (res.data.ok) {
+            setInput("");
+            if (onReply) onReply();
+        }
+    }
 
     async function handleReply() {
         let api =
@@ -41,7 +58,17 @@ const ReplyBox = ({
                 ></textarea>
             </div>
             <div>
-                <button className="btn btn-primary btn-sm ReplyBox-btn" onClick={handleReply}>Reply</button>
+                <button
+                    className="btn btn-primary btn-sm ReplyBox-btn"
+                    onClick={edit ? handleEdit : handleReply}>
+                        {edit ? 'Edit' : 'Reply'}
+                </button>
+                {onCancel &&
+                <button
+                    className="btn btn-link btn-sm"
+                    onClick={onCancel}>
+                        Cancel
+                </button>}
             </div>
         </div>
     );

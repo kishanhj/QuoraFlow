@@ -24,6 +24,7 @@ const countChildren = (comment) => {
 
 const Comment = ({ questionId, comment, reply, refresh }) => {
     const [hidden, setHidden] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const childrenCount = countChildren(comment) + 1;
 
@@ -74,13 +75,24 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
             {!hidden && (
                 <>
                     <div>
-                        <pre className={"Comment-content " + (comment.isRemoved ? 'Comment-deleted': '')}>{comment.text}</pre>
+                        {isEditing ?
+                        (<ReplyBox
+                            questionId={questionId}
+                            commentId={comment.id}
+                            onReply={() => { setIsEditing(false); refresh() }}
+                            edit={true}
+                            text={comment.text}
+                            onCancel={() => setIsEditing(false)}
+                        />):
+                        (<pre className={"Comment-content " + (comment.isRemoved ? 'Comment-deleted': '')}>{comment.text}</pre>)
+                        }
                         <div className="Comment-footer">
                             {reply.replyParent === comment.id ? (
                                 <ReplyBox
                                     questionId={questionId}
                                     commentId={comment.id}
                                     onReply={() => { reply.setReplyParent(null); refresh() }}
+                                    onCancel={() => reply.setReplyParent(null)}
                                 />
                             ) : (
                                 <>
@@ -88,7 +100,8 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                                         reply
                                     </button>
                                     {BULLET_CODE}
-                                    <button className="btn btn-link Comment-btn-link" onClick={() => reply.setReplyParent(comment.id)}>
+                                    <button className="btn btn-link Comment-btn-link"
+                                            onClick={() => setIsEditing(true)}>
                                         edit
                                     </button>
                                     {BULLET_CODE}

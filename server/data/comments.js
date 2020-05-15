@@ -102,6 +102,27 @@ async function removeComment(commentId, wasRemoved) {
     return true;
 }
 
+async function updateComment(commentId, text) {
+    const commentsCollection = await getCommentsCollection();
+
+    const updateInfo = await commentsCollection.updateOne({
+        _id: ObjectID(commentId),
+        isRemoved: {
+            $ne: true
+        }
+    }, {
+        $set: {
+            text
+        }
+    });
+
+     if (updateInfo.matchedCount === 0) {
+        throw new Error('Failed to update comment');
+    }
+
+    return true;
+}
+
 // TODO: User
 // direction is 'UP' or 'DOWN'
 async function addVote(commentId, userId, direction) {
@@ -131,4 +152,5 @@ module.exports = {
     addComment,
     addVote,
     removeComment,
+    updateComment,
 };

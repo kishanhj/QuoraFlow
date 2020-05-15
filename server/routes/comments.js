@@ -109,6 +109,40 @@ router.delete('/:questionId/comments/:commentId', async (req, res) => {
     })
 });
 
+router.patch('/:questionId/comments/:commentId', async (req, res) => {
+    const questionId = req.params.questionId;
+    const commentId = req.params.commentId;
+
+    const { text } = req.body;
+
+    if (!text || text === '') {
+        res.status(400).json({
+            ok: false,
+            error: 'Bad Request',
+        });
+        return;
+    }
+
+    let success = null;
+    try {
+        success = await comments.updateComment(commentId, text);
+    } catch (e) {
+        // console.log('Failed to update comment');
+    }
+
+    if (!success) {
+        res.status(404).json({
+            ok: false,
+            error: 'Not Found',
+        });
+        return;
+    }
+
+    res.json({
+        ok: true,
+    });
+});
+
 router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
