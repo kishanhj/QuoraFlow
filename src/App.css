@@ -64,6 +64,10 @@ body {
   border-radius: 2px;
 }
 
+.tag-content{
+  color:#0068da !important;
+}
+
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
@@ -94,7 +98,31 @@ body {
 
 .grey-font{
   font-size: small;
-  color: grey;
+  color: #767676;
+}
+
+.nav-link{
+  color:#a0a3a5 !important;
+}
+.searchKey{
+  color:#a0a3a5 !important;
+}
+
+.btn-outline-info{
+  color:#4eafc3 !important;
+
+}
+
+#edit-q{
+  color:#73777a !important;
+}
+
+#del-q{
+  color:#73777a !important;
+}
+
+.btn-primary{
+  background-color: #0072ee !important;
 }
 
 

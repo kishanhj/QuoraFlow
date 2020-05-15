@@ -11,6 +11,7 @@ import bsCustomFileInput from 'bs-custom-file-input'
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as yup from 'yup';
 import { AuthContext } from '../firebase/Auth'
+import Remove from "./RemoveComponent"
 
 const KeyCodes = {
 	comma: 188,
@@ -164,7 +165,7 @@ function QuestionForm(props) {
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
 			<Form.Group>
-     			<Form.Label>Question</Form.Label>
+     			<Form.Label for="question">Question</Form.Label>
      			<Form.Control
                 type="text"
                 placeholder="question"
@@ -180,7 +181,7 @@ function QuestionForm(props) {
               </Form.Control.Feedback>
   	 			</Form.Group>
 	 			<Form.Group>
-   	 			<Form.Label>Description</Form.Label>
+   	 			<Form.Label for="description">Description</Form.Label>
 					<Form.Control
 				as="textarea" 
 				rows="3"
@@ -203,7 +204,8 @@ function QuestionForm(props) {
                      handleDelete={handleDelete}
                      handleAddition={handleAddition}
 	 				delimiters={delimiters}
-	 				allowDeleteFromEmptyInput={false}
+					 allowDeleteFromEmptyInput={false}
+					 removeComponent={Remove}
 
 	 				 /> 
 				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>} 
@@ -211,7 +213,7 @@ function QuestionForm(props) {
 	 			<br/>
 	 			<br/>
 				 
-	 			<Form.Label>Optional Image Upload</Form.Label>
+	 			<Form.Label for="image1">Optional Image Upload</Form.Label>
 	 			<Form.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
 	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
      				Submit

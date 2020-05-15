@@ -138,10 +138,10 @@ function Questiondisplay(props) {
             <div className="App=body">
                 {isOwner?<Nav className="justify-content-end" variant="tabs" >
                     <Nav.Item>
-                        <Nav.Link href={`/questions/edit/${props.match.params.id}`}>Edit Question</Nav.Link>
+                        <Nav.Link href={`/questions/edit/${props.match.params.id}`}><span id="edit-q">Edit Question</span></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link href={`/questions/delete/${props.match.params.id}`}>Delete Question</Nav.Link>
+                        <Nav.Link id="delete-question" href={`/questions/delete/${props.match.params.id}`}><span id="del-q">Delete Question</span></Nav.Link>
                     </Nav.Item>
                 </Nav>:null}
                 {isAdmin?<Button variant="warning"href={`/questions/delete/${props.match.params.id}`}>Delete Question</Button>:null}
@@ -151,14 +151,14 @@ function Questiondisplay(props) {
                 <Row>  
                     <Col><p>{getData && getData.description}</p></Col>
                 </Row>
-                {getData && getData.image ? <Row> <Col><Image src={`${getData && getData.image}`} thumbnail/></Col></Row>:null }
+                {getData && getData.image ? <Row> <Col><Image alt="question-image" src={`${getData && getData.image}`} thumbnail/></Col></Row>:null }
                 
                 <Row>
-                    <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>like {like}</Button>}</Col>
+                    <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>Like {like}</Button>}</Col>
                     <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
                     <Col><p className="Tag-header grey-font">Tags:</p>
                         <ul className="Tag-list">{gettags && gettags.map((tag)=>{
-                            return <li  className="tag" key={tag.tag}><a href={`/tag/${tag._id}`}>{tag.tag}</a></li>
+                            return <li  className="tag" key={tag.tag}><a className="tag-content" href={`/tag/${tag._id}`}>{tag.tag}</a></li>
                         })}</ul>
                     </Col>
                 </Row>

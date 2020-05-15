@@ -10,6 +10,7 @@ import Alert from 'react-bootstrap/Alert'
 import { WithContext as ReactTags } from 'react-tag-input';
 import { AuthContext } from '../firebase/Auth'
 import { useForm } from 'react-hook-form'
+import Remove from "./RemoveComponent"
 
 const KeyCodes = {
 	comma: 188,
@@ -234,6 +235,7 @@ function EditForm(props) {
                     handleDelete={handleDelete}
                     handleAddition={handleAddition}
 					delimiters={delimiters}
+					removeComponent={Remove}
 
 					 />
 				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>}   
