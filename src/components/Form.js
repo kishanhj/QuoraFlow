@@ -165,7 +165,7 @@ function QuestionForm(props) {
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
 			<Form.Group>
-     			<Form.Label for="question">Question</Form.Label>
+     			<Form.Label htmlFor="question">Question</Form.Label>
      			<Form.Control
                 type="text"
                 placeholder="question"
@@ -181,7 +181,7 @@ function QuestionForm(props) {
               </Form.Control.Feedback>
   	 			</Form.Group>
 	 			<Form.Group>
-   	 			<Form.Label for="description">Description</Form.Label>
+   	 			<Form.Label htmlFor="description">Description</Form.Label>
 					<Form.Control
 				as="textarea" 
 				rows="3"
@@ -213,7 +213,7 @@ function QuestionForm(props) {
 	 			<br/>
 	 			<br/>
 				 
-	 			<Form.Label for="image1">Optional Image Upload</Form.Label>
+	 			<Form.Label htmlFor="image1">Optional Image Upload</Form.Label>
 	 			<Form.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
 	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
      				Submit

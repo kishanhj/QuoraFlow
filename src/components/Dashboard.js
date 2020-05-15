@@ -40,7 +40,7 @@ const Dashboard = (props) => {
 
                 </Nav>
                 <Form inline>
-                    <Form.Label for="search"><span className="searchKey">Search  By Keyword</span></Form.Label>
+                    <Form.Label htmlFor="search"><span className="searchKey">Search  By Keyword</span></Form.Label>
                     <FormControl id="search" type="text" placeholder="Search" className="mr-sm-2" />
                     <Button variant="outline-info" onClick={() => search(document.getElementById("search").value)}>Search</Button>
                     {currentUser?<SignOut />:<Button variant="outline-info" onClick={() => history.push('/signin')}>SignIn</Button>}
