@@ -66,3 +66,7 @@
 .ReplyBox, .ReplyBox textarea {
     width: 100%;
 }
+
+.ReplyBox-btn {
+    margin-top: 0.5em;
+}

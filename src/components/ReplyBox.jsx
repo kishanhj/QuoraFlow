@@ -33,11 +33,16 @@ const ReplyBox = ({
 
     return (
         <div className="ReplyBox">
-            <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-            ></textarea>
-            <button className="btn btn-primary btn-sm" onClick={handleReply}>Reply</button>
+            <div>
+                <textarea
+                    className="form-control"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                ></textarea>
+            </div>
+            <div>
+                <button className="btn btn-primary btn-sm ReplyBox-btn" onClick={handleReply}>Reply</button>
+            </div>
         </div>
     );
 };
