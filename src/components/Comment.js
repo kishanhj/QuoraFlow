@@ -21,7 +21,7 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ questionId, comment, reply }) => {
+const Comment = ({ questionId, comment, reply, refresh }) => {
     const [hidden, setHidden] = useState(false);
 
     const childrenCount = countChildren(comment) + 1;
@@ -32,6 +32,7 @@ const Comment = ({ questionId, comment, reply }) => {
             const res = await axios.post(api, { direction });
             const data = res.data;
             if (data.ok) {
+                refresh();
                 // TODO: refresh or update state
             }
         } catch (e) {
@@ -60,33 +61,33 @@ const Comment = ({ questionId, comment, reply }) => {
             {!hidden && (
                 <>
                     <div>
-                        <div className="Comment-content">{comment.text}</div>
+                        <pre className="Comment-content">{comment.text}</pre>
                         <div className="Comment-footer">
                             {reply.replyParent === comment.id ? (
                                 <ReplyBox
                                     questionId={questionId}
                                     commentId={comment.id}
-                                    onReply={() => reply.setReplyParent(null)}
+                                    onReply={() => { reply.setReplyParent(null); refresh() }}
                                 />
                             ) : (
-                                <button className="Comment-reply-btn" onClick={() => reply.setReplyParent(comment.id)}>
+                                <button className="btn btn-link Comment-btn-reply-child" onClick={() => reply.setReplyParent(comment.id)}>
                                     reply
                                 </button>
                             )}
                         </div>
                     </div>
-                    {comment.comments && <CommentList comments={comment.comments} reply={reply}></CommentList>}
+                    {comment.comments && <CommentList comments={comment.comments} reply={reply} refresh={refresh}></CommentList>}
                 </>
             )}
         </div>
     );
 };
 
-const CommentList = ({ questionId, comments, reply }) => {
+const CommentList = ({ questionId, comments, reply, refresh }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
-                <Comment key={c.id} comment={c} reply={reply}></Comment>
+                <Comment key={c.id} questionId={questionId} comment={c} reply={reply} refresh={refresh} />
             ))}
         </div>
     );
@@ -95,6 +96,9 @@ const CommentList = ({ questionId, comments, reply }) => {
 const CommentBox = ({ questionId }) => {
     const [comments, setComments] = useState(null);
     const [replyParent, setReplyParent] = useState(null);
+    const [dirty, setDirty] = useState(0); // changing vlaue of 'dirty' refreshes commentbox
+
+    const refresh = () => setDirty(Math.random());
 
     useEffect(() => {
         async function fetchComments() {
@@ -108,11 +112,11 @@ const CommentBox = ({ questionId }) => {
         }
 
         fetchComments();
-    }, [questionId]);
+    }, [questionId, dirty]);
 
     return (
         <>
-            <ReplyBox questionId={questionId} isParentQuestion={true} onReply={() => {}} />
+            <ReplyBox questionId={questionId} isParentQuestion={true} onReply={() => refresh()} />
             {comments &&
                 (comments.length === 0 ? (
                     <p>No comments</p>
@@ -121,6 +125,7 @@ const CommentBox = ({ questionId }) => {
                         questionId={questionId}
                         comments={comments}
                         reply={{ replyParent, setReplyParent }}
+                        refresh={refresh}
                     ></CommentList>
                 ))}
         </>
