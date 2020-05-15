@@ -24,15 +24,20 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ questionId, comment, reply, refresh }) => {
+const Comment = ({ questionId, comment, reply, refresh, votings }) => {
     const { currentUser } = useContext(AuthContext);
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
     const currentUserId = currentUser.email;
     const childrenCount = countChildren(comment) + 1;
+    const vote = votings[comment.id];
 
     async function handleVote(direction) {
+        if (vote === direction) {
+            direction = 'NONE';
+        }
+
         const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id + "/vote";
         try {
             const res = await axios.post(api, { direction, userId: currentUserId });
@@ -64,11 +69,11 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
         <div className="Comment">
             <div className="Comment-header">
                 {!comment.isRemoved && (<>
-                    <button className="Comment-vote-btn" onClick={() => handleVote("UP")}>
+                    <button className={"Comment-vote-btn " + (vote === 'UP' ? 'text-primary' : '')} onClick={() => handleVote("UP")}>
                         {UP_CODE}
                     </button>{" "}
                     <span className="Comment-points">{comment.points}</span>{" "}
-                    <button className="Comment-vote-btn" onClick={() => handleVote("DOWN")}>
+                    <button className={"Comment-vote-btn " + (vote === 'DOWN' ? 'text-primary' : '')} onClick={() => handleVote("DOWN")}>
                         {DOWN_CODE}
                     </button>
                     <span className="Comment-user"> {comment.userId} </span>{" "}
@@ -121,18 +126,18 @@ const Comment = ({ questionId, comment, reply, refresh }) => {
                             )}
                         </div>
                     </div>
-                    {comment.comments && <CommentList comments={comment.comments} reply={reply} refresh={refresh}></CommentList>}
+                    {comment.comments && <CommentList comments={comment.comments} reply={reply} refresh={refresh} votings={votings}></CommentList>}
                 </>
             )}
         </div>
     );
 };
 
-const CommentList = ({ questionId, comments, reply, refresh }) => {
+const CommentList = ({ questionId, comments, votings, reply, refresh }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
-                <Comment key={c.id} questionId={questionId} comment={c} reply={reply} refresh={refresh} />
+                <Comment key={c.id} questionId={questionId} comment={c} reply={reply} refresh={refresh} votings={votings} />
             ))}
         </div>
     );
@@ -140,19 +145,24 @@ const CommentList = ({ questionId, comments, reply, refresh }) => {
 
 const CommentBox = ({ questionId }) => {
     const [comments, setComments] = useState(null);
+    const [votings, setVotings] = useState({});
     const [replyParent, setReplyParent] = useState(null);
     const [dirty, setDirty] = useState(0); // changing vlaue of 'dirty' refreshes commentbox
+    const { currentUser } = useContext(AuthContext);
 
     const refresh = () => setDirty(Math.random());
 
     useEffect(() => {
         async function fetchComments() {
-            const api = settings.backendEndpoint + "questions/" + questionId + "/comments";
+            let api = settings.backendEndpoint + "questions/" + questionId + "/comments";
+            api += "?user=" + currentUser.email;
             const res = await axios.get(api);
             const data = res.data;
 
             if (data.ok) {
                 setComments(data.comments);
+                setVotings(data.userVoting);
+                console.log(data.userVoting);
             }
         }
 
@@ -169,6 +179,7 @@ const CommentBox = ({ questionId }) => {
                     <CommentList
                         questionId={questionId}
                         comments={comments}
+                        votings={votings}
                         reply={{ replyParent, setReplyParent }}
                         refresh={refresh}
                     ></CommentList>

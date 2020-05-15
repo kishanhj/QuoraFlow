@@ -7,7 +7,7 @@ async function getComment(commentObjectId) {
     const commentsCollection = await getCommentsCollection();
     const comment = await commentsCollection.findOne({
         _id: commentObjectId
-    });
+    }, { projection: { upVoteUsers: 0, downVoteUsers: 0 } });
 
     if (comment.isRemoved) {
         delete comment.userId;
@@ -44,7 +44,39 @@ async function getCommentTree(questionId) {
     return comments;
 }
 
-async function addComment(parentId, userEmail, text, isParentQuestion) {
+async function getUserVotedComments(questionId, userEmail) {
+    const commentsCollection = await getCommentsCollection();
+    
+    const upVotedComments = await commentsCollection.find({
+        questionId: ObjectID(questionId),
+        upVoteUsers: { $elemMatch: { $eq: userEmail } }
+    }).project({ _id: 1 }).toArray();
+
+    const downVotedComments = await commentsCollection.find({
+        questionId: ObjectID(questionId),
+        downVoteUsers: { $elemMatch: { $eq: userEmail } }
+    }).project({ _id: 1 }).toArray();
+
+    const map = {};
+    for (let c of upVotedComments) {
+        map[c._id] = 'UP';
+    }
+    for (let c of downVotedComments) {
+        map[c._id] = 'DOWN';
+    }
+
+    return map;
+}
+
+/**
+ * 
+ * @param {string} questionId id of the question
+ * @param {string} parentId id of parent (question or comment). If not a sub comment, questionId == parentId
+ * @param {string} userEmail email of user (used as uesrId)
+ * @param {string} text content of comment
+ * @param {string} isParentQuestion true if parent is question, false if comment (redundant but still used)
+ */
+async function addComment(questionId, parentId, userEmail, text, isParentQuestion) {
     const usersCollection = await getUsersCollection();
     const commentsCollection = await getCommentsCollection();
 
@@ -53,9 +85,8 @@ async function addComment(parentId, userEmail, text, isParentQuestion) {
         throw new Error('User not found');
     }
 
-    console.log(user);
-
     const comment = {
+        questionId: ObjectID(questionId),
         userId: userEmail,
         userName: user.userName,
         text,
@@ -173,17 +204,17 @@ async function addVote(commentId, userId, direction) {
     } else if (direction === 'DOWN') {
         updateVoteObj.$addToSet = { downVoteUsers: userId };
         updateVoteObj.$inc = { downVotes: 1 };
+    } else {
+        updateVoteObj.$inc = {};
     }
 
     if (hadUpvoted) {
         updateVoteObj.$pull = { upVoteUsers: userId };
         updateVoteObj.$inc.upVotes = -1;
-    } else {
+    } else if (hadDownvoted) {
         updateVoteObj.$pull = { downVoteUsers: userId };
         updateVoteObj.$inc.downVotes = -1;
     }
-
-    console.log(updateVoteObj);
 
     const updateInfo = await commentsCollection.updateOne({ _id: ObjectID(commentId) }, updateVoteObj);
 
@@ -200,4 +231,5 @@ module.exports = {
     addVote,
     removeComment,
     updateComment,
+    getUserVotedComments,
 };
