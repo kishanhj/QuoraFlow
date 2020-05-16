@@ -24,7 +24,7 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ questionId, comment, reply, refresh, votings }) => {
+const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, child }) => {
     const { currentUser } = useContext(AuthContext);
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -141,7 +141,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
                                             delete
                                         </button>
                                     </>}
-                                    {true && <>
+                                    {!child && !answerComment && <>
                                         {BULLET_CODE}
                                         <button className="btn btn-link Comment-btn-link" onClick={() => markCommentAsAnswer()}>
                                             This is what I was looking for
@@ -156,18 +156,30 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
                             questionId={questionId}
                             comments={comment.comments}
                             reply={reply} refresh={refresh}
-                            votings={votings} />}
+                            votings={votings}
+                            answerComment={answerComment}
+                            child={true}
+                        />}
                 </>
             )}
         </div>
     );
 };
 
-const CommentList = ({ questionId, comments, votings, reply, refresh }) => {
+const CommentList = ({ questionId, comments, votings, reply, refresh, answerComment, child = false }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
-                <Comment key={c.id} questionId={questionId} comment={c} reply={reply} refresh={refresh} votings={votings} />
+                <Comment
+                    key={c.id}
+                    questionId={questionId}
+                    comment={c}
+                    reply={reply}
+                    refresh={refresh}
+                    votings={votings}
+                    answerComment={answerComment}
+                    child={child}
+                />
             ))}
         </div>
     );
@@ -178,6 +190,7 @@ const CommentBox = ({ questionId }) => {
     const [votings, setVotings] = useState({});
     const [replyParent, setReplyParent] = useState(null);
     const [dirty, setDirty] = useState(0); // changing vlaue of 'dirty' refreshes commentbox
+    const [answer, setAnswer] = useState(null);
     const { currentUser } = useContext(AuthContext);
 
     const refresh = () => setDirty(Math.random());
@@ -189,9 +202,12 @@ const CommentBox = ({ questionId }) => {
             const res = await axios.get(api);
             const data = res.data;
 
+            const answerComment = data.question.issolved;
+
             if (data.ok) {
                 setComments(data.comments);
                 setVotings(data.userVoting);
+                setAnswer(answerComment ? answerComment.toString() : null);
             }
         }
 
@@ -207,10 +223,12 @@ const CommentBox = ({ questionId }) => {
                 ) : (
                     <CommentList
                         questionId={questionId}
-                        comments={comments}
+                        comments={comments.sort((a, b) => b.isAnswer ? 1 : (a.isAnswer ? -1 : 0))}
                         votings={votings}
                         reply={{ replyParent, setReplyParent }}
                         refresh={refresh}
+                        answerComment={answer}
+                        child={false}
                     ></CommentList>
                 ))}
         </>

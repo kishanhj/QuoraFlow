@@ -37,7 +37,8 @@ router.get('/:questionId/comments', async (req, res) => {
 
     res.json({
         ok: true,
-        comments: commentsObj,
+        comments: commentsObj.comments,
+        question: commentsObj.question,
         userVoting,
     });
 });
@@ -199,6 +200,13 @@ router.post('/:questionId/comments/:commentId/answer', checkAuth, async (req, re
     const commentId = req.params.commentId;
 
     const question = await questions.getquestion(questionId);
+    if (question.issolved) {
+        res.status(400).json({
+            ok: false,
+            error: 'Bad Request'
+        });
+        return;
+    }
     if (question.userid !== req.locals.email) {
         res.status(403).json({
             ok: false,

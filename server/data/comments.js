@@ -41,7 +41,7 @@ async function getCommentTree(questionId) {
         comments.push(await getComment(question.comments[i]));
     }
 
-    return comments;
+    return {question,comments};
 }
 
 async function getUserVotedComments(questionId, userEmail) {
@@ -250,7 +250,7 @@ async function markCommentAsAnswer(questionId, commentId) {
         }
     });
 
-    if (updateInfo.matchedCount === 0) {
+    if (commentUpdateInfo.matchedCount === 0) {
         throw new Error('Question Not Found');
     }
 
