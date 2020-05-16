@@ -264,6 +264,7 @@ function EditForm(props) {
 					removeComponent={Remove}
 
 					 />
+				<p className="grey-font">Please press return after typing the tag</p>
 				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>}   
 				<br/>
 				<Form1.Label htmlFor="image1">Optional Image Upload</Form1.Label>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { doSignOut } from '../firebase/FirebaseFunctions';
 import { useHistory } from "react-router-dom";
-
+import Button from 'react-bootstrap/Button'
 
 
 const SignOutButton = (props) => {
@@ -13,9 +13,9 @@ const SignOutButton = (props) => {
         
     }
     return (
-        <button type='button' onClick={SignOut}>
+        <Button variant="outline-info" onClick={SignOut}>
             Sign Out
-        </button>
+        </Button>
     );
 };
 

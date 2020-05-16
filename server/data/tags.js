@@ -16,7 +16,6 @@ const addtags=async(tagarray ,questionid)=>{
     for (let i=0;i<tagarray.length;i++){
         const info = await tagcollection.updateOne({tag:tagarray[i]},{$addToSet:{questionid:questionid},$set:{sync:1}},{upsert:true});
         if(null != info.upsertedId){
-            console.log("in elas",info.upsertedId._id,tagarray[i]);
             elasticSearchApi.addTag(info.upsertedId._id,tagarray[i]);
         }
     }
@@ -63,7 +62,6 @@ const getAllTagsData = async (id,email) => {
             question.userName = await usersDB.find({email : question.userid}).project({userName:1,_id:0}).toArray();
             question.userName = question.userName[0].userName;
         }catch(err){
-            console.log(err);
             continue;
         }
         
@@ -79,7 +77,6 @@ const getAllTagsData = async (id,email) => {
         try {
             tagData = await tagcollection.findOne({_id:ObjectID(tagID)},{tag:1,_id:1});
         } catch (error) {
-            console.log(error);
             continue;
         }
 

@@ -14,11 +14,9 @@ bluebird.promisifyAll(redis.Multi.prototype);
  * @return boolean
  */
 async function adminCheck(email) { 
-    console.log(email)
     if (!email) throw "user's email is required";
     if (typeof email != 'string') { throw `Error: email should be of type string` }
     let check = await getUser(email);
-    console.log(check)
     if (!check) throw `Error: no user exists with the email ${email}`
     return check.isadmin;
 
@@ -221,7 +219,6 @@ async function checkUserName(user_name) {
     if (!user_name) throw `Error: userName not provided`
     const userCollection = await users();
     let status = await userCollection.findOne({ userName: user_name });
-    console.log(status)
     if (!status) {
         return true;
     }
@@ -560,7 +557,6 @@ const getUserTags = async (email) => {
         try {
             tagData = await tagcollection.findOne({_id:ObjectID(tagID)},{tag:1,_id:1});
         } catch (error) {
-            console.log(error);
             continue;
         }
 

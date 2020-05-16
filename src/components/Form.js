@@ -174,7 +174,7 @@ function QuestionForm(props) {
      			<Form.Label htmlFor="question">Question</Form.Label>
      			<Form.Control
                 type="text"
-                placeholder="question"
+                placeholder="Type your question here.."
 				name="question"
 				id='question'
                 value={values.question}
@@ -195,7 +195,8 @@ function QuestionForm(props) {
 				name="description"
 				id="description"
                 value={values.description}
-                isInvalid={!!errors.description}
+				isInvalid={!!errors.description}
+				placeholder="Add more details about question here.."
               />
 			  <Form.Control.Feedback type="invalid">
                 {errors.description}
@@ -214,6 +215,7 @@ function QuestionForm(props) {
 					 removeComponent={Remove}
 
 	 				 /> 
+				<p className="grey-font">Please press return after typing the tag</p>
 				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>} 
 	 			<br/>
 	 			<br/>
