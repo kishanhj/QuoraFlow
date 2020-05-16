@@ -24,7 +24,7 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, child }) => {
+const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, child, isUserAdmin }) => {
     const { currentUser } = useContext(AuthContext);
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -144,6 +144,8 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
                                                 onClick={() => setIsEditing(true)}>
                                             edit
                                         </button>
+                                    </>}
+                                    {(isUserAdmin || currentUserId === comment.userId) && <>
                                         {BULLET_CODE}
                                         <button className="btn btn-link Comment-btn-link text-danger" onClick={() => removeComment()}>
                                             delete
@@ -167,6 +169,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
                             votings={votings}
                             answerComment={answerComment}
                             child={true}
+                            isUserAdmin={isUserAdmin}
                         />}
                 </>
             )}
@@ -174,7 +177,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
     );
 };
 
-const CommentList = ({ questionId, comments, votings, reply, refresh, answerComment, child = false }) => {
+const CommentList = ({ questionId, comments, votings, reply, refresh, answerComment, child = false, isUserAdmin }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
@@ -187,6 +190,7 @@ const CommentList = ({ questionId, comments, votings, reply, refresh, answerComm
                     votings={votings}
                     answerComment={answerComment}
                     child={child}
+                    isUserAdmin={isUserAdmin}
                 />
             ))}
         </div>
@@ -200,6 +204,7 @@ const CommentBox = ({ questionId }) => {
     const [dirty, setDirty] = useState(0); // changing vlaue of 'dirty' refreshes commentbox
     const [answer, setAnswer] = useState(null);
     const { currentUser } = useContext(AuthContext);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const refresh = () => setDirty(Math.random());
 
@@ -222,7 +227,21 @@ const CommentBox = ({ questionId }) => {
             }
         }
 
+        async function checkIsAdmin() {
+            let api = settings.backendEndpoint + "isAdmin";
+            const res = await axios.post(api, {
+                email: currentUser.email
+            }, {
+                headers: {
+                    authtoken: await currentUser.getIdToken()
+                }
+            });
+
+            setIsAdmin(res.data.flag);
+        }
+
         fetchComments();
+        checkIsAdmin();
     }, [questionId, dirty]);
 
     return (
@@ -240,6 +259,7 @@ const CommentBox = ({ questionId }) => {
                         refresh={refresh}
                         answerComment={answer}
                         child={false}
+                        isUserAdmin={isAdmin}
                     ></CommentList>
                 ))}
         </>

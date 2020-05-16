@@ -1,6 +1,7 @@
 const express = require("express")
 const comments = require("../data/comments");
 const questions = require("../data/question");
+const users = require("../data/users");
 const {checkAuth} = require("./checkAuth");
 
 const router = express.Router();
@@ -107,16 +108,28 @@ router.delete('/:questionId/comments/:commentId', checkAuth, async (req, res) =>
         return;
     }
 
-    if (comment.userId !== req.locals.email) {
-        res.status(403).json({
-            ok: false,
-            error: 'Unauthorized'
-        });
-        return;
-    }
+    let wasRemovedByAdmin = false;
 
-    // TODO: check if user is admin
-    const wasRemovedByAdmin = false;
+    if (comment.userId !== req.locals.email) {
+        const user = users.getUser(req.locals.email);
+        if (!user) {
+            res.status(500).json({
+                ok: false,
+                error: 'Not Found'
+            });
+            return;
+        }
+
+        if (user.isadmin) {
+            wasRemovedByAdmin = true;
+        } else {
+            res.status(403).json({
+                ok: false,
+                error: 'Unauthorized'
+            });
+            return;
+        }
+    }
 
     let success = null;
     try {
