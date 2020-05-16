@@ -17,10 +17,10 @@ router.post("/isAdmin", async (req, res) => {
         if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
         let status = await userData.adminCheck(usr.email);
         if (!status) {
-            res.json({ flag: false });
+            res.status(200).json({ flag: false });
         }
         else { 
-            res.json({ flag: true });
+            res.status(200).json({ flag: true });
         }
 
 

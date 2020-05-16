@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require("../data");
 const ObjectID = require("mongodb").ObjectID
 const tagsdataAPI = data.tags
+const userData = data.users;
 const questionData = data.questions
 const checkauth= require("./checkAuth")
 
@@ -42,7 +43,7 @@ router.patch("/removetags",checkauth.checkAuth, async function (req, res) {
         if(req.body.questionID){
 
             const {userid}= await questionData.getquestion(req.body.questionID)
-            if(userid!==req.locals.email) throw "UnAthorized Acess"
+            if(userid!==req.locals.email && await userData.adminCheck(req.locals.email)===false) throw "UnAthorized Acess"
         }
     }
     catch(e){
