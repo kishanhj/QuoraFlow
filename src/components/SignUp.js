@@ -5,6 +5,7 @@ import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
 import axios from 'axios';
 import "./Signin.css"
+import * as settings from "../settings.json"
 
 
 
@@ -19,7 +20,8 @@ function SignUp() {
         const getData = async () => {
             try {
                 if (currentUser) {
-                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
+                    let api = settings.backendEndpoint + "users/checkUser";
+                    let status = await axios.post(api, { email: currentUser.email })
                     if (!status.data.flag) {
                         if (uName) {
                             addUser()
@@ -53,9 +55,8 @@ function SignUp() {
         const { userName, email, password1, password2 } = e.target.elements;
 
         try {
-            let status = await axios.post("http://localhost:8080/users/checkUserName", { userName: userName.value });
-            console.log(status.data.flag)
-            console.log(typeof status.data.flag)
+            let api = settings.backendEndpoint + "users/checkUserName";
+            let status = await axios.post(api, { userName: userName.value });
             if (status.data.flag === false) {
                 setUserNameCheck("user name already exists, please try another user name")
                 return false;
@@ -93,7 +94,8 @@ function SignUp() {
                 const payload = { name: uName, email: currentUser.email }
                
                 let i = await currentUser.getIdToken()
-                let status = await axios.post("http://localhost:8080/users/addUser", payload,
+                let api = settings.backendEndpoint + "users/addUser";
+                let status = await axios.post(api, payload,
                     {
                         headers: {
                             'accept': 'application/json',
