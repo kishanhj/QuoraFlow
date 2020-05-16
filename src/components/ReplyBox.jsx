@@ -61,13 +61,17 @@ const ReplyBox = ({
         }
     }
 
+    const labelText = edit ? 'Edit' : (isParentQuestion ? 'Answer' : 'Reply');
+
     return (
         <div className="ReplyBox">
             <div>
+                <label htmlFor="Comments">{labelText}</label>
                 <textarea
                     className="form-control"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    id="Comments"
                 ></textarea>
             </div>
             <div>
@@ -78,7 +82,7 @@ const ReplyBox = ({
                 </button>
                 {onCancel &&
                 <button
-                    className="btn btn-link btn-sm"
+                    className="btn btn-link btn-sm ReplyBox-Cancel"
                     onClick={onCancel}>
                         Cancel
                 </button>}

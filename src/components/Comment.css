@@ -10,7 +10,7 @@
 }
 
 .Comment-deleted {
-    color: #aaa;
+    color: #767676;
 }
 
 .Comment-header {
@@ -22,12 +22,12 @@
 }
 
 .Comment-hide {
-    color: #aaa;
+    color: #767676;
     cursor: pointer;
 }
 
 .Comment-time {
-    color: #aaa;
+    color: #767676;;
 }
 
 .Comment {
@@ -52,6 +52,7 @@
     padding: 0;
     font-size: inherit;
     font-weight: bold;
+    color: #0072ee !important;
 }
 
 .Comment-vote-btn {
@@ -59,6 +60,7 @@
     background: none;
     font-size: 1.3em;
     vertical-align: middle;
+    /* color: #0072ee !important; */
 }
 
 .link-red, .link-red:hover {
@@ -69,6 +71,25 @@
     width: 100%;
 }
 
+.ReplyBox label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    /* float: right; */
+    margin: 8px 0 0 0;
+}
+
 .ReplyBox-btn {
     margin-top: 0.5em;
+}
+
+.text-success{
+    color: #008a00 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.ReplyBox-Cancel{
+    color: #0072ee !important;
 }

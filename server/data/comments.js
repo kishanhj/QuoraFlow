@@ -59,12 +59,14 @@ async function getUserVotedComments(questionId, userEmail) {
     
     const upVotedComments = await commentsCollection.find({
         questionId: ObjectID(questionId),
-        upVoteUsers: { $elemMatch: { $eq: userEmail } }
+        upVoteUsers: { $elemMatch: { $eq: userEmail } },
+        isRemoved: false,
     }).project({ _id: 1 }).toArray();
 
     const downVotedComments = await commentsCollection.find({
         questionId: ObjectID(questionId),
-        downVoteUsers: { $elemMatch: { $eq: userEmail } }
+        downVoteUsers: { $elemMatch: { $eq: userEmail } },
+        isRemoved: false,
     }).project({ _id: 1 }).toArray();
 
     const map = {};

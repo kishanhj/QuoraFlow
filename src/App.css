@@ -125,5 +125,13 @@ body {
   background-color: #0072ee !important;
 }
 
+.btn-outline-primary {
+  color: #0072ee !important;
+  border-color: #0072ee !important;
+}
 
 
+
+.ex-image{
+  display: inline-block;
+}

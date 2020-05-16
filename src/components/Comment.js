@@ -108,7 +108,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
                 </span>{" "}
-                {comment.isAnswer && <span class="text-success">ANSWER</span>}
+                {comment.isAnswer && <span className="text-success">ANSWER</span>}
             </div>
             {!hidden && (
                 <>
@@ -228,7 +228,7 @@ const CommentBox = ({ questionId }) => {
         }
 
         async function checkIsAdmin() {
-            let api = settings.backendEndpoint + "isAdmin";
+            let api = settings.backendEndpoint + "users/isAdmin";
             const res = await axios.post(api, {
                 email: currentUser.email
             }, {

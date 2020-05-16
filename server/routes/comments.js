@@ -111,7 +111,7 @@ router.delete('/:questionId/comments/:commentId', checkAuth, async (req, res) =>
     let wasRemovedByAdmin = false;
 
     if (comment.userId !== req.locals.email) {
-        const user = users.getUser(req.locals.email);
+        const user = await users.getUser(req.locals.email);
         if (!user) {
             res.status(500).json({
                 ok: false,
