@@ -155,10 +155,21 @@ const getTagbyname= async(name)=>{
 
 }
 
+/**
+ * @return array of 10 tags from the database
+ */
 async function getAllTags(){ 
     const tagcollection = await tags();
     const allTag = await tagcollection.find({}).toArray();
-    return allTag;
+    let objToRtrn = []
+    
+    for (let i = 0; i < 10; i++) { 
+        if(allTag[i])
+        {
+            objToRtrn.push(allTag[i]);
+        }
+    }
+    return objToRtrn;
 }
 
 

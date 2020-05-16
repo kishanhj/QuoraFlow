@@ -129,26 +129,31 @@ function UserName() {
     else if(userCheck === 2 && listDetails){
         return (
             <div>
-                <h1>Please select tags that interest you:</h1>
+                <h1>Please select tags that you are interested in:</h1>
                 {tagError && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {tagError}</div>}
                 <form onSubmit={mySubmitHandler}>
-                    <ul>
+                    <div className='form-group'>
+                    <ul >
                         {listDetails && listDetails.map((tag) => {
                             return <li key={tag.tag}>
-                                <p>{tag.tag}
+                                <p>
                                     <input
                                         type='checkbox'
+                                        className="form-check-input"
+                                        id={tag._id}
                                         name={tag._id}
                                         value={tag.tag}
                                         onChange={myChangeHandler}
                                     />
+                                    <label className="form-check-label" for={tag._id}>{tag.tag}</label>
                                 </p>
                             </li>
                         }
                         )}
                     </ul>
                     <br />
-                    <button id='submitButton' class="btn btn-primary" name='submitButton' type='submit' >Add Tags</button>
+                    <button id='submitButton' className="btn btn-primary" name='submitButton' type='submit' >Add Tags</button>
+                    </div>
                 </form>
             </div>
 
