@@ -108,7 +108,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
                 </span>{" "}
-                {comment.isAnswer && <span class="text-success">ANSWER</span>}
+                {comment.isAnswer && <span className="text-success">ANSWER</span>}
             </div>
             {!hidden && (
                 <>

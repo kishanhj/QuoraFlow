@@ -66,7 +66,7 @@ const ReplyBox = ({
     return (
         <div className="ReplyBox">
             <div>
-                <label for="Comments">{labelText}</label>
+                <label htmlFor="Comments">{labelText}</label>
                 <textarea
                     className="form-control"
                     value={input}
