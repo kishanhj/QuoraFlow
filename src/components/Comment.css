@@ -60,7 +60,7 @@
     background: none;
     font-size: 1.3em;
     vertical-align: middle;
-    color: #0072ee !important;
+    /* color: #0072ee !important; */
 }
 
 .link-red, .link-red:hover {

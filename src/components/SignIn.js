@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect } from 'react'
+import React, { useContext, useState, useLayoutEffect, Component } from 'react'
 import SocialSignIn from './SocialSignIn'
 import { Redirect, NavLink } from 'react-router-dom'
 import { AuthContext } from '../firebase/Auth'
@@ -14,22 +14,28 @@ function SignIn() {
             try {
                 if (currentUser) {
                     let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
-                    if (!status.data.flag)
-                        setUserCheck(1)
+                    if (!status.data.flag){
+                        console.log("Status flag = ", status.data.flag)
+                        setUserCheck(1)}
                     else {
+                        console.log("Status flag = ", status.data.flag)
                         setUserCheck(2);
                     }
                 }
             } catch (e) {
                 console.log(e);
             }
+            
         }
         getData();
+        
     }, [currentUser]);
+
+    
 
     if (currentUser != null) {
         console.log(userCheck)
-        if (userCheck == 1) {
+        if (userCheck === 1) {
             return <Redirect to='/username' />
         }
         else if (userCheck == 2) {

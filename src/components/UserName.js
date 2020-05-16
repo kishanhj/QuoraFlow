@@ -2,17 +2,14 @@ import React, { useContext, useState, useLayoutEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
-import SignOut from "./SignOut"
-import { MobileAnalytics } from 'aws-sdk';
+
 //useEffect
 
 function UserName() {
     const { currentUser } = useContext(AuthContext);
     const [userNameCheck, setUserNameCheck] = useState('');
     const [userCheck, setUserCheck] = useState();
-    const [checkbox, setCheckbox] = useState();
     const [listDetails, setListDetails] = useState();
-    const [tagCount, setCount] = useState(0)
     const [tagError, setTagError] = useState('')
     let map = new Set();
 
@@ -51,7 +48,17 @@ function UserName() {
 
             const payload = { name: userName.value, email: currentUser.email }
 
-            let check = await axios.post("http://localhost:8080/users/addUser", payload);
+            let i = await currentUser.getIdToken()
+            let check = await axios.post("http://localhost:8080/users/addUser", payload,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.8',
+                        'Content-Type': 'application/json',
+                        'authtoken': i
+                    }
+                }
+            );
             console.log(check)
             setUserCheck(2)
         }
@@ -72,7 +79,7 @@ function UserName() {
             return false;
         }
         
-
+//add header current user auth token
         map.forEach(async id => {
             await axios.post("http://localhost:8080/users/addTagId", {email:currentUser.email, tag_id:id});
         });
