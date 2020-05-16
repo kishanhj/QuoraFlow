@@ -78,9 +78,9 @@ function UserName() {
 
     // }
     const mySubmitHandler =  async (event) => {
-        event.preventDefault();
+        
         if (map.size < 3) { 
-            setTagError('You must select at least 3 tags')
+            alert('You must select at least 3 tags')
             return false;
         }
         
@@ -104,8 +104,6 @@ function UserName() {
     }
     const myChangeHandler = (event) => {
         let nam = event.target.name;
-        
-        // setCheckbox({ [nam]: val });
         if (map.has(nam)) {
             map.delete(nam)
         }

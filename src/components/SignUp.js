@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
+import React, { useContext, useState, useEffect,useLayoutEffect } from 'react';
 import { Redirect, NavLink } from 'react-router-dom';
 import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions';
 import { AuthContext } from '../firebase/Auth'
@@ -16,6 +16,35 @@ function SignUp() {
     const [userNameCheck, setUserNameCheck] = useState('');
     const [userCheck, setUserCheck] = useState()
     const [uName, setUserName] = useState('')
+
+    const addUser = async () => {
+        if (currentUser && uName) {
+            console.log("addUser called at signup")
+            console.log(uName)
+            console.log("user email:", currentUser.email)
+            try {
+                const payload = { name: uName, email: currentUser.email }
+
+                let i = await currentUser.getIdToken()
+                let api = settings.backendEndpoint + "users/addUser";
+                let status = await axios.post(api, payload,
+                    {
+                        headers: {
+                            'accept': 'application/json',
+                            'Accept-Language': 'en-US,en;q=0.8',
+                            'Content-Type': 'application/json',
+                            'authtoken': i
+                        }
+                    }
+                );
+                console.log(status)
+            } catch (e) {
+                console.log(e)
+                alert(e);
+            }
+        }
+    }
+    
     useLayoutEffect(() => {
         const getData = async () => {
             try {
@@ -85,33 +114,7 @@ function SignUp() {
         }
     };
 
-    const addUser = async () => {
-        if (currentUser && uName) {
-            console.log("addUser called at signup")
-            console.log(uName)
-            console.log("user email:", currentUser.email)
-            try {
-                const payload = { name: uName, email: currentUser.email }
-               
-                let i = await currentUser.getIdToken()
-                let api = settings.backendEndpoint + "users/addUser";
-                let status = await axios.post(api, payload,
-                    {
-                        headers: {
-                            'accept': 'application/json',
-                            'Accept-Language': 'en-US,en;q=0.8',
-                            'Content-Type': 'application/json',
-                            'authtoken': i
-                        }
-                    }
-                    );
-                console.log(status)
-            } catch (e) {
-                console.log(e)
-                alert(e);
-            }
-        }
-    }
+    
     return (
         <div>
             <h1>
