@@ -63,6 +63,24 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
         }
     }
 
+    async function markCommentAsAnswer() {
+        const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id + "/answer";
+        try {
+			const token = await currentUser.getIdToken();
+            const res = await axios.post(api, null, {
+                headers: {
+                    authtoken: token
+                }
+            });
+            const data = res.data;
+            if (data.ok) {
+                refresh()
+            }
+        } catch (e) {
+            console.error("Failed to remove comment", e);
+        }
+    }
+
     comment.points = comment.upVotes - comment.downVotes;
 
     return (
@@ -82,6 +100,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
                 <span className="Comment-hide" onClick={() => setHidden(!hidden)}>
                     [{hidden ? "+" + childrenCount : "-"}]
                 </span>{" "}
+                {comment.isAnswer && <span class="text-success">ANSWER</span>}
             </div>
             {!hidden && (
                 <>
@@ -118,15 +137,26 @@ const Comment = ({ questionId, comment, reply, refresh, votings }) => {
                                             edit
                                         </button>
                                         {BULLET_CODE}
-                                        <button className="btn btn-link Comment-btn-link link-red" onClick={() => removeComment()}>
+                                        <button className="btn btn-link Comment-btn-link text-danger" onClick={() => removeComment()}>
                                             delete
+                                        </button>
+                                    </>}
+                                    {true && <>
+                                        {BULLET_CODE}
+                                        <button className="btn btn-link Comment-btn-link" onClick={() => markCommentAsAnswer()}>
+                                            This is what I was looking for
                                         </button>
                                     </>}
                                 </>
                             )}
                         </div>
                     </div>
-                    {comment.comments && <CommentList comments={comment.comments} reply={reply} refresh={refresh} votings={votings}></CommentList>}
+                    {comment.comments &&
+                        <CommentList
+                            questionId={questionId}
+                            comments={comment.comments}
+                            reply={reply} refresh={refresh}
+                            votings={votings} />}
                 </>
             )}
         </div>
@@ -162,7 +192,6 @@ const CommentBox = ({ questionId }) => {
             if (data.ok) {
                 setComments(data.comments);
                 setVotings(data.userVoting);
-                console.log(data.userVoting);
             }
         }
 

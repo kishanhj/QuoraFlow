@@ -1,5 +1,7 @@
 const express = require("express")
 const comments = require("../data/comments");
+const questions = require("../data/question");
+const {checkAuth} = require("./checkAuth");
 
 const router = express.Router();
 
@@ -189,6 +191,39 @@ router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
 
     res.json({
         ok: true,
+    });
+});
+
+router.post('/:questionId/comments/:commentId/answer', checkAuth, async (req, res) => {
+    const questionId = req.params.questionId;
+    const commentId = req.params.commentId;
+
+    const question = await questions.getquestion(questionId);
+    if (question.userid !== req.locals.email) {
+        res.status(403).json({
+            ok: false,
+            error: 'Unauthorized'
+        });
+        return;
+    }
+
+    let success = null;
+    try {
+        success = await comments.markCommentAsAnswer(questionId, commentId);
+    } catch (e) {
+        console.error(e);
+    }
+
+    if (!success) {
+        res.status(404).json({
+            ok: false,
+            error: 'Not Found'
+        });
+        return;
+    }
+
+    res.json({
+        ok: true
     });
 });
 

@@ -225,6 +225,38 @@ async function addVote(commentId, userId, direction) {
     return true;
 }
 
+async function markCommentAsAnswer(questionId, commentId) {
+    const questionsCollection = await getQuestionsCollection();
+    const commentsCollection = await getCommentsCollection();
+
+    const comment = await commentsCollection.findOne({ _id: ObjectID(commentId) });
+    if (!comment || comment.isRemoved || comment.questionId.toString() !== questionId) {
+        throw new Error('Comment Not Found');
+    }
+
+    const updateInfo = await questionsCollection.updateOne({ _id: ObjectID(questionId) },{
+        $set: {
+            issolved: ObjectID(commentId)
+        }
+    });
+
+    if (updateInfo.matchedCount === 0) {
+        throw new Error('Question Not Found');
+    }
+
+    const commentUpdateInfo = await commentsCollection.updateOne({ _id: ObjectID(commentId) },{
+        $set: {
+            isAnswer: true
+        }
+    });
+
+    if (updateInfo.matchedCount === 0) {
+        throw new Error('Question Not Found');
+    }
+
+    return true;
+}
+
 module.exports = {
     getCommentTree,
     addComment,
@@ -232,4 +264,5 @@ module.exports = {
     removeComment,
     updateComment,
     getUserVotedComments,
+    markCommentAsAnswer,
 };
