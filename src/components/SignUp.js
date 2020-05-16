@@ -4,7 +4,6 @@ import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions'
 import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
 import axios from 'axios';
-import SignOut from "./SignOut"
 import "./Signin.css"
 
 
@@ -15,14 +14,19 @@ function SignUp() {
     const [pwMatch, setPwMatch] = useState('');
     const [userNameCheck, setUserNameCheck] = useState('');
     const [userCheck, setUserCheck] = useState()
-
+    const [uName, setUserName] = useState('')
     useLayoutEffect(() => {
         const getData = async () => {
             try {
                 if (currentUser) {
                     let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
-                    if (!status.data.flag)
+                    if (!status.data.flag) {
+                        if (uName) {
+                            addUser()
+
+                        }
                         setUserCheck(1)
+                    }
                     else {
                         setUserCheck(2);
                     }
@@ -36,10 +40,10 @@ function SignUp() {
 
     if (currentUser != null) {
         console.log(userCheck)
-        if (userCheck == 1) {
+        if (userCheck === 1) {
             return <Redirect to='/username' />;
         }
-        else if (userCheck == 2) {
+        else if (userCheck === 2) {
             return <Redirect to='/username' />;
         }
     }
@@ -68,12 +72,10 @@ function SignUp() {
         }
 
         try {
+            setUserName(userName.value)
             await doCreateUserWithEmailAndPassword(email.value, password1.value, userName.value);
 
-            const payload = { name: userName.value, email: email.value }
 
-            let status = await axios.post("http://localhost:8080/users/addUser", payload);
-            console.log(status)
 
         } catch (e) {
             console.log(e)
@@ -82,15 +84,41 @@ function SignUp() {
         }
     };
 
+    const addUser = async () => {
+        if (currentUser && uName) {
+            console.log("addUser called at signup")
+            console.log(uName)
+            console.log("user email:", currentUser.email)
+            try {
+                const payload = { name: uName, email: currentUser.email }
+               
+                let i = await currentUser.getIdToken()
+                let status = await axios.post("http://localhost:8080/users/addUser", payload,
+                    {
+                        headers: {
+                            'accept': 'application/json',
+                            'Accept-Language': 'en-US,en;q=0.8',
+                            'Content-Type': 'application/json',
+                            'authtoken': i
+                        }
+                    }
+                    );
+                console.log(status)
+            } catch (e) {
+                console.log(e)
+                alert(e);
+            }
+        }
+    }
     return (
         <div>
             <h1>
                 Sign Up
             </h1>
 
-            
-            
-            { pwMatch && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {pwMatch}</div>}
+
+
+            {pwMatch && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {pwMatch}</div>}
             {userNameCheck && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {userNameCheck}</div>}
             <form onSubmit={handleSignUp}>
                 <div className='form-group'>
@@ -121,15 +149,15 @@ function SignUp() {
             </form>
             <br />
             <SocialSignIn></SocialSignIn>
-            <br/>
-            
+            <br />
+
             <nav>
                 <label class="text-secondary">Already have an account?
                     <NavLink class="reqcolor" to='/signin'> Go to Sign-in page</NavLink>
                 </label>
-                </nav>
-            
-            
+            </nav>
+
+
         </div>
     );
 

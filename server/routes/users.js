@@ -2,6 +2,8 @@ const express = require("express")
 const router = express.Router();
 const data = require("../data");
 const userData = data.users
+const checkauth = require("./checkAuth")
+
 
 
 /**
@@ -75,10 +77,13 @@ router.post("/checkUserName", async (req, res) => {
 /**
  * Adds new user to the database with given object
  */
-router.post("/addUser", async (req, res) => {
+router.post("/addUser", checkauth.checkAuth,async (req, res) => {
 
 
     try {
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         console.log("addUser Called")
         let usr = req.body;
         if (!usr) throw `Error: "Request body not provided`
@@ -102,9 +107,12 @@ router.post("/addUser", async (req, res) => {
 /**
  * Get user object based on the email provided
  */
-router.post("/getUser", async (req, res) => {
+router.post("/getUser", checkauth.checkAuth,async (req, res) => {
 
     try {
+        if (req.locals.email !== req.body.email) { 
+            throw "Error: Unauthorized Access"
+        }
         let usr = req.body;
         if (!usr) throw `Error: "Request body not provided`
         if (!usr.email) throw `Error: "email address not provided`
@@ -121,23 +129,26 @@ router.post("/getUser", async (req, res) => {
 /**
  * Get array of all available users
  */
-router.get("/getAll", async (req, res) => {
-    try {
-        let usr = await userData.getAllUsers();
-        res.json(usr)
-    } catch (e) {
-        res.json({ Error: e })
-    }
+// router.get("/getAll", async (req, res) => {
+//     try {
+//         let usr = await userData.getAllUsers();
+//         res.json(usr)
+//     } catch (e) {
+//         res.json({ Error: e })
+//     }
 
-})
+// })
 
 /**
  * Adds Liked question id to the given user
  */
-router.post("/addLikedQuestionId", async (req, res) => {
+router.post("/addLikedQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
+        if (req.locals.email !== req.body.email) {
+            throw "Error: Unauthorized Access"
+        }
         let body = req.body;
         if (!body.email) throw "user email is not provided";
         if (!body.question_id) throw "question_id not provided";
@@ -154,10 +165,13 @@ router.post("/addLikedQuestionId", async (req, res) => {
 /**
  * Removed liked question id from the user
  */
-router.post("/removeLikedQuestionId", async (req, res) => {
+router.post("/removeLikedQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
+        if (req.locals.email !== req.body.email) {
+            throw "Error: Unauthorized Access"
+        }
         let body = req.body;
         if (!body.email) throw "user email is not provided";
         if (!body.question_id) throw "question_id not provided";
@@ -174,12 +188,16 @@ router.post("/removeLikedQuestionId", async (req, res) => {
 /**
  * Adds tag id to the given user
  */
-router.post("/addTagId", async (req, res) => {
+router.post("/addTagId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
+        
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.tag_id) throw "tag_id not provided";
         let usr = await userData.addTag(body.email, body.tag_id);
         res.json(usr);
@@ -194,12 +212,15 @@ router.post("/addTagId", async (req, res) => {
 /**
  * Removes tag id to the given user
  */
-router.post("/removeTagId", async (req, res) => {
+router.post("/removeTagId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.tag_id) throw "tag_id not provided";
         let usr = await userData.removeTag(body.email, body.tag_id);
         res.json(usr);
@@ -214,12 +235,15 @@ router.post("/removeTagId", async (req, res) => {
 /**
  * Adds question id to the gven user
  */
-router.post("/addQuestionId", async (req, res) => {
+router.post("/addQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.question_id) throw "question_id not provided";
         let usr = await userData.addQuestionId(body.email, body.question_id);
         res.json(usr);
@@ -233,12 +257,15 @@ router.post("/addQuestionId", async (req, res) => {
 /**
  * Adds comment id to the gven user
  */
-router.post("/addCommentId", async (req, res) => {
+router.post("/addCommentId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.comment_id) throw "comment_id not provided";
         let usr = await userData.addCommentId(body.email, body.comment_id);
         res.json(usr);
@@ -253,12 +280,15 @@ router.post("/addCommentId", async (req, res) => {
 /**
  * Removes question id from the gven user
  */
-router.post("/removeQuestionId", async (req, res) => {
+router.post("/removeQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.question_id) throw "question_id not provided";
         let usr = await userData.removeQuestionId(body.email, body.question_id);
         res.json(usr);
@@ -273,12 +303,15 @@ router.post("/removeQuestionId", async (req, res) => {
 /**
  * Removes comment id from the user
  */
-router.post("/removeCommentId", async (req, res) => {
+router.post("/removeCommentId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.comment_id) throw "comment_id not provided";
         let usr = await userData.removeCommentId(body.email, body.comment_id);
         res.json(usr);
@@ -293,12 +326,15 @@ router.post("/removeCommentId", async (req, res) => {
 /**
  * Adds voted comment id to the given user
  */
-router.post("/addVotedCommentId", async (req, res) => {
+router.post("/addVotedCommentId", checkauth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.comment_id) throw "comment_id not provided";
         let usr = await userData.addVotedCommentId(body.email, body.comment_id);
         res.json(usr);
@@ -313,12 +349,15 @@ router.post("/addVotedCommentId", async (req, res) => {
 /**
  * Removes voted comment id from the given user
  */
-router.post("/removeVotedCommentId", async (req, res) => {
+router.post("/removeVotedCommentId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.comment_id) throw "comment_id not provided";
         let usr = await userData.removeVotedCommentId(body.email, body.comment_id);
         res.json(usr);
@@ -334,12 +373,15 @@ router.post("/removeVotedCommentId", async (req, res) => {
 /**
  * Adds followed question id to the given
  */
-router.post("/addFollowedQuestionId", async (req, res) => {
+router.post("/addFollowedQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.question_id) throw "question_id not provided";
         let usr = await userData.addFollowedQuestionId(body.email, body.question_id);
         res.json(usr);
@@ -354,12 +396,15 @@ router.post("/addFollowedQuestionId", async (req, res) => {
 /**
  * Removes followed question id to the given
  */
-router.post("/removeFollowedQuestionId", async (req, res) => {
+router.post("/removeFollowedQuestionId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
         let body = req.body;
         if (!body.email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         if (!body.question_id) throw "question_id not provided";
         let usr = await userData.removeFollowedQuestionId(body.email, body.question_id);
         res.json(usr);
@@ -371,10 +416,13 @@ router.post("/removeFollowedQuestionId", async (req, res) => {
 
 })
 
-router.get("/userInfo/:email", async (req, res) => {
+router.get("/userInfo/:email", checkauth.checkAuth,async (req, res) => {
     try {
         const email = req.params.email;
         if (!email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         let userInfo = await userData.getUserInfo(email);
         res.status(200).json(userInfo);
     } catch (error) {
@@ -383,10 +431,13 @@ router.get("/userInfo/:email", async (req, res) => {
     }
 })
 
-router.get("/userInfo/tags/:email",async (req,res) => {
+router.get("/userInfo/tags/:email",checkauth.checkAuth,async (req,res) => {
     try {
         const email = req.params.email;
         if (!email) throw "user email is not provided";
+        if (req.body.email !== req.locals.email) {
+            throw "Error: Unauthorized Access"
+        }
         let userInfo = await userData.getUserTags(email);
         res.status(200).json(userInfo);
     } catch (error) {
