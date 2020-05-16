@@ -132,6 +132,7 @@ function EditForm(props) {
 					'accept': 'application/json',
 					'Accept-Language': 'en-US,en;q=0.8',
 					'Content-Type': 'multipart/form-data',
+					'authtoken': currentUser.getIdToken
 				}
 				
 			});
@@ -153,7 +154,7 @@ function EditForm(props) {
 		catch(e){
 			setissubmitting(false)
 			seterr(true)
-			seterrmsg({msg:e.response.data.error})
+			// seterrmsg({msg:e.response.data.error})
 		}
 		
 		// document.getElementById('question').value = '';

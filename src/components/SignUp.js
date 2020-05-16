@@ -5,6 +5,7 @@ import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
 import axios from 'axios';
 import SignOut from "./SignOut"
+import "./Signin.css"
 
 
 
@@ -87,8 +88,10 @@ function SignUp() {
                 Sign Up
             </h1>
 
-            {pwMatch && <h4 className='error'>{pwMatch}</h4>}
-            {userNameCheck && <h4 className='error'>{userNameCheck}</h4>}
+            
+            
+            { pwMatch && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {pwMatch}</div>}
+            {userNameCheck && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {userNameCheck}</div>}
             <form onSubmit={handleSignUp}>
                 <div className='form-group'>
                     <label>
@@ -114,17 +117,18 @@ function SignUp() {
                          <input className='form-control' required id='password2' name='password2' type='password'></input>
                     </label>
                 </div>
-                <button id='submitButton' name='submitButton' type='submit' >Sign Up</button>
+                <button id='submitButton' class="btn btn-primary" name='submitButton' type='submit' >Sign Up</button>
             </form>
             <br />
             <SocialSignIn></SocialSignIn>
-            <SignOut />
             <br/>
-            <label>Existing user?
-                <nav>
-                    <NavLink to='/signin'>Go to Sign-in page</NavLink>
+            
+            <nav>
+                <label class="text-secondary">Already have an account?
+                    <NavLink class="reqcolor" to='/signin'> Go to Sign-in page</NavLink>
+                </label>
                 </nav>
-            </label>
+            
             
         </div>
     );

@@ -10,7 +10,9 @@ const userData = data.users
 router.post("/isAdmin", async (req, res) => {
     try {
         let usr = req.body;
-        if (!usr) throw `Error: "Request body not provided`
+        if (!usr) {
+            throw `Error: "Request body not provided`
+        }
         if (!usr.email) throw `Error: "email address not provided`
         if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
         let status = await userData.adminCheck(usr.email);

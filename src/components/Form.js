@@ -89,12 +89,14 @@ function QuestionForm(props) {
 			for(let i of formdata.entries()){
 				console.log(i[0]+" "+i[1])
 			}
-
+			let i = await currentUser.getIdToken()
+			console.log(i)
 			const { data } = await axios.post('http://localhost:8080/questions', formdata, {
 				headers: {
 					'accept': 'application/json',
 					'Accept-Language': 'en-US,en;q=0.8',
 					'Content-Type': 'multipart/form-data',
+					'authtoken': i
 				}
 				
 			});
@@ -116,7 +118,7 @@ function QuestionForm(props) {
 				
 				seterr(true)
 				seterrmsg({msg:e.response.data.error})
-				console.log(e.response.data.error)
+				console.log(e.response)
 			} 
 
 		}

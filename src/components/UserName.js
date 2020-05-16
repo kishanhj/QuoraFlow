@@ -110,8 +110,8 @@ function UserName() {
         return (
 
             <div>
-                <h1>Enter user name</h1>
-                {userNameCheck && <h4 className='error'>{userNameCheck}</h4>}
+                <h1>Enter user name for your new account</h1>
+                {userNameCheck && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {userNameCheck}</div>}
                 <form onSubmit={handleUserName}>
                     <div className='form-group'>
                         <label>
@@ -120,8 +120,8 @@ function UserName() {
                         </label>
                     </div>
                     <br />
-                    <button id='submitButton' name='submitButton' type='submit' >Sign Up</button>
-                    <SignOut />
+                    <button id='submitButton' class="btn btn-primary" name='submitButton' type='submit' >Sign Up</button>
+                    
                 </form>
             </div>
         )
@@ -130,7 +130,7 @@ function UserName() {
         return (
             <div>
                 <h1>Please select tags that interest you:</h1>
-                <h2 className="Error">{tagError}</h2>
+                {tagError && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {tagError}</div>}
                 <form onSubmit={mySubmitHandler}>
                     <ul>
                         {listDetails && listDetails.map((tag) => {
@@ -148,7 +148,7 @@ function UserName() {
                         )}
                     </ul>
                     <br />
-                    <button id='submitButton' name='submitButton' type='submit' >Add Tags</button>
+                    <button id='submitButton' class="btn btn-primary" name='submitButton' type='submit' >Add Tags</button>
                 </form>
             </div>
 

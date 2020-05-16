@@ -4,6 +4,7 @@ import { Redirect, NavLink } from 'react-router-dom'
 import { AuthContext } from '../firebase/Auth'
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/FirebaseFunctions'
 import axios from 'axios';
+import "./Signin.css"
 
 function SignIn() {
     const { currentUser } = useContext(AuthContext);
@@ -63,10 +64,12 @@ function SignIn() {
 
 
     return (<div>
-        <h1>
-            Sign In
+        
+            <h1>
+                Sign In
             </h1>
-
+        
+        
         <form onSubmit={handleLogin}>
 
             <div className='form-group'>
@@ -81,17 +84,23 @@ function SignIn() {
                          <input className='form-control' required id='password1' name='password1' type='password'></input>
                 </label>
             </div>
-
-            <button id='submitButton' name='submitButton' type='submit' >Sign In</button>
-            <button className='forgotPassword' onClick={passwordReset}>Forgot Password?</button>
-            <SocialSignIn></SocialSignIn>
-        </form>
+            <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+                <button id='submitButton' name='submitButton' class="btn btn-primary" type='submit' >Sign In</button>
+                <button className="btn btn-secondary" onClick={passwordReset}>Forgot Password?</button>
+            </div>
+                <SocialSignIn></SocialSignIn>
+            </form>
+        
         <br />
-        <label>New user?
-         <nav>
-                <NavLink to='/signup'>Register new account</NavLink>
-            </nav>
-        </label>
+
+        <nav class="nav">
+
+            <label class="text-secondary">New user?
+                <NavLink class="reqcolor" to='/signup'> Register new account</NavLink>
+            </label>
+
+        </nav>
+
 
 
         <br />

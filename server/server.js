@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const expstatic = express.static(__dirname + "/public");
 const methodOverride = require('method-override');
-const xss=require("xss")
+const xss = require("xss")
 const admin = require('firebase-admin')
 const configRoutes = require("./routes");
 const exphbs = require("express-handlebars");
@@ -12,10 +12,10 @@ const session = require('express-session')
 app.use(methodOverride('_method'))
 var http = require('http').Server(app);
 const io = require('socket.io')(http);
-var allowCrossDomain = function(req, res, next) {
+var allowCrossDomain = function (req, res, next) {
   res.header('Access-Control-Allow-Origin', "*");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, authtoken');
   next();
 }
 
@@ -30,7 +30,7 @@ app.use(allowCrossDomain)
 app.use(function (req, res, next) {
   if (req.body) {
     const keys = Object.keys(req.body);
-    for(let i = 0; i < keys.length; ++i) {
+    for (let i = 0; i < keys.length; ++i) {
       req.body[keys[i]] = xss(req.body[keys[i]]);
     }
   }
@@ -51,27 +51,27 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-var serviceAccount = require("./quoraoverflow-firebase-adminsdk-98d62-e218222843.json");
+// var serviceAccount = require("./quoraoverflow-firebase-adminsdk-98d62-e218222843.json");
 
-var defaultApp = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-console.log(defaultApp.name);  // '[DEFAULT]'
-// app.use("/", checkAuth)
+// var defaultApp = admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
+// console.log(defaultApp.name);  // '[DEFAULT]'
+// // app.use("/", checkAuth)  
 
 
-function checkAuth(req, res, next) {
-  if (req.headers.authtoken) {
-    admin.auth().verifyIdToken(req.headers.authtoken)
-      .then(() => {
-        next()
-      }).catch(() => {
-        res.status(403).send('Unauthorized')
-      });
-  } else {
-    res.status(403).send('Unauthorized')
-  }
-}
+// function checkAuth(req, res, next) {
+//   if (req.headers.authtoken) {
+//     admin.auth().verifyIdToken(req.headers.authtoken)
+//       .then(() => {
+//         next()
+//       }).catch(() => {
+//         res.status(403).send('Unauthorized')
+//       });
+//   } else {
+//     res.status(403).send('Unauthorized')
+//   }
+// }
 
 
 configRoutes(app);
