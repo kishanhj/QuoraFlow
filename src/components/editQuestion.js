@@ -122,38 +122,59 @@ function EditForm(props) {
 			else{
 				formdata.append("image",oldimage)
 			}
+
+			if(currentUser){
+				formdata.append("email",currentUser.email)
+			}
 			for(let i of formdata.entries()){
 				console.log(i[0]+" "+i[1])
 			}
 			
-
+			let i = await currentUser.getIdToken()
 			const { data } = await Axios.patch(`http://localhost:8080/questions/${props.match.params.id}`, formdata, {
 				headers: {
 					'accept': 'application/json',
 					'Accept-Language': 'en-US,en;q=0.8',
 					'Content-Type': 'multipart/form-data',
-					'authtoken': currentUser.getIdToken
+					'authtoken': i
 				}
 				
 			});
-			const tagdata={
-				tagarray:tagtext,
-				questionID:data._id
 
-			}
-			
-			
-			
-			const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
-				tagarray:oldtags,
-				questionID:data._id
-			}})
-			const { }=await Axios.post(`http://localhost:8080/tags/addtags`, tagdata)
+			const tagdata= new FormData()
+			tagdata.append("tagarray",tagtext)
+			tagdata.append("questionID",data._id)
+
+			const oldtagdata= new FormData()
+			oldtagdata.append("questionID",data._id)
+	
+			const {}= await Axios.patch(`http://localhost:8080/tags/removetags`,
+			{"tagarray":oldtags,"questionID":data._id}
+			,{headers: {
+					'accept': 'application/json',
+					'authtoken': i
+			}}		
+			)
+			console.log(tagdata)
+			const {}=await Axios.patch(`http://localhost:8080/tags/addtags`,
+			{"tagarray":tagtext,"questionID":data._id},{
+				headers: {
+					'accept': 'application/json',
+					'authtoken': i
+				}
+				
+			})
 			props.history.push(`/questions/display/${props.match.params.id}`)
 		}
 		catch(e){
 			setissubmitting(false)
 			seterr(true)
+			console.log(e)
+			if(e.response){
+				seterrmsg({msg:e.response.data.error})	
+			}
+			
+			
 			// seterrmsg({msg:e.response.data.error})
 		}
 		

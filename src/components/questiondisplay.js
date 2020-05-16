@@ -80,7 +80,14 @@ function Questiondisplay(props) {
     const handlelike=(e)=>{
         async function addlike(){
             try{
-                const { data }  = await Axios.patch(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
+                let i = await currentUser.getIdToken()
+                const { data }  = await Axios.patch(`http://localhost:8080/questions/like/${props.match.params.id}`,{},
+                {headers: {
+                        'accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.8',
+                        'Content-Type': 'multipart/form-data',
+                        'authtoken': i
+                }})
                 setlike(data.likes.length)
                 if(hasliked===true){
                     sethasliked(false)
@@ -102,7 +109,14 @@ function Questiondisplay(props) {
     const handlereport=(e)=>{
         async function addlike(){
             try{
-                const { data }  = await Axios.patch(`http://localhost:8080/questions/report/${props.match.params.id}/${currentUser.email}`)
+                let i = await currentUser.getIdToken()
+                const { data }  = await Axios.patch(`http://localhost:8080/questions/report/${props.match.params.id}`,{},
+                {headers: {
+                        'accept': 'application/json',
+                        'Accept-Language': 'en-US,en;q=0.8',
+                        'Content-Type': 'multipart/form-data',
+                        'authtoken': i
+                }})
                 if(hasreport===true){
                     sethasreport(false)
                 }

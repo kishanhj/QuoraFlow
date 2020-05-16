@@ -3,12 +3,24 @@ const router = express.Router();
 const data = require("../data");
 const ObjectID = require("mongodb").ObjectID
 const tagsdataAPI = data.tags
+const questionData = data.questions
+const checkauth= require("./checkAuth")
 
 
-router.post("/addtags", async function (req, res) {
+router.patch("/addtags",checkauth.checkAuth,async function (req, res) {
+    try{
+        if(req.body.questionID){
+            const {userid}= await questionData.getquestion(req.body.questionID)
+            if(userid!==req.locals.email) throw "UnAthorized Acess"
+        }
+    }
+    catch(e){
+        res.status(403).json({ Error: "Unauthorized Route" })
+    }
     try {
         const t = req.body
         if (!t) throw "No tag data"
+        console.log(t.tagarray)
         if (!t.tagarray) throw "No tag Array defined"
         if (!t.questionID) throw "No Question Id is defined"
 
@@ -20,12 +32,22 @@ router.post("/addtags", async function (req, res) {
 
     }
     catch (e) {
-        res.status(200).json({ error: e })
+        res.status(400).json({ error: e })
 
     }
 })
 
-router.delete("/removetags", async function (req, res) {
+router.patch("/removetags",checkauth.checkAuth, async function (req, res) {
+    try{
+        if(req.body.questionID){
+
+            const {userid}= await questionData.getquestion(req.body.questionID)
+            if(userid!==req.locals.email) throw "UnAthorized Acess"
+        }
+    }
+    catch(e){
+        res.status(403).json({ Error: "Unauthorized Route" })
+    }
     try {
         const t = req.body
         if (!t) throw "No tag data"
@@ -40,7 +62,7 @@ router.delete("/removetags", async function (req, res) {
 
     }
     catch (e) {
-        res.status(200).json({ error: e })
+        res.status(400).json({ error: e })
 
     }
 })

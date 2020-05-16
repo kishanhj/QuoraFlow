@@ -90,7 +90,6 @@ function QuestionForm(props) {
 				console.log(i[0]+" "+i[1])
 			}
 			let i = await currentUser.getIdToken()
-			console.log(i)
 			const { data } = await axios.post('http://localhost:8080/questions', formdata, {
 				headers: {
 					'accept': 'application/json',

@@ -5,6 +5,7 @@ const questionData = data.questions
 const userData = data.users;
 const tagData = data.tags;
 const admin = require("firebase-admin")
+const checkauth= require("./checkAuth")
 
 
 router.get("/", async function (req, res) {
@@ -57,10 +58,9 @@ router.get("/:id", async function (req, res) {
 
 })
 
-router.post("/", checkAuth, questionData.upload.single('image'), async function (req, res) {
+router.post("/", checkauth.checkAuth, questionData.upload.single('image'), async function (req, res) {
 
     try {
-        console.log("this is local: ", req.locals)
         let image = undefined
         if (req.file) {
             image = String(req.file.location)
@@ -79,7 +79,7 @@ router.post("/", checkAuth, questionData.upload.single('image'), async function 
         if (!questiondata.tags) {
             error.push("No Tags Entered")
         }
-        if (!questiondata.userid) {
+        if (!req.locals.email) {
             error.push("No User Id Entered")
         }
         if (error.length > 0) {
@@ -91,8 +91,7 @@ router.post("/", checkAuth, questionData.upload.single('image'), async function 
 
 
         tags = questiondata.tags.split(",")
-        const postquestion = await questionData.createquestion(questiondata.title, questiondata.description, tags, questiondata.userid, image)
-        console.log(postquestion)
+        const postquestion = await questionData.createquestion(questiondata.title, questiondata.description, tags,req.locals.email, image)
         const addingTouser = await userData.addQuestionId(postquestion.userid, String(postquestion._id))
 
         res.status(200).json(postquestion)
@@ -106,7 +105,15 @@ router.post("/", checkAuth, questionData.upload.single('image'), async function 
 })
 
 
-router.patch("/:id", questionData.upload.single('image'), async function (req, res) {
+router.patch("/:id",checkauth.checkAuth, questionData.upload.single('image'), async function (req, res) {
+    try{
+        if(req.body.email!==req.locals.email){
+            throw "UnAthorized Acess"
+        }
+    }
+    catch(e){
+        res.status(403).json({ Error: "Unauthorized Route" })
+    }
     const questiondata = req.body
     try {
         await questionData.getquestion(req.params.id)
@@ -144,7 +151,18 @@ router.patch("/:id", questionData.upload.single('image'), async function (req, r
 
 
 
-router.delete("/:id", async function (req, res) {
+router.delete("/:id",checkauth.checkAuth, async function (req, res) {
+    
+    try{
+        const questiondata=await questionData.getquestion(req.params.id)
+        if(questiondata.userid!==req.locals.email){
+            throw "UnAthorized Acess"
+        }
+    }
+    catch(e){
+        res.status(403).json({ Error: "Unauthorized Route" })
+        return;
+    }
     try {
 
         const deletequestion = await questionData.deletequestion(req.params.id)
@@ -158,7 +176,7 @@ router.delete("/:id", async function (req, res) {
     }
 })
 
-router.patch("/like/:id/:userid", async function (req, res) {
+router.patch("/like/:id",checkauth.checkAuth, async function (req, res) {
     try {
         await questionData.getquestion(req.params.id)
 
@@ -168,7 +186,7 @@ router.patch("/like/:id/:userid", async function (req, res) {
         return;
     }
     try {
-        await userData.getUser(req.params.userid)
+        await userData.getUser(req.locals.email)
     }
     catch (e) {
         console.log(1)
@@ -176,15 +194,15 @@ router.patch("/like/:id/:userid", async function (req, res) {
         return;
     }
     try {
-        if (await questionData.getlike(req.params.id, req.params.userid)) {
-            const updatelike = await questionData.unlike(req.params.id, req.params.userid)
-            const updateuser = await userData.removeLikedQuestionId(req.params.userid, req.params.id)
+        if (await questionData.getlike(req.params.id, req.locals.email)) {
+            const updatelike = await questionData.unlike(req.params.id, req.locals.email)
+            const updateuser = await userData.removeLikedQuestionId(req.locals.email, req.params.id)
             res.status(200).json(updatelike)
             return;
         }
         else {
-            const updatelike = await questionData.updatelike(req.params.id, req.params.userid)
-            const updateuser = await userData.addLikedQuestionId(req.params.userid, req.params.id)
+            const updatelike = await questionData.updatelike(req.params.id, req.locals.email)
+            const updateuser = await userData.addLikedQuestionId(req.locals.email, req.params.id)
             res.status(200).json(updatelike)
             return;
 
@@ -229,7 +247,7 @@ router.get("/like/:id/:userid", async function (req, res) {
 })
 
 
-router.patch("/report/:id/:userid", async function (req, res) {
+router.patch("/report/:id/",checkauth.checkAuth, async function (req, res) {
     try {
         await questionData.getquestion(req.params.id)
 
@@ -239,20 +257,20 @@ router.patch("/report/:id/:userid", async function (req, res) {
         return;
     }
     try {
-        await userData.getUser(req.params.userid)
+        await userData.getUser(req.locals.email)
     }
     catch (e) {
         res.status(404).json({ error: e })
         return;
     }
     try {
-        if (await questionData.getreport(req.params.id, req.params.userid)) {
-            const updatereport = await questionData.unreport(req.params.id, req.params.userid)
+        if (await questionData.getreport(req.params.id,req.locals.email)) {
+            const updatereport = await questionData.unreport(req.params.id,req.locals.email)
             res.status(200).json(updatereport)
             return;
         }
         else {
-            const updatereport = await questionData.updatereport(req.params.id, req.params.userid)
+            const updatereport = await questionData.updatereport(req.params.id,req.locals.email)
             res.status(200).json(updatereport)
             return;
 

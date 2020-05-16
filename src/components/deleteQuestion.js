@@ -22,16 +22,26 @@ function Deletequestion(props){
                     if(currentUser!==null){
                         if(data.userid===currentUser.email || admin.data.flag){
                             setisOwner({isowner:true})
-                            const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`)
+                            let i = await currentUser.getIdToken()
+                            const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`,
+                                {headers: {
+                                    'accept': 'application/json',
+                                    'Accept-Language': 'en-US,en;q=0.8',
+                                    'Content-Type': 'multipart/form-data',
+                                    'authtoken': i
+                                }})
                             sethasdeleted(true)
                             let oldtags=[]
                             for(let i=0;i<data.tags.length;i++){
                                 oldtags.push(data.tags[i].tag)
                             }
-                            const { }= await Axios.delete(`http://localhost:8080/tags/removetags`,{ data: {
-				                tagarray:oldtags,
-				                questionID:data._id
-			                }})
+                            const {}= await Axios.patch(`http://localhost:8080/tags/removetags`,
+			                        {"tagarray":oldtags,"questionID":data._id}
+			                        ,{headers: {
+					                        'accept': 'application/json',
+					                        'authtoken': i
+			                                    }}		
+			                        )
 
                         }
                         
