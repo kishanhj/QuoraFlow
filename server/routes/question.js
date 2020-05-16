@@ -154,8 +154,10 @@ router.patch("/:id",checkauth.checkAuth, questionData.upload.single('image'), as
 router.delete("/:id",checkauth.checkAuth, async function (req, res) {
     
     try{
+
         const questiondata=await questionData.getquestion(req.params.id)
-        if(questiondata.userid!==req.locals.email){
+        if(questiondata.userid!==req.locals.email && await userData.adminCheck(req.locals.email)===false){
+            console.log(await userData.adminCheck(req.locals.email))
             throw "UnAthorized Acess"
         }
     }
@@ -164,7 +166,6 @@ router.delete("/:id",checkauth.checkAuth, async function (req, res) {
         return;
     }
     try {
-
         const deletequestion = await questionData.deletequestion(req.params.id)
         res.sendStatus(200)
         return;
@@ -189,7 +190,6 @@ router.patch("/like/:id",checkauth.checkAuth, async function (req, res) {
         await userData.getUser(req.locals.email)
     }
     catch (e) {
-        console.log(1)
         res.status(404).json({ error: e })
         return;
     }
