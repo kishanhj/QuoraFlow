@@ -5,6 +5,7 @@ import { AuthContext } from '../firebase/Auth'
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/FirebaseFunctions'
 import axios from 'axios';
 import "./Signin.css"
+import * as settings from "../settings.json"
 
 function SignIn() {
     const { currentUser } = useContext(AuthContext);
@@ -13,15 +14,18 @@ function SignIn() {
         const getData = async () => {
             try {
                 if (currentUser) {
-                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
-                    if (!status.data.flag){
+                    let api = settings.backendEndpoint + "users/checkUser";
+                    let status = await axios.post(api, { email: currentUser.email })
+                    if (!status.data.flag) {
                         console.log("Status flag = ", status.data.flag)
-                        setUserCheck(1)}
+                        setUserCheck(1)
+                    }
                     else {
                         console.log("Status flag = ", status.data.flag)
                         setUserCheck(2);
                     }
                 }
+                
             } catch (e) {
                 console.log(e);
             }
@@ -38,7 +42,7 @@ function SignIn() {
         if (userCheck === 1) {
             return <Redirect to='/username' />
         }
-        else if (userCheck == 2) {
+        else if (userCheck === 2) {
             return <Redirect to='/' />;
         }
     }

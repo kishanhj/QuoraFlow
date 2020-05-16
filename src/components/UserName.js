@@ -2,6 +2,7 @@ import React, { useContext, useState, useLayoutEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
+import * as settings from "../settings.json"
 
 //useEffect
 
@@ -18,8 +19,10 @@ function UserName() {
         const getData = async () => {
             try {
                 if (currentUser) {
-                    let status = await axios.post("http://localhost:8080/users/checkUser", { email: currentUser.email })
-                    const { data: listHashtag } = await axios.get("http://localhost:8080/tags/getalltags")
+                    let api1 = settings.backendEndpoint + "users/checkUser";
+                    let status = await axios.post(api1, { email: currentUser.email })
+                    let api = settings.backendEndpoint + "tags/getalltags";
+                    const { data: listHashtag } = await axios.get(api)
                     setListDetails(listHashtag)
                     if (!status.data.flag)
                         setUserCheck(1)
@@ -38,7 +41,8 @@ function UserName() {
         e.preventDefault();
         const { userName } = e.target.elements;
         try {
-            let status = await axios.post("http://localhost:8080/users/checkUserName", { userName: userName.value });
+            let api1 = settings.backendEndpoint + "users/checkUserName";
+            let status = await axios.post(api1, { userName: userName.value });
             console.log(status.data.flag)
             console.log(typeof status.data.flag)
             if (status.data.flag === false) {
@@ -49,7 +53,8 @@ function UserName() {
             const payload = { name: userName.value, email: currentUser.email }
 
             let i = await currentUser.getIdToken()
-            let check = await axios.post("http://localhost:8080/users/addUser", payload,
+            let api = settings.backendEndpoint + "users/addUser";
+            let check = await axios.post(api, payload,
                 {
                     headers: {
                         'accept': 'application/json',
@@ -72,16 +77,24 @@ function UserName() {
     //     e.preventDefault();
 
     // }
-    const mySubmitHandler =  (event) => {
+    const mySubmitHandler =  async (event) => {
         event.preventDefault();
         if (map.size < 3) { 
             setTagError('You must select at least 3 tags')
             return false;
         }
         
-//add header current user auth token
+        let i = await currentUser.getIdToken()
+        let api = settings.backendEndpoint + "users/addTagId";
         map.forEach(async id => {
-            await axios.post("http://localhost:8080/users/addTagId", {email:currentUser.email, tag_id:id});
+            await axios.post(api, { email: currentUser.email, tag_id: id }, {
+                headers: {
+                    'accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': 'application/json',
+                    'authtoken': i
+                }
+            });
         });
 
         setUserCheck(3)

@@ -326,7 +326,7 @@ router.post("/removeCommentId", checkauth.checkAuth,async (req, res) => {
 /**
  * Adds voted comment id to the given user
  */
-router.post("/addVotedCommentId",checkauth.checkAuth ,async (req, res) => {
+router.post("/addVotedCommentId", checkauth.checkAuth,async (req, res) => {
 
 
     try {
