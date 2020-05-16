@@ -244,12 +244,12 @@ function EditForm(props) {
 		<div>
 			<Form1 id='simple-form' onSubmit={handleSubmit(formSubmit)} encType="multipart/form-data">
 				<Form1.Group>
-    			<Form1.Label>Question</Form1.Label>
+    			<Form1.Label htmlFor="question">Question</Form1.Label>
     			<Form1.Control id='question' name='question' type="text" value={getData && getData.title} onChange={handleTitle} placeholder="Question Title" ref={register({ required: true, maxLength: 2000,minLength:10 })} />
 				{errors.question && <Alert variant={'danger'}>The Question field is required with a min of 10 characters and max of 2000 characters</Alert>}
   				</Form1.Group>
 				<Form1.Group>
-   				<Form1.Label>Description</Form1.Label>
+   				<Form1.Label htmlFor="description">Description</Form1.Label>
     			<Form1.Control as="textarea" rows="3" id='description' name='description' value={getData && getData.description} onChange={ handleDescription}  placeholder="Add a description." ref={register({ required: true, maxLength: 20000,minLength:10 })} />
 				{errors.description && <Alert variant={'danger'}>The Description field is required with a min of 10 characters and max of 20000 characters</Alert>}
   				</Form1.Group>
@@ -266,9 +266,9 @@ function EditForm(props) {
 					 />
 				{err?<Alert variant={'danger'}>{errmsg && errmsg.msg}</Alert>:<p></p>}   
 				<br/>
-				<Form1.Label>Optional Image Upload</Form1.Label>
+				<Form1.Label htmlFor="image1">Optional Image Upload</Form1.Label>
 				<br/>
-				{oldimage? <Button variant="outline-primary" onClick={handledeleteimage}>{imagename} X</Button>: null}
+				{oldimage?<div className="ex-image"><p>{imagename}<Button variant="primary" onClick={handledeleteimage}> X</Button></p></div>: null}
 				
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange}   accept="image/*" custom/>  
 				<Button disabled={issubmitting} variant="primary" type="submit">
