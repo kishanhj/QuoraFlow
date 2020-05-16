@@ -175,7 +175,7 @@ function Questiondisplay(props) {
                 
                 <Row>
                     <Col>{hasliked?<Button onClick={handlelike}>Unlike {like}</Button>:<Button onClick={handlelike}>Like {like}</Button>}</Col>
-                    <Col xs large="2"> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
+                    <Col> <p className='TimeStamp grey-font'>{timestamp}</p></Col>
                     <Col><p className="Tag-header grey-font">Tags:</p>
                         <ul className="Tag-list">{gettags && gettags.map((tag)=>{
                             return <li  className="tag" key={tag.tag}><a title="tags" className="tag-content" href={`/tag/${tag._id}`}>{tag.tag}</a></li>
