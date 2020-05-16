@@ -40,7 +40,11 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
 
         const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id + "/vote";
         try {
-            const res = await axios.post(api, { direction, userId: currentUserId });
+            const res = await axios.post(api, { direction }, {
+                headers: {
+                    authtoken: await currentUser.getIdToken()
+                }
+            });
             const data = res.data;
             if (data.ok) {
                 refresh();
@@ -53,7 +57,11 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
     async function removeComment() {
         const api = settings.backendEndpoint + "questions/" + questionId + "/comments/" + comment.id;
         try {
-            const res = await axios.delete(api);
+            const res = await axios.delete(api, {
+                headers: {
+                    authtoken: await currentUser.getIdToken()
+                }
+            })
             const data = res.data;
             if (data.ok) {
                 refresh()
@@ -198,8 +206,11 @@ const CommentBox = ({ questionId }) => {
     useEffect(() => {
         async function fetchComments() {
             let api = settings.backendEndpoint + "questions/" + questionId + "/comments";
-            api += "?user=" + currentUser.email;
-            const res = await axios.get(api);
+            const res = await axios.get(api, {
+                headers: {
+                    authtoken: await currentUser.getIdToken()
+                }
+            });
             const data = res.data;
 
             const answerComment = data.question.issolved;

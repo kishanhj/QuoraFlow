@@ -5,10 +5,10 @@ const {checkAuth} = require("./checkAuth");
 
 const router = express.Router();
 
-router.get('/:questionId/comments', async (req, res) => {
+router.get('/:questionId/comments', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
 
-    const userEmail = req.query.user;
+    const userEmail = req.locals.email;
 
     if (!userEmail || userEmail.length === 0) {
         res.status(400).json({
@@ -43,12 +43,10 @@ router.get('/:questionId/comments', async (req, res) => {
     });
 });
 
-router.post('/:questionId/comments', async (req, res) => {
+router.post('/:questionId/comments', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
-    const {
-        userId,
-        text,
-    } = req.body;
+    const { text } = req.body;
+    const userId = req.locals.email;
 
     let success = null;
     try {
@@ -70,13 +68,11 @@ router.post('/:questionId/comments', async (req, res) => {
     });
 });
 
-router.post('/:questionId/comments/:commentId', async (req, res) => {
+router.post('/:questionId/comments/:commentId', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
-    const {
-        userId,
-        text,
-    } = req.body;
+    const { text } = req.body;
+    const userId = req.locals.email;
 
     let success = null;
     try {
@@ -98,9 +94,26 @@ router.post('/:questionId/comments/:commentId', async (req, res) => {
     });
 });
 
-router.delete('/:questionId/comments/:commentId', async (req, res) => {
+router.delete('/:questionId/comments/:commentId', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
+
+    const comment = await comments.getCommentShort(commentId);
+    if (!comment || comment.questionId.toString() !== questionId) {
+        res.status(400).json({
+            ok: false,
+            error: 'Bad Request'
+        });
+        return;
+    }
+
+    if (comment.userId !== req.locals.email) {
+        res.status(403).json({
+            ok: false,
+            error: 'Unauthorized'
+        });
+        return;
+    }
 
     // TODO: check if user is admin
     const wasRemovedByAdmin = false;
@@ -125,9 +138,26 @@ router.delete('/:questionId/comments/:commentId', async (req, res) => {
     })
 });
 
-router.patch('/:questionId/comments/:commentId', async (req, res) => {
+router.patch('/:questionId/comments/:commentId', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
+
+    const comment = await comments.getCommentShort(commentId);
+    if (!comment || comment.questionId.toString() !== questionId) {
+        res.status(400).json({
+            ok: false,
+            error: 'Bad Request'
+        });
+        return;
+    }
+
+    if (comment.userId !== req.locals.email) {
+        res.status(403).json({
+            ok: false,
+            error: 'Unauthorized'
+        });
+        return;
+    }
 
     const { text } = req.body;
 
@@ -159,13 +189,11 @@ router.patch('/:questionId/comments/:commentId', async (req, res) => {
     });
 });
 
-router.post('/:questionId/comments/:commentId/vote', async (req, res) => {
+router.post('/:questionId/comments/:commentId/vote', checkAuth, async (req, res) => {
     const questionId = req.params.questionId;
     const commentId = req.params.commentId;
-    const {
-        direction,
-        userId, // Shuold be a backend session
-    } = req.body;
+    const { direction } = req.body;
+    const userId = req.locals.email;
 
     if (direction !== 'UP' && direction !== 'DOWN' && direction !== 'NONE') {
         res.status(400).json({

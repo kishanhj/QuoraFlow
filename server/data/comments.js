@@ -3,6 +3,16 @@ const getCommentsCollection = require('../config/mongoCollections').Comments;
 const getQuestionsCollection = require('../config/mongoCollections').Questions;
 const getUsersCollection = require('../config/mongoCollections').Users;
 
+async function getCommentShort(commentId) {
+    const commentsCollection = await getCommentsCollection();
+
+    const comment = await commentsCollection.findOne({
+        _id: ObjectID(commentId)
+    });
+
+    return comment;
+}
+
 async function getComment(commentObjectId) {
     const commentsCollection = await getCommentsCollection();
     const comment = await commentsCollection.findOne({
@@ -258,6 +268,7 @@ async function markCommentAsAnswer(questionId, commentId) {
 }
 
 module.exports = {
+    getCommentShort,
     getCommentTree,
     addComment,
     addVote,

@@ -23,6 +23,10 @@ const ReplyBox = ({
 
         const res = await axios.patch(api, {
             text: input,
+        }, {
+            headers: {
+                authtoken: await currentUser.getIdToken()
+            }
         });
 
         if (res.data.ok) {
@@ -44,8 +48,11 @@ const ReplyBox = ({
         }
 
         const res = await axios.post(api, {
-            userId: currentUser.email,
-            text: input,
+            text: input
+        }, {
+            headers: {
+                authtoken: await currentUser.getIdToken()
+            }
         });
 
         if (res.data.ok) {
