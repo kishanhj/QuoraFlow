@@ -71,6 +71,13 @@
     width: 100%;
 }
 
+.ReplyBox label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    /* float: right; */
+    margin: 8px 0 0 0;
+}
+
 .ReplyBox-btn {
     margin-top: 0.5em;
 }

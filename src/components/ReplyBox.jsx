@@ -61,10 +61,12 @@ const ReplyBox = ({
         }
     }
 
+    const labelText = edit ? 'Edit' : (isParentQuestion ? 'Answer' : 'Reply');
+
     return (
         <div className="ReplyBox">
             <div>
-                <label for="Comments">Comments:</label>
+                <label for="Comments">{labelText}</label>
                 <textarea
                     className="form-control"
                     value={input}
