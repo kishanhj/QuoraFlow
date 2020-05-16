@@ -64,10 +64,12 @@ const ReplyBox = ({
     return (
         <div className="ReplyBox">
             <div>
+                <label for="Comments">Comments:</label>
                 <textarea
                     className="form-control"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    id="Comments"
                 ></textarea>
             </div>
             <div>
@@ -78,7 +80,7 @@ const ReplyBox = ({
                 </button>
                 {onCancel &&
                 <button
-                    className="btn btn-link btn-sm"
+                    className="btn btn-link btn-sm ReplyBox-Cancel"
                     onClick={onCancel}>
                         Cancel
                 </button>}
