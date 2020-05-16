@@ -22,6 +22,24 @@ async function adminCheck(email) {
 
 }
 
+async function checkTag(email) {
+    console.log("check tg called")
+    if (!email) throw "user's email is required";
+    if (typeof email != 'string') { throw `Error: email should be of type string` }
+    let check = await getUser(email);
+    if (!check) throw `Error: no user exists with the email ${email}`
+    console.log(check.tags)
+    console.log(check.tags.length)
+    console.log(email)
+    if (check.tags.length == 0) {
+        console.log(check.tags.length)
+        return false
+    }
+    else {
+        return true
+    }
+}
+
 /**
  * Adds the user to the database
  * @param {Object of user to be added} usrObj 
@@ -181,13 +199,13 @@ async function getUser(email) {
     if (typeof email != 'string') { throw `Error: email should be of type string` }
 
     let usrToRtrn = await checkRedis(email);
-    if(usrToRtrn) return usrToRtrn;
+    if (usrToRtrn) return usrToRtrn;
 
     usrToRtrn = await userCollection.findOne({ "email": email })
     if (!usrToRtrn) {
         throw `Error: No user found with email ${email}`
     }
-    addUserToRedisMap(email,usrToRtrn);
+    addUserToRedisMap(email, usrToRtrn);
     return usrToRtrn;
 
 }
@@ -467,37 +485,37 @@ async function removeVotedCommentId(email, c_id) {
 
 }
 
-async function checkRedis(email){
-    const user = await client.hgetAsync("Users",email);
+async function checkRedis(email) {
+    const user = await client.hgetAsync("Users", email);
     // console.log("checkRedis : ",user);
-    if(user)
+    if (user)
         return JSON.parse(user);
 }
 
-async function addUserToRedisMap(email,user){
+async function addUserToRedisMap(email, user) {
     const userString = JSON.stringify(user);
     // console.log("addPersonToRedisMap : ",userString,email);
     client.hsetAsync("Users", email, userString);
 }
 
-async function removeUserFromRedisMap(email){
+async function removeUserFromRedisMap(email) {
     // console.log("removePersonToRedisMap : ",email);
     client.hdelAsync("Users", email);
 }
 
-async function getUserInfo(email){
+async function getUserInfo(email) {
     if (!email) throw "user's email is required";
 
-    if("guest" === email)
+    if ("guest" === email)
         return getGuestInfo();
-    
+
     const tagDataAPI = require("./tags");
-    const {tags} = await getUser(email);
+    const { tags } = await getUser(email);
 
     var questions = [];
     const tagObjList = [];
 
-    for(var tagID of tags){
+    for (var tagID of tags) {
         var tagData = undefined;
 
         try {
@@ -506,17 +524,17 @@ async function getUserInfo(email){
             continue;
         }
 
-        if(!tagData) continue;
+        if (!tagData) continue;
 
         tagObjList.push(tagData.tag);
-        questions.push.apply(questions,tagData.questions);
+        questions.push.apply(questions, tagData.questions);
     }
 
     questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
-    questions.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    questions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     const data = {
-        tags : tagObjList,
-        questions : questions
+        tags: tagObjList,
+        questions: questions
     }
 
     return data;
@@ -527,46 +545,46 @@ const getGuestInfo = async () => {
     const tagcollection = await tags();
     const tagDataAPI = require("./tags");
 
-    const generalTag = await tagcollection.findOne({tag:'General'});
-    const tagData =  await tagDataAPI.getTag(generalTag._id);
+    const generalTag = await tagcollection.findOne({ tag: 'General' });
+    const tagData = await tagDataAPI.getTag(generalTag._id);
 
     var questions = [];
-    questions.push.apply(questions,tagData.questions);
-    questions.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    questions.push.apply(questions, tagData.questions);
+    questions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
 
     const data = {
-        questions : questions
+        questions: questions
     }
 
     return data;
 }
 
 const getUserTags = async (email) => {
-    if(!email) throw "Must provide an email";
-    
+    if (!email) throw "Must provide an email";
+
     const usersCollection = mongocollection.Users;
     const usersDB = await usersCollection();
-    const userTagIDs = await usersDB.find({email : email}).project({tags:1,_id:0}).toArray();
+    const userTagIDs = await usersDB.find({ email: email }).project({ tags: 1, _id: 0 }).toArray();
 
     const tags = mongocollection.Tags;
     const tagcollection = await tags();
     const userTags = [];
-    for(var tagID of userTagIDs[0].tags){
+    for (var tagID of userTagIDs[0].tags) {
         var tagData = undefined;
         try {
-            tagData = await tagcollection.findOne({_id:ObjectID(tagID)},{tag:1,_id:1});
+            tagData = await tagcollection.findOne({ _id: ObjectID(tagID) }, { tag: 1, _id: 1 });
         } catch (error) {
             continue;
         }
 
-        if(!tagData) continue;
+        if (!tagData) continue;
         userTags.push(tagData);
     }
-    
+
     return userTags;
 }
 
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck,getUserTags }
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck, getUserTags, checkTag }
