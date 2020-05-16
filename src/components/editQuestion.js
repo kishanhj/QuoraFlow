@@ -11,6 +11,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import { AuthContext } from '../firebase/Auth'
 import { useForm } from 'react-hook-form'
 import Remove from "./RemoveComponent"
+import settings from "../settings.json";
 
 const KeyCodes = {
 	comma: 188,
@@ -47,7 +48,8 @@ function EditForm(props) {
         console.log("question rendered")
         async function getdata(){
 			try{
-				const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
+				let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+				const { data }= await Axios.get(api)
 				setgetData(data)
 				setoldimage(data.image)
 				if(currentUser!==undefined && data.userid===currentUser.email){
@@ -131,7 +133,8 @@ function EditForm(props) {
 			}
 			
 			let i = await currentUser.getIdToken()
-			const { data } = await Axios.patch(`http://localhost:8080/questions/${props.match.params.id}`, formdata, {
+			let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+			const { data } = await Axios.patch(api, formdata, {
 				headers: {
 					'accept': 'application/json',
 					'Accept-Language': 'en-US,en;q=0.8',
@@ -147,16 +150,17 @@ function EditForm(props) {
 
 			const oldtagdata= new FormData()
 			oldtagdata.append("questionID",data._id)
-	
-			const {}= await Axios.patch(`http://localhost:8080/tags/removetags`,
+
+			let atagapi=settings.backendEndpoint + "tags/removetags";
+			const {}= await Axios.patch(atagapi,
 			{"tagarray":oldtags,"questionID":data._id}
 			,{headers: {
 					'accept': 'application/json',
 					'authtoken': i
 			}}		
 			)
-			console.log(tagdata)
-			const {}=await Axios.patch(`http://localhost:8080/tags/addtags`,
+			let rtagapi=settings.backendEndpoint + "tags/addtags";
+			const {}=await Axios.patch(rtagapi,
 			{"tagarray":tagtext,"questionID":data._id},{
 				headers: {
 					'accept': 'application/json',

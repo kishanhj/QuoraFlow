@@ -11,7 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CommentBox } from './Comment'
 import { AuthContext } from '../firebase/Auth'
-import { titleCase } from "title-case";
+import settings from "../settings.json";
 
 
 
@@ -32,9 +32,11 @@ function Questiondisplay(props) {
             console.log("question rendered")
             async function getdata(){
                 try{
-                    const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
+                    let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+                    const { data }= await Axios.get(api)
                     if(currentUser){
-                        const admin= await Axios.post(`http://localhost:8080/users/isAdmin`, {email:currentUser.email});
+                        let adminapi=settings.backendEndpoint + "users/isAdmin";
+                        const admin= await Axios.post(adminapi, {email:currentUser.email});
                         console.log(admin.data.flag)
                         setisAdmin(admin.data.flag)
                     }
@@ -45,9 +47,11 @@ function Questiondisplay(props) {
                     setlike(data.likes.length)
                     settimestamp(new Date(data.timestamp).toUTCString())
                     setisOwner(data.userid==currentUser.email)
-                    const likedata  = await Axios.get(`http://localhost:8080/questions/like/${props.match.params.id}/${currentUser.email}`)
+                    let lapi=settings.backendEndpoint + "questions/like/"+props.match.params.id+"/"+currentUser.email;
+                    const likedata  = await Axios.get(lapi)
                     sethasliked(likedata.data.like)
-                    const reportdata  = await Axios.get(`http://localhost:8080/questions/report/${props.match.params.id}/${currentUser.email}`)
+                    let rapi=settings.backendEndpoint + "questions/report/"+props.match.params.id+"/"+currentUser.email;
+                    const reportdata  = await Axios.get(rapi)
                     sethasreport(reportdata.data.report)
                     
                     
@@ -81,7 +85,8 @@ function Questiondisplay(props) {
         async function addlike(){
             try{
                 let i = await currentUser.getIdToken()
-                const { data }  = await Axios.patch(`http://localhost:8080/questions/like/${props.match.params.id}`,{},
+                let lapi=settings.backendEndpoint + "questions/like/"+props.match.params.id
+                const { data }  = await Axios.patch(lapi,{},
                 {headers: {
                         'accept': 'application/json',
                         'Accept-Language': 'en-US,en;q=0.8',
@@ -110,7 +115,8 @@ function Questiondisplay(props) {
         async function addlike(){
             try{
                 let i = await currentUser.getIdToken()
-                const { data }  = await Axios.patch(`http://localhost:8080/questions/report/${props.match.params.id}`,{},
+                let rapi=settings.backendEndpoint + "questions/report/"+props.match.params.id
+                const { data }  = await Axios.patch(rapi,{},
                 {headers: {
                         'accept': 'application/json',
                         'Accept-Language': 'en-US,en;q=0.8',

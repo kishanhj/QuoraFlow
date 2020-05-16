@@ -3,7 +3,7 @@ import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import { AuthContext } from '../firebase/Auth'
 import '../App.css';
-
+import settings from "../settings.json";
 
 
 function Deletequestion(props){
@@ -16,14 +16,16 @@ function Deletequestion(props){
         ()=>{
             async function getdata(){
                 try{
-                    const { data }= await Axios.get(`http://localhost:8080/questions/${props.match.params.id}`)
-                    const admin= await Axios.post(`http://localhost:8080/users/isAdmin`, {email:currentUser.email});
+                    let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+                    const { data }= await Axios.get(api)
+                    let adminapi=settings.backendEndpoint + "users/isAdmin";
+                    const admin= await Axios.post(adminapi, {email:currentUser.email});
                     setgetData(data)
                     if(currentUser!==null){
                         if(data.userid===currentUser.email || admin.data.flag){
                             setisOwner({isowner:true})
                             let i = await currentUser.getIdToken()
-                            const { } = await Axios.delete(`http://localhost:8080/questions/${props.match.params.id}`,
+                            const { } = await Axios.delete(api,
                                 {headers: {
                                     'accept': 'application/json',
                                     'Accept-Language': 'en-US,en;q=0.8',
@@ -35,7 +37,8 @@ function Deletequestion(props){
                             for(let i=0;i<data.tags.length;i++){
                                 oldtags.push(data.tags[i].tag)
                             }
-                            const {}= await Axios.patch(`http://localhost:8080/tags/removetags`,
+                            let atagapi=settings.backendEndpoint + "tags/removetags";
+                            const {}= await Axios.patch(atagapi,
 			                        {"tagarray":oldtags,"questionID":data._id}
 			                        ,{headers: {
 					                        'accept': 'application/json',
