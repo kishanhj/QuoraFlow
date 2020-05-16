@@ -228,7 +228,7 @@ const CommentBox = ({ questionId }) => {
         }
 
         async function checkIsAdmin() {
-            let api = settings.backendEndpoint + "isAdmin";
+            let api = settings.backendEndpoint + "users/isAdmin";
             const res = await axios.post(api, {
                 email: currentUser.email
             }, {
