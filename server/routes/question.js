@@ -157,7 +157,6 @@ router.delete("/:id",checkauth.checkAuth, async function (req, res) {
 
         const questiondata=await questionData.getquestion(req.params.id)
         if(questiondata.userid!==req.locals.email && await userData.adminCheck(req.locals.email)===false){
-            console.log(await userData.adminCheck(req.locals.email))
             throw "UnAthorized Acess"
         }
     }

@@ -1,8 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 
 const mongoConfig = {
-  serverUrl: 'mongodb://localhost:27017/',
-  database: 'Reddit-Like'
+  "serverUrl": "mongodb+srv://kishan:kishan@locationtoip-bqvuk.mongodb.net/test?retryWrites=true&w=majority",
+  "database": 'QuoraFlow_DB'
 };
 
 let _connection = undefined;
