@@ -8,7 +8,8 @@ const SignOutButton = (props) => {
     const history = useHistory();
     const SignOut=()=>{
         doSignOut()
-        history.push('/signin')
+        history.push('/signup')
+        
         
     }
     return (

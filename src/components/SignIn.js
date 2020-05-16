@@ -16,14 +16,16 @@ function SignIn() {
                 if (currentUser) {
                     let api = settings.backendEndpoint + "users/checkUser";
                     let status = await axios.post(api, { email: currentUser.email })
-                    if (!status.data.flag){
+                    if (!status.data.flag) {
                         console.log("Status flag = ", status.data.flag)
-                        setUserCheck(1)}
+                        setUserCheck(1)
+                    }
                     else {
                         console.log("Status flag = ", status.data.flag)
                         setUserCheck(2);
                     }
                 }
+                
             } catch (e) {
                 console.log(e);
             }
