@@ -20,8 +20,8 @@ const LandingPage = (props) => {
         const getData = async () => {
             if(currentUser){
             let i = await currentUser.getIdToken();
-            var answerPage = undefined !== props.answerPage;
-            var myQuestions = undefined !== props.myQuestions;
+            let answerPage = undefined !== props.answerPage;
+            let myQuestions = undefined !== props.myQuestions;
             const body = {"email" : currentUser.email,"answerPage" : answerPage,"myQuestions":myQuestions };
             const {data} = await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/userInfo/${currentUser.email}`,
                 body,{headers: {
@@ -31,8 +31,8 @@ const LandingPage = (props) => {
             });
                 setUserData(data);
             } else {
-                var answerPage = undefined !== props.answerPage;
-                var myQuestions = undefined !== props.myQuestions;
+                let answerPage = undefined !== props.answerPage;
+                let myQuestions = undefined !== props.myQuestions;
                 if(answerPage || myQuestions) { 
                     setLoginRedirect(true);
                     return;

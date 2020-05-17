@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 
 const QuestionCard = (props) => {
-    const [question,setQuestion] = useState(props.data);
+    const [question,] = useState(props.data);
     const {tags,userName} = question;
 
     const getQuestionLink = () => {

@@ -1,7 +1,6 @@
 import React, { useState,useContext } from 'react';
 import { Redirect,useHistory } from 'react-router-dom';
 import { Button, Navbar, FormControl, Form, Nav } from 'react-bootstrap';
-import queryString from 'query-string'
 import SignOut from "./SignOut"
 import { AuthContext } from '../firebase/Auth'
 
