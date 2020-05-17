@@ -91,7 +91,7 @@ function QuestionForm(props) {
 				console.log(i[0]+" "+i[1])
 			}
 			let i = await currentUser.getIdToken()
-			let api=settings.backendEndpoint + "questions";
+			let api=process.env.REACT_APP_backendEndpoint + "questions";
 			const { data } = await axios.post(api,formdata, {
 				headers: {
 					'accept': 'application/json',
@@ -101,7 +101,7 @@ function QuestionForm(props) {
 				}
 				
 			});
-			let tagapi=settings.backendEndpoint + "tags/addtags";
+			let tagapi=process.env.REACT_APP_backendEndpoint + "tags/addtags";
 			const {}=await axios.patch(tagapi,
 			{"tagarray":tagtext,"questionID":data._id},{
 				headers: {
