@@ -29,7 +29,7 @@ const Dashboard = (props) => {
                     <Nav.Link href="/answer">Unanswered</Nav.Link>
                     <Nav.Link href="/questions">Add Question</Nav.Link>
                 </Nav>
-                <Form inline>
+                <Form inline onSubmit={(e) => { e.preventDefault(); search(document.getElementById("search").value); }}>
                     <Form.Label htmlFor="search"><span className="searchKey">Hi!&nbsp;{currentUser?currentUser.displayName:"Guest"}&nbsp;
 </span></Form.Label>
                     <FormControl id="search" type="text" placeholder="Search" className="mr-sm-2" />
