@@ -49,9 +49,6 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   background: #b7cfe0;
   cursor: pointer;
 }
-body {
-  background-color: #ECEBE4;
-}
 
 .tag{
   border: 1px solid #ddd;

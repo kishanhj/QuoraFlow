@@ -47,11 +47,13 @@ async function getCommentTree(questionId) {
     });
 
     const comments = [];
-    for (let i = 0; i < question.comments.length; ++i) {
-        comments.push(await getComment(question.comments[i]));
+    if (question.comments) {
+        for (let i = 0; i < question.comments.length; ++i) {
+            comments.push(await getComment(question.comments[i]));
+        }
     }
 
-    return {question,comments};
+    return { question, comments };
 }
 
 async function getUserVotedComments(questionId, userEmail) {

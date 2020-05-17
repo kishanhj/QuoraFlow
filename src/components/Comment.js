@@ -24,7 +24,7 @@ const countChildren = (comment) => {
     return count;
 };
 
-const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, child, isUserAdmin }) => {
+const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, child, isUserAdmin, isUserOwner }) => {
     const { currentUser } = useContext(AuthContext);
     const [hidden, setHidden] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -151,7 +151,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
                                             delete
                                         </button>
                                     </>}
-                                    {!child && !answerComment && <>
+                                    {!child && !answerComment && isUserOwner && <>
                                         {BULLET_CODE}
                                         <button className="btn btn-link Comment-btn-link" onClick={() => markCommentAsAnswer()}>
                                             This is what I was looking for
@@ -177,7 +177,7 @@ const Comment = ({ questionId, comment, reply, refresh, votings, answerComment, 
     );
 };
 
-const CommentList = ({ questionId, comments, votings, reply, refresh, answerComment, child = false, isUserAdmin }) => {
+const CommentList = ({ questionId, comments, votings, reply, refresh, answerComment, child = false, isUserAdmin, isUserOwner }) => {
     return (
         <div className="CommentList">
             {comments.map((c) => (
@@ -191,6 +191,7 @@ const CommentList = ({ questionId, comments, votings, reply, refresh, answerComm
                     answerComment={answerComment}
                     child={child}
                     isUserAdmin={isUserAdmin}
+                    isUserOwner={isUserOwner}
                 />
             ))}
         </div>
@@ -205,6 +206,7 @@ const CommentBox = ({ questionId }) => {
     const [answer, setAnswer] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isUserOwner, setIsUserOwner] = useState(false);
 
     const refresh = () => setDirty(Math.random());
 
@@ -224,6 +226,7 @@ const CommentBox = ({ questionId }) => {
                 setComments(data.comments);
                 setVotings(data.userVoting);
                 setAnswer(answerComment ? answerComment.toString() : null);
+                setIsUserOwner(currentUser.email === data.question.email);
             }
         }
 
@@ -260,6 +263,7 @@ const CommentBox = ({ questionId }) => {
                         answerComment={answer}
                         child={false}
                         isUserAdmin={isAdmin}
+                        isUserOwner={isUserOwner}
                     ></CommentList>
                 ))}
         </>
