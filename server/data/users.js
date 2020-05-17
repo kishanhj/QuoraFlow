@@ -2,8 +2,9 @@ const mongocollection = require('../config/mongoCollections');
 const ObjectID = require("mongodb").ObjectID
 const users = mongocollection.Users
 
+require('dotenv').config();
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient({ url: process.env.REDIS_URL });
 const bluebird = require("bluebird");
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
