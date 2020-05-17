@@ -77,9 +77,10 @@ const ReplyBox = ({
     }
 
     const labelText = edit ? 'Edit' : (isParentQuestion ? 'Answer' : 'Reply');
+    const childReplyClassName = !isParentQuestion && !edit ? 'ReplyBox-child' : '';
 
     return (
-        <div className="ReplyBox">
+        <div className={"ReplyBox " + childReplyClassName}>
             <div>
                 <label htmlFor="Comments">{labelText}</label>
                 <textarea
