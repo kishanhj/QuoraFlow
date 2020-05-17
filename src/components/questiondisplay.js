@@ -11,7 +11,6 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { CommentBox } from './Comment'
 import { AuthContext } from '../firebase/Auth'
-import settings from "../settings.json";
 
 
 

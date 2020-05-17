@@ -12,7 +12,6 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import * as yup from 'yup';
 import { AuthContext } from '../firebase/Auth'
 import Remove from "./RemoveComponent"
-import settings from "../settings.json";
 
 const KeyCodes = {
 	comma: 188,
