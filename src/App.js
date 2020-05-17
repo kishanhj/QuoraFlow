@@ -29,6 +29,7 @@ function App() {
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/signin" component={SignIn} />
             <PrivateRoute exact path="/answer" ><LandingPage answerPage={true} /></PrivateRoute>
+            <PrivateRoute exact path="/myQuestions" ><LandingPage myQuestions={true} /></PrivateRoute>
             <PrivateRoute exact path="/questions" exact component={Form} />
             <PrivateRoute exact path="/questions/display/:id" exact component={Question} />
             <PrivateRoute exact path="/questions/edit/:id" exact component={EditQuestion} />

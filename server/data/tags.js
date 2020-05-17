@@ -61,7 +61,7 @@ const getAllTagsData = async (id,email) => {
     const usersCollection = mongocollection.Users;
     const usersDB = await usersCollection();
 
-    const questions = [];
+    var questions = [];
     for(var qid of tag.questionid){
         var question = undefined;
 
@@ -75,6 +75,9 @@ const getAllTagsData = async (id,email) => {
         
         if(question) questions.push(question);
     }
+
+    questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
+    questions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
     const followers = await usersDB.find({ tags : { $elemMatch : {$eq : id } }}).project({userName:1,_id:0}).toArray();
     const userTagIDs = await usersDB.find({email : email}).project({tags:1,_id:0}).toArray();

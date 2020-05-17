@@ -488,32 +488,29 @@ async function removeVotedCommentId(email, c_id) {
 
 async function checkRedis(email) {
     const user = await client.hgetAsync("Users", email);
-    // console.log("checkRedis : ",user);
     if (user)
         return JSON.parse(user);
 }
 
 async function addUserToRedisMap(email, user) {
     const userString = JSON.stringify(user);
-    // console.log("addPersonToRedisMap : ",userString,email);
     client.hsetAsync("Users", email, userString);
 }
 
 async function removeUserFromRedisMap(email) {
-    // console.log("removePersonToRedisMap : ",email);
     client.hdelAsync("Users", email);
 }
 
-async function getUserInfo(email,answerPage) {
+async function getUserInfo(email,answerPage,myQuestions) {
     if (!email) throw "user's email is required";
 
     if ("guest" === email)
         return getGuestInfo();
 
     const tagDataAPI = require("./tags");
-    const { tags } = await getUser(email);
+    const { tags , questions ,userName } = await getUser(email);
 
-    var questions = [];
+    var questionList = [];
     const tagObjList = [];
 
     for (var tagID of tags) {
@@ -528,19 +525,39 @@ async function getUserInfo(email,answerPage) {
         if (!tagData) continue;
 
         tagObjList.push(tagData.tag);
-        questions.push.apply(questions, tagData.questions);
+        questionList.push.apply(questionList, tagData.questions);
     }
 
-    questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
-    questions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    if(myQuestions){
+        questionList = [];
+        const questionsDataAPI = require("./question");
+        console.log(questions,userName)
+        for(var qid of questions){
+            var question = undefined;
+            try {
+                question = await questionsDataAPI.getquestion(qid.toString());
+                question.userName = userName;
+            }catch(err){
+                console.log(err);
+                continue;
+            }
+            console.log(question);
+            if(question) questionList.push(question);
+        }
+
+    }
+
+
+    questionList = Array.from(new Set(questionList.map(JSON.stringify))).map(JSON.parse);
+    questionList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
     if(answerPage){
-        questions = questions.filter(q => q.issolved === null);
+        questionList = questionList.filter(q => q.issolved === null);
     }
     
     const data = {
         tags: tagObjList,
-        questions: questions
+        questions: questionList
     }
 
     return data;
