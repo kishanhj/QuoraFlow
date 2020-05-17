@@ -249,6 +249,22 @@ const getreport=async(id,userid)=>{
     
 }
 
+const getAllAsyncQuetions = async () => {
+    const questioncollection = await questions()
+    const allquestions= await questioncollection.find({sync : {$ne : 0}}).toArray();
+    return allquestions
+}
+
+const resetQuestionSync = async (id)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+    await getquestion(id)
+    const questioncollection = await questions()
+    questioncollection.updateOne({_id:ObjectID(id)},{$set:{sync:0}})
+    return;
+
+}
+
 module.exports={
     createquestion,
     getallquestions,
@@ -261,6 +277,7 @@ module.exports={
     unlike,
     updatereport,
     unreport,
-    getreport
-
+    getreport,
+    getAllAsyncQuetions,
+    resetQuestionSync
 }

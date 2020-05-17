@@ -24,7 +24,7 @@ const QuestionCard = (props) => {
             </div>
             {/* //user */}
             <div className='qc_user_wrap'>
-                <img className='qc_user_img' src='/imgs/user.png'></img>
+                <img className='qc_user_img' src='/imgs/user.png' alt='userimage'></img>
                 <div className="">
                     <div className = "qc_wrap_title title">{userName}</div>
                     <div className = "qc_wrap_answered">{getAnswered()}</div>

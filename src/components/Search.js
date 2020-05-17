@@ -23,7 +23,7 @@ const Search = (props) => {
         if(props.location && props.location.search){
             const newValues = queryString.parse(props.location.search)
             setQuery(newValues.q);
-            const {data} = await Axios.get(`http://localhost:8080/search/?q=${newValues.q}`);
+            const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}search/?q=${newValues.q}`);
             setResults(data);
         }
     }

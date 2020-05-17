@@ -9,7 +9,7 @@ const FollowTagButton = (props) => {
 
     useEffect(() => {
         const getData = async () => {
-            const {data} = await Axios.get(`http://localhost:8080/tags/followers/${props.tagID}`);
+            const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}tags/followers/${props.tagID}`);
             setTagData(data)
         }
         getData();
@@ -37,10 +37,17 @@ const FollowTagButton = (props) => {
             "email" : currentUser.email
         }
 
+        
+        let i = await currentUser.getIdToken()
+        const headers = {headers: {
+            'accept': 'application/json',
+            'authtoken': i
+        } }
+
         if(doesUserFollow)
-            await Axios.post(`http://localhost:8080/users/removeTagId`,body);
+            await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/removeTagId`,body,headers);
         else
-            await Axios.post(`http://localhost:8080/users/addTagId`,body);
+            await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/addTagId`,body,headers);
 
         props.refreshData.setRefreshCount(props.refreshData.refreshCount+1);
     }

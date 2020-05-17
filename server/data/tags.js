@@ -4,6 +4,12 @@ const tags = mongocollection.Tags
 const elasticSearchApi = require("../elasticSearch/searchAPI");
 const questionsDataAPI = require("./question");
 
+const redis = require("redis");
+const client = redis.createClient();
+const bluebird = require("bluebird");
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
+
 
 const addtags=async(tagarray ,questionid)=>{
 
@@ -19,6 +25,7 @@ const addtags=async(tagarray ,questionid)=>{
             elasticSearchApi.addTag(info.upsertedId._id,tagarray[i]);
         }
     }
+    removeTagsFromRedisMap();
     return;
 
 
@@ -125,6 +132,7 @@ const getTag = async (id) => {
             question.userName = await usersDB.find({email : question.userid}).project({userName:1,_id:0}).toArray();
             question.userName = question.userName[0].userName;
         }catch(err){
+            console.log(err);
             continue;
         }
         
@@ -145,11 +153,24 @@ const getTagbyname= async(name)=>{
     if(!name || typeof(name)!=="string") throw "Name is not properly defined"
         const tagcollection = await tags();
         const tag =await tagcollection.findOne({tag:name})
+        console.log(tag,name)
         if(!tag) throw "No tag with that name found"
         return tag
+}
 
-   
+async function checkRedis(){
+    const tags = await client.hgetAsync("tags","allTags");
+    if(tags)
+        return JSON.parse(tags);
+}
 
+async function addTagsToRedisMap(tags){
+    const tagsString = JSON.stringify(tags);
+    client.hsetAsync("tags", "allTags", tagsString);
+}
+
+async function removeTagsFromRedisMap(){
+    client.hdelAsync("tags", "allTags");
 }
 
 /**
@@ -167,6 +188,22 @@ async function getAllTags(){
         }
     }
     return objToRtrn;
+}   
+
+async function getAllAsyncTags(){ 
+    const tagcollection = await tags();
+    const allTag = await tagcollection.find({sync : {$ne : 0}}).toArray();
+    return allTag;
+}
+
+const resetTagSync = async (id)=>{
+    if(!id) throw "No id is provided"
+    if(typeof id !=="string") throw "id is not of correct type"
+
+    const tagcollection =  await tags();
+    tagcollection.updateOne({_id:ObjectID(id)},{$set:{sync:0}})
+    return;
+
 }
 
 
@@ -177,6 +214,8 @@ module.exports={
     getTag,
     getTagbyname,
     getTagFollowers,
-    getAllTags
+    getAllTags,
+    getAllAsyncTags,
+    resetTagSync
 }
 

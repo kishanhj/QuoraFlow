@@ -416,13 +416,14 @@ router.post("/removeFollowedQuestionId", checkauth.checkAuth, async (req, res) =
 
 })
 
-router.get("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
+router.post("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
     try {
         const email = req.params.email;
         if (!email) throw "user email is not provided";
         if (req.body.email !== req.locals.email) {
             throw "Error: Unauthorized Access"
         }
+        
         let userInfo = await userData.getUserInfo(email);
         res.status(200).json(userInfo);
     } catch (error) {
@@ -431,7 +432,7 @@ router.get("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
     }
 })
 
-router.get("/userInfo/tags/:email", checkauth.checkAuth, async (req, res) => {
+router.post("/userInfo/tags/:email", checkauth.checkAuth, async (req, res) => {
     try {
         const email = req.params.email;
         if (!email) throw "user email is not provided";

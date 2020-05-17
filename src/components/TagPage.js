@@ -20,7 +20,7 @@ const TagPage = (props) => {
     useEffect(() => {
         const getData = async () => {
             try{
-                const {data} = await Axios.get(`http://localhost:8080/tags/main/${props.match.params.id}/${currentUser.email}`);
+                const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}tags/main/${props.match.params.id}/${currentUser.email}`);
                 setTagData(data);
             } catch(e){
                 setTagData(null);
@@ -38,7 +38,7 @@ const TagPage = (props) => {
     const buildHeading = () => {
         return (
             <div className="tag_heading card" key={tagData.id}>
-                <img src="/imgs/tag.png" className='tag_img_main'/>
+                <img src="/imgs/tag.png" className='tag_img_main' alt='userimage'/>
                 <div className="tag_heading_2">
                     <div className="tag_title title">{tagData.title}</div>
                     <FollowTagButton tagID={tagData.id} refreshData={refreshData}/>
@@ -50,10 +50,10 @@ const TagPage = (props) => {
     const buildFollowerList = () => {
         return (
             <div className='tag_body_followers'>
-                <h5 className="tag_follower_heading">Followers</h5>
+                <div className="tag_follower_heading">Followers</div>
                 {tagData && tagData.followers.map( (follower) =>
                     <div className='tag_user' key={follower.userName}>
-                        <img className="tag_user_img" src="/imgs/user.png" />
+                        <img className="tag_user_img" src="/imgs/user.png" alt='userimage'/>
                         <div className='tag_user_name'> {follower.userName} </div>
                     </div>
                 )}

@@ -18,10 +18,17 @@ const LandingPage = (props) => {
     useEffect(() => {
         const getData = async () => {
             if(currentUser){
-                const {data} = await Axios.get(`http://localhost:8080/users/userInfo/${currentUser.email}`);
+            let i = await currentUser.getIdToken()
+            const body = {"email" : currentUser.email};
+            const {data} = await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/userInfo/${currentUser.email}`,
+                body,{headers: {
+					'accept': 'application/json',
+					'authtoken': i
+				}
+            });
                 setUserData(data);
             } else {
-                const {data} = await Axios.get(`http://localhost:8080/users/userInfo/guest`);
+                const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}users/userInfo/guest`);
                 setUserData(data);
             } 
         }

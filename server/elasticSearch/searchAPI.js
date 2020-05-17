@@ -14,8 +14,12 @@ const addQuestion = async (questionDB) => {
 
     if (sConfig.useAws) {
         var created = await crudAWSWrap(addQuestionAWS,question);
-        if(created) console.log("Index created");
-        return;
+        if(created) {
+            console.log("Index created");
+            const questionDataApi = require("../data/question");
+            questionDataApi.resetQuestionSync(questionDB._id.toString());
+        };
+        return created;
     }
 
     url = sConfig.baseUrl + sConfig.slash + sConfig.questionIndex + sConfig.slash + sConfig.questionType;
@@ -33,8 +37,12 @@ const addTag = async (tagID,tagTitle) => {
 
     if (sConfig.useAws) {
         var created = await crudAWSWrap(addTagAWS,tag);
-        if(created) console.log("Tag Index created");
-        return;
+        if(created) {
+            console.log("Tag Index created");
+            const tagDataApi = require("../data/tags");
+            tagDataApi.resetTagSync(tagID.toString());
+        }
+        return created;
     }
 
     url = sConfig.baseUrl + sConfig.slash + sConfig.tagIndex + sConfig.slash + sConfig.tagType;
@@ -52,9 +60,13 @@ const updateQuestion = async (questionDB) => {
     var url = "", res = {};
 
     if (sConfig.useAws) {
-        var created = await crudAWSWrap(updateQuestionAWS,question);
-        if(created) console.log("Index updated");
-        return;
+        var updated = await crudAWSWrap(updateQuestionAWS,question);
+        if(updated) { 
+            console.log("Index updated");
+            const questionDataApi = require("../data/question");
+            questionDataApi.resetQuestionSync(question._id.toString());
+        }
+        return updated;
     }
 
     url = sConfig.baseUrl + sConfig.slash + sConfig.questionIndex + sConfig.slash + sConfig.questionType;
@@ -215,8 +227,43 @@ const doNormalSearchAWS = async (query,successCallback,errorCallback) => {
 
 }
 
+const syncData = async () => {
+    questionSync();
+    tagSync();
+}
+
+const questionSync = async () => {
+    const questionDataApi = require("../data/question");
+    const questions = await questionDataApi.getAllAsyncQuetions();
+    for(var question of questions){
+        console.log("syncing question : ",question.title);
+        switch(question.sync){
+            case 1 : if(addQuestion(question)){
+                        console.log("syncing added question : ",question.title);
+                    }       
+                     break;
+            case 2 : if(updateQuestion(question)){
+                        console.log("syncing updated question : ",question.title);
+                    }
+                     break;
+        }
+    }
+}
+
+const tagSync = async () => {
+    const tagDataApi = require("../data/tags");
+    const tags = await tagDataApi.getAllAsyncTags();
+    for(var tag of tags){
+        console.log("syncing tag : ",tag.tag);
+        if(addTag(tag._id.toString(),tag.tag)){
+            console.log("syncing success tag : ",tag.tag);
+            
+        }
+        
+    }
+}
 
 
 module.exports = {
-    addQuestion, doNormalSearch,updateQuestion,addTag
+    addQuestion, doNormalSearch,updateQuestion,addTag,syncData
 }

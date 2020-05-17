@@ -21,23 +21,13 @@ const Dashboard = (props) => {
 
     return (
         <div>
-            {/* <img alt='img'></img> */}
-            {/* <button>Home</button>
-            <button>Answer</button>
-            <button>Notifications</button>
-            <input id= "search" type='text' placeholder="Enter text here" ></input>
-            <button onClick={() => search(document.getElementById("search").value)}>Search</button>
-            <button><Link className="showlink" to="/questions">Add question</Link></button> */}
 
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/">QuoraFlow</Navbar.Brand>
                 <Nav className="mr-auto">
                     <Nav.Link href="/">Home</Nav.Link>
                     <Nav.Link href="/answer">Answer</Nav.Link>
-                    <Nav.Link href="/">Notifications</Nav.Link>
                     <Nav.Link href="/questions">Add Question</Nav.Link>
-
-
                 </Nav>
                 <Form inline>
                     <Form.Label htmlFor="search"><span className="searchKey">Hi!&nbsp;{currentUser?currentUser.displayName:"Guest"}&nbsp;
