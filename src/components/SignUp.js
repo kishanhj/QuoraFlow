@@ -5,8 +5,11 @@ import { AuthContext } from '../firebase/Auth'
 import SocialSignIn from './SocialSignIn';
 import axios from 'axios';
 import "./Signin.css"
-import * as settings from "../settings.json"
+// import * as settings from "../settings.json"
 
+const settings = {
+    backendEndpoint: process.env.REACT_APP_backendEndpoint
+}
 
 
 

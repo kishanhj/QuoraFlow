@@ -2,7 +2,11 @@ import React, { useContext, useState, useLayoutEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
-import * as settings from "../settings.json"
+// import * as settings from "../settings.json"
+
+const settings = {
+    backendEndpoint: process.env.REACT_APP_backendEndpoint
+}
 
 //useEffect
 
