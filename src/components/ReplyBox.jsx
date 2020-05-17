@@ -18,11 +18,16 @@ const ReplyBox = ({
     const [input, setInput] = useState(text ? text : '');
 
     async function handleEdit() {
+        const text = input.trim();
+        if (text.length === 0) {
+            return;
+        }
+
         let api =
             settings.backendEndpoint + "questions/" + questionId + "/comments/" + commentId;
 
         const res = await axios.patch(api, {
-            text: input,
+            text
         }, {
             headers: {
                 authtoken: await currentUser.getIdToken()
@@ -36,6 +41,11 @@ const ReplyBox = ({
     }
 
     async function handleReply() {
+        const text = input.trim();
+        if (text.length === 0) {
+            return;
+        }
+
         let api =
             settings.backendEndpoint + "questions/" + questionId + "/comments";
 
@@ -48,7 +58,7 @@ const ReplyBox = ({
         }
 
         const res = await axios.post(api, {
-            text: input
+            text
         }, {
             headers: {
                 authtoken: await currentUser.getIdToken()
