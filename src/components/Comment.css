@@ -82,6 +82,10 @@
     margin-top: 0.5em;
 }
 
+.ReplyBox-child {
+    margin-left: 1.5rem;
+}
+
 .text-success{
     color: #008a00 !important;
 }

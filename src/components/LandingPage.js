@@ -18,8 +18,9 @@ const LandingPage = (props) => {
     useEffect(() => {
         const getData = async () => {
             if(currentUser){
-            let i = await currentUser.getIdToken()
-            const body = {"email" : currentUser.email};
+            let i = await currentUser.getIdToken();
+            var answerPage = undefined !== props.answerPage;
+            const body = {"email" : currentUser.email,"answerPage" : answerPage };
             const {data} = await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/userInfo/${currentUser.email}`,
                 body,{headers: {
 					'accept': 'application/json',
