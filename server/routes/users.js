@@ -432,6 +432,16 @@ router.post("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
     }
 })
 
+router.get("/userInfo/guest", async (req, res) => {
+    try {
+        let userInfo = await userData.getUserInfo("guest");
+        res.status(200).json(userInfo);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: error });
+    }
+})
+
 router.post("/userInfo/tags/:email", checkauth.checkAuth, async (req, res) => {
     try {
         const email = req.params.email;
@@ -446,6 +456,8 @@ router.post("/userInfo/tags/:email", checkauth.checkAuth, async (req, res) => {
         res.status(400).json({ error: error });
     }
 })
+
+
 
 router.post("/checkiftags", async (req, res) => {
     try {

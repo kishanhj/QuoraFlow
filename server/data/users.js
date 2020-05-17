@@ -546,7 +546,7 @@ const getGuestInfo = async () => {
     const tagcollection = await tags();
     const tagDataAPI = require("./tags");
 
-    const generalTag = await tagcollection.findOne({ tag: 'General' });
+    const generalTag = await tagcollection.findOne({ tag: 'general' });
     const tagData = await tagDataAPI.getTag(generalTag._id);
 
     var questions = [];

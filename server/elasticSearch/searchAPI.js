@@ -104,6 +104,7 @@ const doNormalSearch = async (query) => {
         }
     }
 
+    syncData();
     if (sConfig.useAws){
         const res =  await searchAWSWrap(searchQuery);
         return res.hits.hits;
@@ -257,7 +258,6 @@ const tagSync = async () => {
         console.log("syncing tag : ",tag.tag);
         if(addTag(tag._id.toString(),tag.tag)){
             console.log("syncing success tag : ",tag.tag);
-            
         }
         
     }
