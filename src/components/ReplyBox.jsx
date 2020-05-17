@@ -1,9 +1,14 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import settings from "../settings.json";
 import "./Comment.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthContext } from '../firebase/Auth'
+
+require('dotenv').config();
+
+const settings = {
+    backendEndpoint: process.env.REACT_APP_backendEndpoint
+}
 
 const ReplyBox = ({
     questionId,

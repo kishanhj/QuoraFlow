@@ -76,9 +76,10 @@ app.set("view engine", "handlebars");
 
 configRoutes(app);
 
-http.listen(8080, () => {
+const port = process.env.PORT || 8080;
+http.listen(port, () => {
   console.log("We've now got a server!");
-  console.log("Your routes will be running on http://localhost:8080");
+  console.log("Your routes will be running on http://localhost:" + port);
 });
 
 

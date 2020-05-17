@@ -195,7 +195,7 @@ function QuestionForm(props) {
 				id="description"
                 value={values.description}
 				isInvalid={!!errors.description}
-				placeholder="Add more details about question here.."
+				placeholder="Add more details about your question here.."
               />
 			  <Form.Control.Feedback type="invalid">
                 {errors.description}
@@ -221,7 +221,7 @@ function QuestionForm(props) {
 	 			<br/>
 				 
 	 			<Form.Label htmlFor="image1">Optional Image Upload</Form.Label>
-	 			<Form.File id="image1" label="Optional Image Upload" onChange={handleimagechange} accept="image/*" custom/>  
+	 			<Form.File id="image1" label="Click here to upload an image." onChange={handleimagechange} accept="image/*" custom/>  
 	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
      				Submit
   	 			</Button>
