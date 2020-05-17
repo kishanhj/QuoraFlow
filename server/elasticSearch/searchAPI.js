@@ -64,7 +64,7 @@ const updateQuestion = async (questionDB) => {
         if(updated) { 
             console.log("Index updated");
             const questionDataApi = require("../data/question");
-            questionDataApi.resetQuestionSync(question._id.toString());
+            questionDataApi.resetQuestionSync(questionDB._id.toString());
         }
         return updated;
     }
@@ -145,7 +145,7 @@ const addQuestionAWS = async (question,successCallback,errorCallback) => {
 
     var client = new AWS.HttpClient();
     client.handleRequest(request, null, function (response) {
-            successCallback('201' == response.statusCode);
+            successCallback('201' == response.statusCode || '200' == response.statusCode);
     }, function (error) {
         console.log(error);
         errorCallback(false);
@@ -168,7 +168,7 @@ const addTagAWS = async (tag,successCallback,errorCallback) => {
 
     var client = new AWS.HttpClient();
     client.handleRequest(request, null, function (response) {
-            successCallback('201' == response.statusCode);
+            successCallback('201' == response.statusCode || '200' == response.statusCode);
     }, function (error) {
         console.log(error);
         errorCallback(false);
