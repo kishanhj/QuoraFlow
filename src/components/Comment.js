@@ -231,7 +231,7 @@ const CommentBox = ({ questionId }) => {
                 setComments(data.comments);
                 setVotings(data.userVoting);
                 setAnswer(answerComment ? answerComment.toString() : null);
-                setIsUserOwner(currentUser.email === data.question.email);
+                setIsUserOwner(currentUser.email === data.question.userid);
             }
         }
 
