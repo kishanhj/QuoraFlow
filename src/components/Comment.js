@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import ReplyBox from "./ReplyBox.jsx";
-import settings from "../settings.json";
 import "./Comment.css";
 import { AuthContext } from '../firebase/Auth'
 import moment from 'moment';
+
+require('dotenv').config();
+
+const settings = {
+    backendEndpoint: process.env.REACT_APP_backendEndpoint
+}
 
 const UP_CODE = "\u25B2";
 const DOWN_CODE = "\u25BC";
