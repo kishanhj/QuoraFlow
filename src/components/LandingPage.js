@@ -9,6 +9,7 @@ const LandingPage = (props) => {
     const { currentUser } = useContext(AuthContext);
     const [userData,setUserData] = useState(undefined);
     const [refreshCount,setRefreshCount] = useState(0);
+    const [loginRedirect,setLoginRedirect] = useState(false);
 
     const refreshData = {
         refreshCount : refreshCount,
@@ -30,6 +31,12 @@ const LandingPage = (props) => {
             });
                 setUserData(data);
             } else {
+                var answerPage = undefined !== props.answerPage;
+                var myQuestions = undefined !== props.myQuestions;
+                if(answerPage || myQuestions) { 
+                    setLoginRedirect(true);
+                    return;
+                }
                 const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}users/userInfo/guest`);
                 setUserData(data);
             } 
@@ -40,9 +47,12 @@ const LandingPage = (props) => {
     
     if(null === userData)
         return (<Redirect to='/notfound'></Redirect>)
+
+    if(loginRedirect)
+        return (<Redirect to='/signin'></Redirect>)
     
     if(undefined === userData)
-        return (<div className='loader'></div>);
+        return (<div  className='loader'></div>);
 
     const buildFollowingTags = () => {
         if(currentUser)
