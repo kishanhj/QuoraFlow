@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useContext} from 'react';
-import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
+import {BrowserRouter as Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import { AuthContext } from '../firebase/Auth'
 import '../App.css';

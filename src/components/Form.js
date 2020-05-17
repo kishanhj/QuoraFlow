@@ -30,12 +30,11 @@ function QuestionForm(props) {
 	const [ err, seterr ] = useState(false);
 	const [errmsg ,seterrmsg]=useState(undefined)
 	const [image ,selectimage]=useState(null)
-	const [formsubmit,setformsubmit]=useState(false)
 	const [tags,settaags]=useState([
 		{id:'General',text:'General'}
 		
 	 ])
-	 const [suggestions,setsuggestions]=useState([
+	 const [suggestions,]=useState([
 		{ id: 'Computer Science', text: 'Computer Science' },
 		{ id: 'Electronics', text: 'Electronics' },
 		{ id: 'C++', text: 'C++' },
@@ -101,7 +100,7 @@ function QuestionForm(props) {
 				
 			});
 			let tagapi=process.env.REACT_APP_backendEndpoint + "tags/addtags";
-			const {}=await axios.patch(tagapi,
+			await axios.patch(tagapi,
 			{"tagarray":tagtext,"questionID":data._id},{
 				headers: {
 					'accept': 'application/json',
@@ -142,9 +141,7 @@ function QuestionForm(props) {
         })
 		
 	}
-	if (currentUser==undefined) {
-        console.log('Redirect called');
-       
+	if (currentUser===undefined) {
         return <Redirect to='/signin'></Redirect>
     }
 	
