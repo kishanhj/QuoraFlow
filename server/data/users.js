@@ -86,7 +86,7 @@ async function addTag(email, t_id) {
     if (!t_id) throw "tag_id to be added is not provided"
     if (typeof t_id != 'string') throw `Error: tag_id should be of type string`
 
-    let usr = await userCollection.updateOne({ "email": email }, { "$push": { "tags": t_id } })
+    let usr = await userCollection.updateOne({ "email": email }, { "$addToSet": { "tags": t_id } })
     if (usr.modifiedCount > 0) {
         removeUserFromRedisMap(email);
         return await getUser(email);
