@@ -2,7 +2,6 @@
     "name": "QuoraFlow",
     "version": "0.1.0",
     "private": true,
-    "proxy": "http://localhost:8080",
     "dependencies": {
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.5.0",
@@ -23,6 +22,7 @@
         "mongodb": "^3.5.6",
         "multer": "^1.4.2",
         "multer-s3": "^2.9.0",
+        "package.json": "^2.0.1",
         "react": "^16.13.0",
         "react-bootstrap": "^1.0.0",
         "react-dnd": "^3.0.2",
@@ -35,13 +35,15 @@
         "react-scripts": "3.4.0",
         "react-tag-input": "^6.4.2",
         "redis": "^3.0.2",
+        "serve": "^11.3.0",
         "socket.io": "^2.3.0",
         "title-case": "^3.0.2",
         "xss": "^1.0.6",
         "yup": "^0.28.5"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "node server/server.js & serve -s build",
+        "react": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
