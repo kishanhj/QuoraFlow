@@ -5,7 +5,11 @@ import { AuthContext } from '../firebase/Auth'
 import { doSignInWithEmailAndPassword, doPasswordReset } from '../firebase/FirebaseFunctions'
 import axios from 'axios';
 import "./Signin.css"
-import * as settings from "../settings.json"
+require('dotenv').config();
+
+const settings = {
+    backendEndpoint: process.env.REACT_APP_backendEndpoint
+}
 
 function SignIn() {
     const { currentUser } = useContext(AuthContext);
