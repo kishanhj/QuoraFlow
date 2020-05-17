@@ -272,7 +272,7 @@ function EditForm(props) {
 				
 				<Form1.File id="image1" label="Optional Image Upload" onChange={handleimagechange}   accept="image/*" custom/>  
 				<Button disabled={issubmitting} variant="primary" type="submit">
-    				Submit
+				{issubmitting?"Submitting...":"Submit"}
   				</Button>
 			</Form1>
 		</div>

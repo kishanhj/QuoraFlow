@@ -223,7 +223,7 @@ function QuestionForm(props) {
 	 			<Form.Label htmlFor="image1">Optional Image Upload</Form.Label>
 	 			<Form.File id="image1" label="Click here to upload an image." onChange={handleimagechange} accept="image/*" custom/>  
 	 			<Button variant="primary" type="submit" disabled={isSubmitting}>
-     				Submit
+     				{isSubmitting?"Submitting...":"Submit"}
   	 			</Button>
         </Form>
       )}
