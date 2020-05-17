@@ -26,7 +26,7 @@ const Dashboard = (props) => {
                 <Navbar.Brand href="/">QuoraFlow</Navbar.Brand>
                 <Nav className="mr-auto">
                     <Nav.Link href="/">Home</Nav.Link>
-                    <Nav.Link href="/answer">Answer</Nav.Link>
+                    <Nav.Link href="/answer">Unanswered</Nav.Link>
                     <Nav.Link href="/questions">Add Question</Nav.Link>
                 </Nav>
                 <Form inline>
