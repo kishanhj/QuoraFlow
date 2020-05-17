@@ -37,7 +37,7 @@ const SearchCard = (props) => {
         return(
             <div className = 'SearchCard'>
                 <div className='SearchCard_title_wrap'> 
-                   <img src="/imgs/tag.png" className='tag_img'/>Tag : <Link className='SearchCard_title title SearchCard_tag' to={getTagLink()}>{title}</Link>
+                   <img src="/imgs/tag.png" alt='img' className='tag_img'/>Tag : <Link className='SearchCard_title title SearchCard_tag' to={getTagLink()}>{title}</Link>
                 </div>
                 <FollowTagButton tagID={data._source.id} refreshData={refreshData}/>
             </div>
