@@ -46,7 +46,7 @@ const SearchCard = (props) => {
     return(
         <div className = 'SearchCard'>
             <div className='SearchCard_title title'> 
-                <Link to={getQuestionLink()}>{title}</Link>
+                <Link className='SearchCard_title' to={getQuestionLink()}>{title}</Link>
             </div>
             <div className='SearchCard_desc'> {description} </div>
         </div>

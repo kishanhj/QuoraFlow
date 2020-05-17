@@ -33,7 +33,7 @@ const QuestionCard = (props) => {
             {/* //question */}
             <div className="qc_question_wrap">
             <div className = "qc_queston_title title"> 
-                <Link to={getQuestionLink()}>{question.title}</Link> 
+                <Link to={getQuestionLink()} className='qc_queston_title'>{question.title}</Link> 
             </div>
             <div className = "qc_queston_desc "> {question.description} </div>
             </div>
