@@ -15,7 +15,6 @@ const addQuestion = async (questionDB) => {
     if (sConfig.useAws) {
         var created = await crudAWSWrap(addQuestionAWS,question);
         if(created) {
-            console.log("Index created");
             const questionDataApi = require("../data/question");
             questionDataApi.resetQuestionSync(questionDB._id.toString());
         };
@@ -38,7 +37,6 @@ const addTag = async (tagID,tagTitle) => {
     if (sConfig.useAws) {
         var created = await crudAWSWrap(addTagAWS,tag);
         if(created) {
-            console.log("Tag Index created");
             const tagDataApi = require("../data/tags");
             tagDataApi.resetTagSync(tagID.toString());
         }
@@ -62,7 +60,6 @@ const updateQuestion = async (questionDB) => {
     if (sConfig.useAws) {
         var updated = await crudAWSWrap(updateQuestionAWS,question);
         if(updated) { 
-            console.log("Index updated");
             const questionDataApi = require("../data/question");
             questionDataApi.resetQuestionSync(questionDB._id.toString());
         }
@@ -237,15 +234,12 @@ const questionSync = async () => {
     const questionDataApi = require("../data/question");
     const questions = await questionDataApi.getAllAsyncQuetions();
     for(var question of questions){
-        console.log("syncing question : ",question.title);
         switch(question.sync){
-            case 1 : if(addQuestion(question)){
-                        console.log("syncing added question : ",question.title);
-                    }       
+            case 1 : addQuestion(question)
                      break;
-            case 2 : if(updateQuestion(question)){
-                        console.log("syncing updated question : ",question.title);
-                    }
+            case 2 : updateQuestion(question)
+                     break;
+            case 3 : questionDataApi.resetQuestionSync(question._id.toString());
                      break;
         }
     }
@@ -255,11 +249,7 @@ const tagSync = async () => {
     const tagDataApi = require("../data/tags");
     const tags = await tagDataApi.getAllAsyncTags();
     for(var tag of tags){
-        console.log("syncing tag : ",tag.tag);
-        if(addTag(tag._id.toString(),tag.tag)){
-            console.log("syncing success tag : ",tag.tag);
-        }
-        
+        addTag(tag._id.toString(),tag.tag)
     }
 }
 

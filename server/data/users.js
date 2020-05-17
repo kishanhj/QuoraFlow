@@ -504,7 +504,7 @@ async function removeUserFromRedisMap(email) {
     client.hdelAsync("Users", email);
 }
 
-async function getUserInfo(email) {
+async function getUserInfo(email,answerPage) {
     if (!email) throw "user's email is required";
 
     if ("guest" === email)
@@ -533,6 +533,11 @@ async function getUserInfo(email) {
 
     questions = Array.from(new Set(questions.map(JSON.stringify))).map(JSON.parse);
     questions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    if(answerPage){
+        questions = questions.filter(q => q.issolved === null);
+    }
+    
     const data = {
         tags: tagObjList,
         questions: questions

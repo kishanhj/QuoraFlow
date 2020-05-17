@@ -419,12 +419,13 @@ router.post("/removeFollowedQuestionId", checkauth.checkAuth, async (req, res) =
 router.post("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
     try {
         const email = req.params.email;
+        const answerPage = req.body.answerPage;
         if (!email) throw "user email is not provided";
         if (req.body.email !== req.locals.email) {
             throw "Error: Unauthorized Access"
         }
         
-        let userInfo = await userData.getUserInfo(email);
+        let userInfo = await userData.getUserInfo(email,answerPage);
         res.status(200).json(userInfo);
     } catch (error) {
         console.log(error);
