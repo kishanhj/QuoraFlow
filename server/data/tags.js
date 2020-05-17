@@ -4,8 +4,9 @@ const tags = mongocollection.Tags
 const elasticSearchApi = require("../elasticSearch/searchAPI");
 const questionsDataAPI = require("./question");
 
+require('dotenv').config();
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient({ url: process.env.REDIS_URL });
 const bluebird = require("bluebird");
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
