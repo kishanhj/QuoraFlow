@@ -48,7 +48,7 @@ function EditForm(props) {
         console.log("question rendered")
         async function getdata(){
 			try{
-				let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+				let api=process.env.REACT_APP_backendEndpoint + "questions/"+props.match.params.id;
 				const { data }= await Axios.get(api)
 				setgetData(data)
 				setoldimage(data.image)
@@ -133,7 +133,7 @@ function EditForm(props) {
 			}
 			
 			let i = await currentUser.getIdToken()
-			let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+			let api=process.env.REACT_APP_backendEndpoint+ "questions/"+props.match.params.id;
 			const { data } = await Axios.patch(api, formdata, {
 				headers: {
 					'accept': 'application/json',
@@ -151,7 +151,7 @@ function EditForm(props) {
 			const oldtagdata= new FormData()
 			oldtagdata.append("questionID",data._id)
 
-			let atagapi=settings.backendEndpoint + "tags/removetags";
+			let atagapi=process.env.REACT_APP_backendEndpoint + "tags/removetags";
 			const {}= await Axios.patch(atagapi,
 			{"tagarray":oldtags,"questionID":data._id}
 			,{headers: {
@@ -159,7 +159,7 @@ function EditForm(props) {
 					'authtoken': i
 			}}		
 			)
-			let rtagapi=settings.backendEndpoint + "tags/addtags";
+			let rtagapi=process.env.REACT_APP_backendEndpoint + "tags/addtags";
 			const {}=await Axios.patch(rtagapi,
 			{"tagarray":tagtext,"questionID":data._id},{
 				headers: {

@@ -16,9 +16,9 @@ function Deletequestion(props){
         ()=>{
             async function getdata(){
                 try{
-                    let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+                    let api=process.env.REACT_APP_backendEndpoint + "questions/"+props.match.params.id;
                     const { data }= await Axios.get(api)
-                    let adminapi=settings.backendEndpoint + "users/isAdmin";
+                    let adminapi=process.env.REACT_APP_backendEndpoint + "users/isAdmin";
                     const admin= await Axios.post(adminapi, {email:currentUser.email});
                     setgetData(data)
                     if(currentUser!==null){
@@ -37,7 +37,7 @@ function Deletequestion(props){
                             for(let i=0;i<data.tags.length;i++){
                                 oldtags.push(data.tags[i].tag)
                             }
-                            let atagapi=settings.backendEndpoint + "tags/removetags";
+                            let atagapi=process.env.REACT_APP_backendEndpoint + "tags/removetags";
                             const {}= await Axios.patch(atagapi,
 			                        {"tagarray":oldtags,"questionID":data._id}
 			                        ,{headers: {

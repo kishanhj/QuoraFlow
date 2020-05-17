@@ -29,13 +29,13 @@ function Questiondisplay(props) {
     useEffect(
         ()=>{
        
-            console.log("question rendered")
+            
             async function getdata(){
                 try{
-                    let api=settings.backendEndpoint + "questions/"+props.match.params.id;
+                    let api=process.env.REACT_APP_backendEndpoint + "questions/"+props.match.params.id;
                     const { data }= await Axios.get(api)
                     if(currentUser){
-                        let adminapi=settings.backendEndpoint + "users/isAdmin";
+                        let adminapi=process.env.REACT_APP_backendEndpoint + "users/isAdmin";
                         const admin= await Axios.post(adminapi, {email:currentUser.email});
                         console.log(admin.data.flag)
                         setisAdmin(admin.data.flag)
@@ -47,10 +47,10 @@ function Questiondisplay(props) {
                     setlike(data.likes.length)
                     settimestamp(new Date(data.timestamp).toUTCString())
                     setisOwner(data.userid==currentUser.email)
-                    let lapi=settings.backendEndpoint + "questions/like/"+props.match.params.id+"/"+currentUser.email;
+                    let lapi=process.env.REACT_APP_backendEndpoint+ "questions/like/"+props.match.params.id+"/"+currentUser.email;
                     const likedata  = await Axios.get(lapi)
                     sethasliked(likedata.data.like)
-                    let rapi=settings.backendEndpoint + "questions/report/"+props.match.params.id+"/"+currentUser.email;
+                    let rapi=process.env.REACT_APP_backendEndpoint + "questions/report/"+props.match.params.id+"/"+currentUser.email;
                     const reportdata  = await Axios.get(rapi)
                     sethasreport(reportdata.data.report)
                     
@@ -85,7 +85,7 @@ function Questiondisplay(props) {
         async function addlike(){
             try{
                 let i = await currentUser.getIdToken()
-                let lapi=settings.backendEndpoint + "questions/like/"+props.match.params.id
+                let lapi=process.env.REACT_APP_backendEndpoint + "questions/like/"+props.match.params.id
                 const { data }  = await Axios.patch(lapi,{},
                 {headers: {
                         'accept': 'application/json',
@@ -115,7 +115,7 @@ function Questiondisplay(props) {
         async function addlike(){
             try{
                 let i = await currentUser.getIdToken()
-                let rapi=settings.backendEndpoint + "questions/report/"+props.match.params.id
+                let rapi=process.env.REACT_APP_backendEndpoint + "questions/report/"+props.match.params.id
                 const { data }  = await Axios.patch(rapi,{},
                 {headers: {
                         'accept': 'application/json',
