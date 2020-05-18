@@ -126,8 +126,8 @@ function SignUp() {
 
 
 
-            {pwMatch && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {pwMatch}</div>}
-            {userNameCheck && <div class="alert alert-warning" role="alert"><strong>Warning!</strong> {userNameCheck}</div>}
+            {pwMatch && <div className="alert alert-warning" role="alert"><strong>Warning!</strong> {pwMatch}</div>}
+            {userNameCheck && <div className="alert alert-warning" role="alert"><strong>Warning!</strong> {userNameCheck}</div>}
             <form onSubmit={handleSignUp}>
                 <div className='form-group'>
                     <label>
@@ -153,7 +153,7 @@ function SignUp() {
                          <input className='form-control' required id='password2' name='password2' type='password'></input>
                     </label>
                 </div>
-                <button id='submitButton' class="btn btn-primary" name='submitButton' type='submit' >Sign Up</button>
+                <button id='submitButton' className="btn btn-primary" name='submitButton' type='submit' >Sign Up</button>
             </form>
             <br />
             <SocialSignIn></SocialSignIn>

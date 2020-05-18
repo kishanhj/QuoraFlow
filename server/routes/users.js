@@ -5,6 +5,28 @@ const userData = data.users
 const checkauth = require("./checkAuth")
 
 
+router.post("/updateUser", checkauth.checkAuth, async (req, res) => {
+
+
+        try {
+    
+            let body = req.body;
+            if (!body.email) throw "user email is not provided";
+            if (req.body.email !== req.locals.email) {
+                throw "Error: Unauthorized Access"
+            }
+            if (!body.name) throw "userName not provided";
+            let usr = await userData.updateUser(body.email, body.name);
+            res.json(usr);
+        } catch (e) {
+            console.log(e);
+            res.json({ Error: e })
+        }
+    
+    
+    })
+
+
 
 /**
  * Checks if the user is an admin based on the email provided
@@ -42,9 +64,9 @@ router.post("/checkuser", async (req, res) => {
         if (!usr.email) throw `Error: "email address not provided`
         if (typeof usr.email != 'string') throw `Error: "email should be of type stirng`
 
-        let status = await userData.checkUser(usr.email)
-        if (!status) res.json({ flag: false })
-        else res.json({ flag: true })
+        let status = await userData.checkUser2(usr.email)
+        console.log(status)
+        res.json(status)
 
     } catch (e) {
         res.json({ Error: e })
@@ -184,6 +206,8 @@ router.post("/removeLikedQuestionId", checkauth.checkAuth, async (req, res) => {
 
 
 })
+
+
 
 /**
  * Adds tag id to the given user

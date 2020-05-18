@@ -1,6 +1,7 @@
 const mongocollection = require('../config/mongoCollections');
 const ObjectID = require("mongodb").ObjectID
 const users = mongocollection.Users
+const tags =mongocollection.Tags
 
 require('dotenv').config();
 const redis = require("redis");
@@ -49,7 +50,7 @@ async function checkTag(email) {
 async function addUser(usrObj) {
 
     const userCollection = await users();
-
+    console.log("userobj:",usrObj)
     let newObj = {
         userName: usrObj.name.toLowerCase(),
         email: usrObj.email,
@@ -59,8 +60,17 @@ async function addUser(usrObj) {
         questions_followed: [],
         tags: [],
         questions_liked: [],
-        isadmin: false
+        isadmin: false,
+        isnewUser:usrObj.isnewUser==='true'
     }
+    const tagcollection= await  tags()
+    const t= await tagcollection.findOne({tag:"general"})
+    if(t){
+        newObj.tags.push(t._id.toString())
+    }
+    console.log("data-obj",newObj)
+    const email=await userCollection.findOne({email:usrObj.email})
+    if(email) throw "Email Exists"
 
     let status = await userCollection.insertOne(newObj);
     if (status.insertedCount > 0) {
@@ -97,6 +107,19 @@ async function addTag(email, t_id) {
 
 
 
+}
+
+async function updateUser(email,username) {
+
+        const userCollection = await users();
+    console.log(await getUser(email))
+        let status = await userCollection.updateOne({ email:email}, {$set:{isnewUser:false,userName:username}});
+        if (status.modifiedCount > 0) {
+            return await getUser(email)
+        }
+        else {
+            throw `Error: User was not added to the database`
+        }
 }
 
 
@@ -199,10 +222,10 @@ async function getUser(email) {
     if (!email) { throw `Error: Email is not provided for the user` }
     if (typeof email != 'string') { throw `Error: email should be of type string` }
 
-    let usrToRtrn = await checkRedis(email);
-    if (usrToRtrn) return usrToRtrn;
+    // let usrToRtrn = await checkRedis(email);
+    // if (usrToRtrn) return usrToRtrn;
 
-    usrToRtrn = await userCollection.findOne({ "email": email })
+    let usrToRtrn = await userCollection.findOne({ "email": email })
     if (!usrToRtrn) {
         throw `Error: No user found with email ${email}`
     }
@@ -229,6 +252,20 @@ async function checkUser(email) {
 
 }
 
+async function checkUser2(email) {
+    const userCollection = await users();
+    if (!email) { throw `Error: Email is not provided for the user` }
+    if (typeof email != 'string') { throw `Error: email should be of type string` }
+
+    let usrToRtrn = await userCollection.findOne({ "email": email })
+    console.log("the user",usrToRtrn)
+    if (!usrToRtrn) {
+        return {flag:false,isnewUser:false}
+    }
+    return {flag:true,isnewUser:usrToRtrn.isnewUser};
+
+}
+
 /**
  * To check if the provided userName is unique or not
  * @param {string to check if an user with the userName exists in the database} userName 
@@ -246,6 +283,8 @@ async function checkUserName(user_name) {
     }
 
 }
+
+
 
 
 
@@ -593,4 +632,4 @@ const getUserTags = async (email) => {
 
 
 
-module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck, getUserTags, checkTag }
+module.exports = { addUser, getUser, getAllUsers, addQuestionId, removeQuestionId, addCommentId, removeCommentId, addFollowedQuestionId, removeFollowedQuestionId, addVotedCommentId, removeVotedCommentId, checkUserName, addLikedQuestionId, removeLikedQuestionId, addTag, removeTag, getUserInfo, checkUser, adminCheck, getUserTags, checkTag,updateUser,checkUser2 }

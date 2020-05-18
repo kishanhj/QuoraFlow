@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect } from 'react';
+import React, { useContext, useState, useLayoutEffect,useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth'
 import axios from 'axios';
@@ -18,8 +18,7 @@ function UserName() {
     const [tagError, setTagError] = useState('')
     let map = new Set();
 
-    useLayoutEffect(() => {
-        console.log(userCheck)
+    useEffect(() => {
         const getData = async () => {
             try {
                 if (currentUser) {
@@ -28,17 +27,26 @@ function UserName() {
                     let api = settings.backendEndpoint + "tags/getalltags";
                     const { data: listHashtag } = await axios.get(api)
                     setListDetails(listHashtag)
-                    if (!status.data.flag)
+                    if (status.data.flag && status.data.isnewUser)
                         setUserCheck(1)
                     else {
-                        setUserCheck(2);
+                        let tagapi = await axios.post(settings.backendEndpoint + "users/checkiftags",{email:currentUser.email})
+                        console.log("tags",tagapi)
+                        if(!tagapi.data.flag){
+                            setUserCheck(2)
+                        }
+                        else{
+                            setUserCheck(3)
+                        }
                     }
+                    
                 }
             } catch (e) {
                 console.log(e);
             }
         }
         getData();
+        console.log(userCheck)
     }, [currentUser, userCheck]);
 
     const handleUserName = async (e) => {
@@ -57,7 +65,7 @@ function UserName() {
             const payload = { name: userName.value, email: currentUser.email }
 
             let i = await currentUser.getIdToken()
-            let api = settings.backendEndpoint + "users/addUser";
+            let api = settings.backendEndpoint + "users/updateUser";
             let check = await axios.post(api, payload,
                 {
                     headers: {
@@ -69,7 +77,15 @@ function UserName() {
                 }
             );
             console.log(check)
-            setUserCheck(2)
+            let tagapi = await axios.post(settings.backendEndpoint + "users/checkiftags",{email:currentUser.email})
+            console.log("tags",tagapi)
+            if(!tagapi.data.flag){
+                setUserCheck(2)
+            }
+            else{
+                setUserCheck(3)
+            }
+            
         }
         catch (e) {
             console.log(e)
@@ -127,7 +143,7 @@ function UserName() {
 
 
     
-
+    console.log("this is usercheck",userCheck)
     if (userCheck === 1) {
         return (
 
@@ -167,7 +183,7 @@ function UserName() {
                                         value={tag.tag}
                                         onChange={myChangeHandler}
                                     />
-                                    <label className="form-check-label" for={tag._id}>{tag.tag}</label>
+                                    <label className="form-check-label" htmlFor={tag._id}>{tag.tag}</label>
                                 </p>
                             </li>
                         }
