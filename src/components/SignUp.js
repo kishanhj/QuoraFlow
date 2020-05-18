@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect,useLayoutEffect } from 'react';
+import React, { useContext, useState,useLayoutEffect } from 'react';
 import { Redirect, NavLink } from 'react-router-dom';
 import { doCreateUserWithEmailAndPassword } from '../firebase/FirebaseFunctions';
 import { AuthContext } from '../firebase/Auth'

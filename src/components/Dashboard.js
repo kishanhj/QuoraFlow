@@ -1,7 +1,6 @@
 import React, { useState,useContext } from 'react';
 import { Redirect,useHistory } from 'react-router-dom';
 import { Button, Navbar, FormControl, Form, Nav } from 'react-bootstrap';
-import queryString from 'query-string'
 import SignOut from "./SignOut"
 import { AuthContext } from '../firebase/Auth'
 
@@ -27,6 +26,7 @@ const Dashboard = (props) => {
                 <Nav className="mr-auto">
                     <Nav.Link href="/">Home</Nav.Link>
                     <Nav.Link href="/answer">Unanswered</Nav.Link>
+                    <Nav.Link href="/myQuestions">My Questions</Nav.Link>
                     <Nav.Link href="/questions">Add Question</Nav.Link>
                 </Nav>
                 <Form inline onSubmit={(e) => { e.preventDefault(); search(document.getElementById("search").value); }}>

@@ -9,6 +9,7 @@ const LandingPage = (props) => {
     const { currentUser } = useContext(AuthContext);
     const [userData,setUserData] = useState(undefined);
     const [refreshCount,setRefreshCount] = useState(0);
+    const [loginRedirect,setLoginRedirect] = useState(false);
 
     const refreshData = {
         refreshCount : refreshCount,
@@ -19,8 +20,9 @@ const LandingPage = (props) => {
         const getData = async () => {
             if(currentUser){
             let i = await currentUser.getIdToken();
-            var answerPage = undefined !== props.answerPage;
-            const body = {"email" : currentUser.email,"answerPage" : answerPage };
+            let answerPage = undefined !== props.answerPage;
+            let myQuestions = undefined !== props.myQuestions;
+            const body = {"email" : currentUser.email,"answerPage" : answerPage,"myQuestions":myQuestions };
             const {data} = await Axios.post(`${process.env.REACT_APP_backendEndpoint}users/userInfo/${currentUser.email}`,
                 body,{headers: {
 					'accept': 'application/json',
@@ -29,6 +31,12 @@ const LandingPage = (props) => {
             });
                 setUserData(data);
             } else {
+                let answerPage = undefined !== props.answerPage;
+                let myQuestions = undefined !== props.myQuestions;
+                if(answerPage || myQuestions) { 
+                    setLoginRedirect(true);
+                    return;
+                }
                 const {data} = await Axios.get(`${process.env.REACT_APP_backendEndpoint}users/userInfo/guest`);
                 setUserData(data);
             } 
@@ -39,9 +47,12 @@ const LandingPage = (props) => {
     
     if(null === userData)
         return (<Redirect to='/notfound'></Redirect>)
+
+    if(loginRedirect)
+        return (<Redirect to='/signin'></Redirect>)
     
     if(undefined === userData)
-        return (<div className='loader'></div>);
+        return (<div  className='loader'></div>);
 
     const buildFollowingTags = () => {
         if(currentUser)

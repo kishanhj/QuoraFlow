@@ -1,5 +1,5 @@
 import React ,{useState,useEffect,useContext} from 'react';
-import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,7 +33,7 @@ function EditForm(props) {
 	const [imagename, setimagename]=useState('');
 	const [tags,settags]=useState([ ])
 	const { register, errors, handleSubmit } = useForm();
-	const [suggestions,setsuggestions]=useState([
+	const [suggestions,]=useState([
 	   { id: 'Computer Science', text: 'Computer Science' },
 	   { id: 'Electronics', text: 'Electronics' },
 	   { id: 'C++', text: 'C++' },
@@ -151,7 +151,7 @@ function EditForm(props) {
 			oldtagdata.append("questionID",data._id)
 
 			let atagapi=process.env.REACT_APP_backendEndpoint + "tags/removetags";
-			const {}= await Axios.patch(atagapi,
+			await Axios.patch(atagapi,
 			{"tagarray":oldtags,"questionID":data._id}
 			,{headers: {
 					'accept': 'application/json',
@@ -159,7 +159,7 @@ function EditForm(props) {
 			}}		
 			)
 			let rtagapi=process.env.REACT_APP_backendEndpoint + "tags/addtags";
-			const {}=await Axios.patch(rtagapi,
+			await Axios.patch(rtagapi,
 			{"tagarray":tagtext,"questionID":data._id},{
 				headers: {
 					'accept': 'application/json',
@@ -221,7 +221,7 @@ function EditForm(props) {
 		setoldimage(null)
 	}
 
-	if (currentUser==undefined) {
+	if (currentUser===undefined) {
 			return <Redirect to='/signin'></Redirect>
 	}
 

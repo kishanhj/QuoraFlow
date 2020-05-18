@@ -444,12 +444,14 @@ router.post("/userInfo/:email", checkauth.checkAuth, async (req, res) => {
     try {
         const email = req.params.email;
         const answerPage = req.body.answerPage;
+        const myQuestions = req.body.myQuestions;
+
         if (!email) throw "user email is not provided";
         if (req.body.email !== req.locals.email) {
             throw "Error: Unauthorized Access"
         }
         
-        let userInfo = await userData.getUserInfo(email,answerPage);
+        let userInfo = await userData.getUserInfo(email,answerPage,myQuestions);
         res.status(200).json(userInfo);
     } catch (error) {
         console.log(error);

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect, Component } from 'react'
+import React, { useContext, useState, useLayoutEffect } from 'react'
 import SocialSignIn from './SocialSignIn'
 import { Redirect, NavLink } from 'react-router-dom'
 import { AuthContext } from '../firebase/Auth'

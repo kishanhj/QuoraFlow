@@ -3,16 +3,8 @@ import ReactHtmlParser from 'react-html-parser';
 import { Link } from "react-router-dom";
 import FollowTagButton from "./FollowTagButton";
 
-const stringValidator = (value) => {
-    if(!value || typeof value != 'string' || value === ''){
-        console.log(value);
-        return false;
-    }
-    return true;
-}
-
 const SearchCard = (props) => {
-    const [data,setData] = useState(props.data);
+    const [data,] = useState(props.data);
     const [refreshCount,setRefreshCount] = useState(0);
 
     const refreshData = {
