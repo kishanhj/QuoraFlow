@@ -26,7 +26,7 @@ const addtags=async(tagarray ,questionid)=>{
             elasticSearchApi.addTag(info.upsertedId._id,tagarray[i]);
         }
     }
-    removeTagsFromRedisMap();
+    await removeTagsFromRedisMap();
     return;
 
 
@@ -44,6 +44,7 @@ const removetags=async(tagarray ,questionid)=>{
         await tagcollection.update({tag:tagarray[i]},{ $pull: { questionid: questionid } })
 
     }
+    await removeTagsFromRedisMap();
     return;
 
 
@@ -170,20 +171,24 @@ async function checkRedis(){
 
 async function addTagsToRedisMap(tags){
     const tagsString = JSON.stringify(tags);
-    client.hsetAsync("tags", "allTags", tagsString);
+    await client.hsetAsync("tags", "allTags", tagsString);
 }
 
 async function removeTagsFromRedisMap(){
-    client.hdelAsync("tags", "allTags");
+    await client.hdelAsync("tags", "allTags");
 }
 
 /**
  * @return array of 10 tags from the database
  */
 async function getAllTags(){ 
+
+    let objToRtrn = checkRedis();
+    if(objToRtrn) return objToRtrn;
+
     const tagcollection = await tags();
     const allTag = await tagcollection.find({}).toArray();
-    let objToRtrn = []
+    objToRtrn = []
     
     for (let i = 0; i < 10; i++) { 
         if(allTag[i])
@@ -191,6 +196,7 @@ async function getAllTags(){
             objToRtrn.push(allTag[i]);
         }
     }
+    await addTagsToRedisMap(objToRtrn);
     return objToRtrn;
 }   
 
