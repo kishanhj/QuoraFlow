@@ -10,7 +10,7 @@ function Deletequestion(props){
     const [isOwner ,setisOwner] =useState(undefined)
     const [ postData, setpostData]=useState(true);
     const [hasdeleted,sethasdeleted]=useState(false)
-    const [ getData, setgetData ] = useState({});
+    const [ , setgetData ] = useState({});
     useEffect(
         ()=>{
             async function getdata(){
