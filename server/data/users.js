@@ -531,17 +531,16 @@ async function getUserInfo(email,answerPage,myQuestions) {
     if(myQuestions){
         questionList = [];
         const questionsDataAPI = require("./question");
-        console.log(questions,userName)
         for(var qid of questions){
             var question = undefined;
             try {
                 question = await questionsDataAPI.getquestion(qid.toString());
+                if(question.isdeleted) continue;
                 question.userName = userName;
             }catch(err){
                 console.log(err);
                 continue;
             }
-            console.log(question);
             if(question) questionList.push(question);
         }
 
