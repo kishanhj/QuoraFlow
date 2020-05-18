@@ -1,4 +1,4 @@
-import React, {useState,useEffect,useContext} from 'react';
+import React from 'react';
 
 class RemoveComponent extends React.Component {
    constructor(props){

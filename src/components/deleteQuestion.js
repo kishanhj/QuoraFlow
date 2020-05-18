@@ -24,7 +24,7 @@ function Deletequestion(props){
                         if(data.userid===currentUser.email || admin.data.flag){
                             setisOwner({isowner:true})
                             let i = await currentUser.getIdToken()
-                            const { } = await Axios.delete(api,
+                            await Axios.delete(api,
                                 {headers: {
                                     'accept': 'application/json',
                                     'Accept-Language': 'en-US,en;q=0.8',
@@ -37,7 +37,7 @@ function Deletequestion(props){
                                 oldtags.push(data.tags[i].tag)
                             }
                             let atagapi=process.env.REACT_APP_backendEndpoint + "tags/removetags";
-                            const {}= await Axios.patch(atagapi,
+                            await Axios.patch(atagapi,
 			                        {"tagarray":oldtags,"questionID":data._id}
 			                        ,{headers: {
 					                        'accept': 'application/json',

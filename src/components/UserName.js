@@ -15,7 +15,7 @@ function UserName() {
     const [userNameCheck, setUserNameCheck] = useState('');
     const [userCheck, setUserCheck] = useState();
     const [listDetails, setListDetails] = useState();
-    const [tagError, setTagError] = useState('')
+    const [tagError, ] = useState('')
     let map = new Set();
 
     useLayoutEffect(() => {

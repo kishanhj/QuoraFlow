@@ -1,5 +1,5 @@
 import React, {useState,useEffect,useContext} from 'react';
-import {BrowserRouter as Router , Route ,Link,Redirect} from 'react-router-dom';
+import {BrowserRouter as Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -45,7 +45,7 @@ function Questiondisplay(props) {
                     settags(data.tags)
                     setlike(data.likes.length)
                     settimestamp(new Date(data.timestamp).toUTCString())
-                    setisOwner(data.userid==currentUser.email)
+                    setisOwner(data.userid===currentUser.email)
                     let lapi=process.env.REACT_APP_backendEndpoint+ "questions/like/"+props.match.params.id+"/"+currentUser.email;
                     const likedata  = await Axios.get(lapi)
                     sethasliked(likedata.data.like)
@@ -115,7 +115,7 @@ function Questiondisplay(props) {
             try{
                 let i = await currentUser.getIdToken()
                 let rapi=process.env.REACT_APP_backendEndpoint + "questions/report/"+props.match.params.id
-                const { data }  = await Axios.patch(rapi,{},
+                await Axios.patch(rapi,{},
                 {headers: {
                         'accept': 'application/json',
                         'Accept-Language': 'en-US,en;q=0.8',
@@ -138,7 +138,7 @@ function Questiondisplay(props) {
         
 
     }
-    if (currentUser==undefined) {
+    if (currentUser===undefined) {
         return (<Redirect to='/signin'></Redirect>)
     }
 
