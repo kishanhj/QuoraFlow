@@ -33,7 +33,7 @@ async function checkTag(email) {
     console.log(check.tags)
     console.log(check.tags.length)
     console.log(email)
-    if (check.tags.length == 0) {
+    if (check.tags.length < 3) {
         console.log(check.tags.length)
         return false
     }
