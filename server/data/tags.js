@@ -183,7 +183,8 @@ async function removeTagsFromRedisMap(){
  */
 async function getAllTags(){ 
 
-    let objToRtrn = checkRedis();
+    let objToRtrn = await checkRedis();
+    console.log("redis",objToRtrn)
     if(objToRtrn) return objToRtrn;
 
     const tagcollection = await tags();
@@ -197,6 +198,7 @@ async function getAllTags(){
         }
     }
     await addTagsToRedisMap(objToRtrn);
+    console.log("redis-1",objToRtrn)
     return objToRtrn;
 }   
 
