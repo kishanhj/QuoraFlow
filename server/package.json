@@ -10,7 +10,7 @@
   "author": "CS554",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.643.0",
+    "aws-sdk": "^2.814.0",
     "base-64": "^0.1.0",
     "bluebird": "^3.7.2",
     "date-input-polyfill": "^2.14.0",
